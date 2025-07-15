@@ -1,0 +1,10 @@
+{
+  "name": "pet-feeder-miniapp",
+  "appid": "__UNI__PETFEEDER",
+  "description": "Pet feeder mini program",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "platforms": {
+    "mp-weixin": {}
+  }
+}
