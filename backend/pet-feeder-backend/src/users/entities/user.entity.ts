@@ -13,6 +13,13 @@ export class User {
   @Column({ length: 100 })
   nickname: string;
 
+  @Column({
+    type: 'varchar',
+    length: 20,
+    default: 'user',
+  })
+  role: string;
+
   @Column({ length: 20, nullable: true })
   phone?: string;
 

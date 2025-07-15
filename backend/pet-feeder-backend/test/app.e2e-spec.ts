@@ -13,6 +13,10 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalInterceptors(
+      new (require('../src/common/interceptors/logging.interceptor').LoggingInterceptor)(),
+      new (require('../src/common/interceptors/response.interceptor').ResponseInterceptor)(),
+    );
     await app.init();
   });
 
@@ -20,6 +24,6 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect({ code: 0, message: 'success', data: 'Hello World!' });
   });
 });

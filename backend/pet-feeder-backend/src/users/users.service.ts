@@ -25,6 +25,10 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { id } });
   }
 
+  findByOpenid(openid: string) {
+    return this.usersRepository.findOne({ where: { openid } });
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.usersRepository.update(id, updateUserDto);
   }
