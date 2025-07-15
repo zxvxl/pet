@@ -1,0 +1,17 @@
+{
+  "pages": [
+    {"path": "pages/login/index", "style": {"navigationBarTitleText": "登录"}},
+    {"path": "pages/pets/list", "style": {"navigationBarTitleText": "我的宠物"}},
+    {"path": "pages/pets/edit", "style": {"navigationBarTitleText": "编辑宠物"}},
+    {"path": "pages/appointment/book", "style": {"navigationBarTitleText": "预约服务"}},
+    {"path": "pages/orders/list", "style": {"navigationBarTitleText": "订单列表"}},
+    {"path": "pages/orders/detail", "style": {"navigationBarTitleText": "订单详情"}},
+    {"path": "pages/user/profile", "style": {"navigationBarTitleText": "个人中心"}},
+    {"path": "pages/pay/result", "style": {"navigationBarTitleText": "支付结果"}}
+  ],
+  "globalStyle": {
+    "navigationBarTitleText": "Pet Feeder",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f8f8f8"
+  }
+}
