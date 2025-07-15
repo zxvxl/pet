@@ -1,0 +1,3 @@
+<input bindinput="e=>setData({desc:e.detail.value})" placeholder="服务描述" />
+<button bindtap="chooseImage">选择图片</button>
+<button bindtap="onSubmit">提交</button>

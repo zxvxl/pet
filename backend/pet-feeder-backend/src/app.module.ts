@@ -7,6 +7,7 @@ import { PetsModule } from './pets/pets.module';
 import { OrdersModule } from './orders/orders.module';
 import { FeedersModule } from './feeders/feeders.module';
 import { AuthModule } from './auth/auth.module';
+import { ServiceOrdersModule } from './service-orders/service-orders.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
     PetsModule,
     OrdersModule,
     FeedersModule,
+    ServiceOrdersModule,
     AuthModule,
   ],
   controllers: [AppController],
