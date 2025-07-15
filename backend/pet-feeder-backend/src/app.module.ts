@@ -8,6 +8,7 @@ import { OrdersModule } from './orders/orders.module';
 import { FeedersModule } from './feeders/feeders.module';
 import { AuthModule } from './auth/auth.module';
 import { ServiceOrdersModule } from './service-orders/service-orders.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ServiceOrdersModule } from './service-orders/service-orders.module';
     FeedersModule,
     ServiceOrdersModule,
     AuthModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
