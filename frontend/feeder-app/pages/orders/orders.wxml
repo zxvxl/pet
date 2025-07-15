@@ -1,0 +1,4 @@
+<view wx:for="{{orders}}" wx:key="id" data-id="{{item.id}}">
+  <view>{{item.order.id}}</view>
+  <button bindtap="accept" data-id="{{item.order.id}}">接单</button>
+</view>

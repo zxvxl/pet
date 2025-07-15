@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateFeederDto } from './dto/create-feeder.dto';
 import { UpdateFeederDto } from './dto/update-feeder.dto';
 import { Feeder } from './entities/feeder.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class FeedersService {
@@ -13,7 +14,10 @@ export class FeedersService {
   ) {}
 
   create(createFeederDto: CreateFeederDto) {
-    const feeder = this.feedersRepository.create(createFeederDto);
+    const feeder = this.feedersRepository.create({
+      ...createFeederDto,
+      user: { id: createFeederDto.userId } as User,
+    });
     return this.feedersRepository.save(feeder);
   }
 
@@ -27,6 +31,10 @@ export class FeedersService {
 
   update(id: number, updateFeederDto: UpdateFeederDto) {
     return this.feedersRepository.update(id, updateFeederDto);
+  }
+
+  updateStatus(id: number, status: number) {
+    return this.feedersRepository.update(id, { status });
   }
 
   remove(id: number) {

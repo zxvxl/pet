@@ -27,6 +27,11 @@ export class FeedersController {
     return this.feedersService.update(+id, updateFeederDto);
   }
 
+  @Patch(':id/status/:status')
+  updateStatus(@Param('id') id: string, @Param('status') status: string) {
+    return this.feedersService.updateStatus(+id, +status);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.feedersService.remove(+id);
