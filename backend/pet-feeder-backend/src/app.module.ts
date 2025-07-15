@@ -13,8 +13,12 @@ import { AdminModule } from './admin/admin.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
+      type: 'mysql',
+      host: process.env.MYSQL_HOST || 'localhost',
+      port: +(process.env.MYSQL_PORT || 3306),
+      username: process.env.MYSQL_USER || 'root',
+      password: process.env.MYSQL_PASSWORD || 'password',
+      database: process.env.MYSQL_DB || 'pet_feeder',
       synchronize: true,
       autoLoadEntities: true,
     }),
