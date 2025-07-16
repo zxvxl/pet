@@ -7,6 +7,7 @@
     {"path": "pages/orders/list", "style": {"navigationBarTitleText": "订单列表"}},
     {"path": "pages/orders/detail", "style": {"navigationBarTitleText": "订单详情"}},
     {"path": "pages/orders/track", "style": {"navigationBarTitleText": "服务追踪"}},
+    {"path": "pages/im/chat", "style": {"navigationBarTitleText": "聊天"}},
     {"path": "pages/user/profile", "style": {"navigationBarTitleText": "个人中心"}},
     {"path": "pages/pay/result", "style": {"navigationBarTitleText": "支付结果"}}
   ],
