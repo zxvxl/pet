@@ -1,14 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { baseUrl } from '../config';
 import { ElMessageBox } from 'element-plus';
 const feeders = ref([]);
 const fetchFeeders = async () => {
-  const res = await fetch('/admin/feeders');
+  const res = await fetch(baseUrl + '/admin/feeders');
   const json = await res.json();
   feeders.value = json.data || [];
 };
 const audit = async (id, approve) => {
-  await fetch('/admin/feeders/audit', {
+  await fetch(baseUrl + '/admin/feeders/audit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ feederId: id, approve }),
