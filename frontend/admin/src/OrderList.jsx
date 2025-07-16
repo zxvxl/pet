@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { baseUrl } from '../config';
 
 export default function OrderList() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch('/service-orders')
+    fetch(baseUrl + '/service-orders')
       .then((r) => r.json())
       .then((d) => setOrders(d.data || []));
   }, []);

@@ -3,6 +3,7 @@ import { ServiceOrdersService } from './service-orders.service';
 import { CreateServiceOrderDto } from './dto/create-service-order.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { CompleteServiceDto } from './dto/complete-service.dto';
+import { ServiceStatus } from './status.enum';
 
 @Controller('service-orders')
 export class ServiceOrdersController {
@@ -26,6 +27,16 @@ export class ServiceOrdersController {
   @Patch(':id/complete')
   complete(@Param('id') id: string, @Body() dto: CompleteServiceDto) {
     return this.service.complete(+id, dto);
+  }
+
+  @Patch(':id/depart')
+  depart(@Param('id') id: string) {
+    return this.service.updateStatus(+id, ServiceStatus.DEPARTED);
+  }
+
+  @Patch(':id/start')
+  start(@Param('id') id: string) {
+    return this.service.updateStatus(+id, ServiceStatus.SERVING);
   }
 
   @Patch(':id/cancel')

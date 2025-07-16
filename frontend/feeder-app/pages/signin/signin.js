@@ -1,3 +1,4 @@
+import { baseUrl } from '../../config'
 Page({
   data: { id: 0 },
   onLoad(query) {
@@ -7,7 +8,7 @@ Page({
     wx.getLocation({
       success: (res) => {
         wx.request({
-          url: `/service-orders/${this.data.id}/sign-in`,
+          url: `${baseUrl}/service-orders/${this.data.id}/sign-in`,
           method: 'PATCH',
           data: { lat: res.latitude, lng: res.longitude },
         });
