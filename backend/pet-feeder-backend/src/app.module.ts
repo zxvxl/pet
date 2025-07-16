@@ -9,6 +9,7 @@ import { FeedersModule } from './feeders/feeders.module';
 import { AuthModule } from './auth/auth.module';
 import { ServiceOrdersModule } from './service-orders/service-orders.module';
 import { AdminModule } from './admin/admin.module';
+import { TrackingModule } from './tracking/tracking.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AdminModule } from './admin/admin.module';
     OrdersModule,
     FeedersModule,
     ServiceOrdersModule,
+    TrackingModule,
     AuthModule,
     AdminModule,
   ],

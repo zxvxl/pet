@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { baseUrl } from '../config';
 
 const orders = ref([]);
 const fetchOrders = async () => {
-  const res = await fetch('/service-orders');
+  const res = await fetch(baseUrl + '/service-orders');
   const json = await res.json();
   orders.value = json.data || [];
 };

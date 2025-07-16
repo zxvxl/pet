@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { baseUrl } from '../config';
 
 export default function FeederAudit() {
   const [feeders, setFeeders] = useState([]);
 
   useEffect(() => {
-    fetch('/feeders')
+    fetch(baseUrl + '/feeders')
       .then((r) => r.json())
       .then((d) => setFeeders(d.data || []));
   }, []);
 
   const updateStatus = (id, status) => {
-    fetch(`/feeders/${id}/status/${status}`, { method: 'PATCH' })
+    fetch(`${baseUrl}/feeders/${id}/status/${status}`, { method: 'PATCH' })
       .then(() => setFeeders((prev) => prev.filter((f) => f.id !== id)));
   };
 

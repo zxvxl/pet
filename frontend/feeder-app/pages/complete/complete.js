@@ -1,3 +1,4 @@
+import { baseUrl } from '../../config'
 Page({
   data: { id: 0, desc: '', images: [] },
   onLoad(query) {
@@ -8,7 +9,7 @@ Page({
   },
   onSubmit() {
     wx.request({
-      url: `/service-orders/${this.data.id}/complete`,
+      url: `${baseUrl}/service-orders/${this.data.id}/complete`,
       method: 'PATCH',
       data: { description: this.data.desc, images: this.data.images },
     });
