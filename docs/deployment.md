@@ -1,6 +1,6 @@
 # 部署指南
 
-本文档介绍如何在 Linux 服务器上部署本仓库的后端服务和前端小程序示例。
+本文档介绍如何在 Linux 服务器以及 macOS 系统上部署本仓库的后端服务和前端小程序示例。
 
 ## 仓库结构
 
@@ -13,6 +13,15 @@
 - Node.js 18 或更高版本
 - MySQL 数据库
 - 可选：`pm2` 或 `systemd` 用于后台运行服务
+
+### 在 macOS 上安装依赖
+
+在 macOS 系统上推荐使用 [Homebrew](https://brew.sh) 安装 Node.js 和 MySQL：
+
+```bash
+brew install node
+brew install mysql
+```
 
 ## 后端部署步骤
 
@@ -36,6 +45,7 @@
    ```
    或者使用 `pm2`/`systemd` 等方式后台运行。
 4. 也可以执行脚本 `scripts/deploy_backend.sh` 完成安装和启动。
+   macOS 用户可执行 `scripts/deploy_backend_mac.sh`，效果相同。
 
 ## 小程序部署步骤
 
