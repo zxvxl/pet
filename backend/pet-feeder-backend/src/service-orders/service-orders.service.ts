@@ -33,7 +33,10 @@ export class ServiceOrdersService {
   }
 
   findOne(id: number) {
-    return this.repository.findOne({ where: { id }, relations: ['feeder', 'order'] });
+    return this.repository.findOne({
+      where: { id },
+      relations: ['feeder', 'order', 'order.user'],
+    });
   }
 
   signIn(id: number, dto: SignInDto) {
@@ -75,9 +78,9 @@ export class ServiceOrdersService {
     const tpl = templateMap[status];
     if (tpl) {
       const detail = await this.findOne(id);
-      const openid = detail.order.user?.openid;
+      const openid = detail?.order?.user?.openid;
       if (openid) {
-        this.wxService.send(openid, tpl, { status }, `/pages/orders/detail?id=${detail.order.id}`);
+        this.wxService.send(openid, tpl, { status }, `/pages/orders/detail?id=${detail!.order.id}`);
       }
     }
     return res;
