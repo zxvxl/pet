@@ -4,11 +4,13 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { Feeder } from '../../feeders/entities/feeder.entity';
 import { Order } from '../../orders/entities/order.entity';
 
 @Entity('feeder_service_orders')
+@Unique(['order'])
 export class ServiceOrder {
   @PrimaryGeneratedColumn()
   id: number;
