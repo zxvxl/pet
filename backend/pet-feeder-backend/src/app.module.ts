@@ -10,6 +10,9 @@ import { AuthModule } from './auth/auth.module';
 import { ServiceOrdersModule } from './service-orders/service-orders.module';
 import { AdminModule } from './admin/admin.module';
 import { TrackingModule } from './tracking/tracking.module';
+import { EvaluationsModule } from './evaluations/evaluations.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { ComplaintsModule } from './complaints/complaints.module';
 
 @Module({
   imports: [
@@ -31,6 +34,9 @@ import { TrackingModule } from './tracking/tracking.module';
     TrackingModule,
     AuthModule,
     AdminModule,
+    EvaluationsModule,
+    FeedbackModule,
+    ComplaintsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
