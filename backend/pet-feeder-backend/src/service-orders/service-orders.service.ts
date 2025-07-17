@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, QueryFailedError } from 'typeorm';
 import { ServiceOrder } from './entities/service-order.entity';
 import { CreateServiceOrderDto } from './dto/create-service-order.dto';
 import { SignInDto } from './dto/sign-in.dto';
@@ -16,20 +16,41 @@ export class ServiceOrdersService {
   constructor(
     @InjectRepository(ServiceOrder)
     private repository: Repository<ServiceOrder>,
+    @InjectRepository(Feeder)
+    private feeders: Repository<Feeder>,
+    @InjectRepository(Order)
+    private orders: Repository<Order>,
     private gateway: TrackingGateway,
     private wxService: WxTemplateService,
   ) {}
 
-  create(dto: CreateServiceOrderDto) {
+  async create(dto: CreateServiceOrderDto) {
+    const feeder = await this.feeders.findOne({ where: { id: dto.feederId } });
+    if (feeder?.isBlacklist) {
+      throw new ForbiddenException('BLACKLIST');
+    }
+    const existing = await this.repository.findOne({
+      where: { order: { id: dto.orderId } },
+    });
+    if (existing) {
+      throw new ConflictException('ORDER_TAKEN');
+    }
+
     const entity = this.repository.create({
       feeder: { id: dto.feederId } as Feeder,
       order: { id: dto.orderId } as Order,
       status: ServiceStatus.ACCEPTED,
     });
-    return this.repository.save(entity).then((saved) => {
+    try {
+      const saved = await this.repository.save(entity);
       this.gateway.notifyStatus(saved.id, ServiceStatus.ACCEPTED);
       return saved;
-    });
+    } catch (err) {
+      if (err instanceof QueryFailedError) {
+        throw new ConflictException('ORDER_TAKEN');
+      }
+      throw err;
+    }
   }
 
   findOne(id: number) {
