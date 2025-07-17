@@ -11,6 +11,6 @@ import { WxTemplateService } from './wx-template.service';
   imports: [TypeOrmModule.forFeature([ServiceOrder, FeederLocation])],
   providers: [TrackingService, TrackingGateway, WxTemplateService],
   controllers: [TrackingController],
-  exports: [TrackingGateway, TrackingService],
+  exports: [TrackingGateway, TrackingService, WxTemplateService],
 })
 export class TrackingModule {}
