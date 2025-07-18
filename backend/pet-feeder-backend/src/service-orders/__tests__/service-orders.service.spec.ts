@@ -5,6 +5,8 @@ import { ServiceOrdersService } from '../service-orders.service';
 import { ServiceOrder } from '../entities/service-order.entity';
 import { TrackingGateway } from '../../tracking/tracking.gateway';
 import { WxTemplateService } from '../../tracking/wx-template.service';
+import { Feeder } from '../../feeders/entities/feeder.entity';
+import { Order } from '../../orders/entities/order.entity';
 import { ServiceStatus } from '../status.enum';
 
 describe('ServiceOrdersService status flow', () => {
@@ -21,6 +23,8 @@ describe('ServiceOrdersService status flow', () => {
       providers: [
         ServiceOrdersService,
         { provide: getRepositoryToken(ServiceOrder), useValue: repo },
+        { provide: getRepositoryToken(Feeder), useValue: {} },
+        { provide: getRepositoryToken(Order), useValue: {} },
         { provide: TrackingGateway, useValue: gateway },
         { provide: WxTemplateService, useValue: wx },
       ],
