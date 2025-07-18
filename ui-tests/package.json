@@ -1,0 +1,11 @@
+{
+  "name": "ui-tests",
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "miniprogram-automator": "^0.12.1"
+  }
+}
