@@ -33,6 +33,9 @@ export class Feeder {
   @Column('tinyint', { default: 0 })
   status: number;
 
+  @Column({ length: 255, nullable: true })
+  rejectReason?: string;
+
   @Column('tinyint', { default: 0 })
   isBlacklist: number;
 

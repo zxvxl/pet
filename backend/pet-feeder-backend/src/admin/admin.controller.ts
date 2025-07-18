@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -23,6 +23,19 @@ export class AdminController {
   @Roles('admin')
   auditFeeder(@Body() dto: AuditFeederDto) {
     return this.service.auditFeeder(dto);
+  }
+
+  @Patch('feeders/:id/audit')
+  @Roles('admin')
+  auditFeederById(
+    @Param('id') id: string,
+    @Body() dto: Omit<AuditFeederDto, 'feederId'>,
+  ) {
+    return this.service.auditFeeder({
+      feederId: parseInt(id, 10),
+      approve: dto.approve,
+      reason: dto.reason,
+    });
   }
 
   @Post('orders/update-status')

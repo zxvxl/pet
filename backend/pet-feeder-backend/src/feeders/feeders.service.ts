@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateFeederDto } from './dto/create-feeder.dto';
+import { ApplyFeederDto } from './dto/apply-feeder.dto';
 import { UpdateFeederDto } from './dto/update-feeder.dto';
 import { Feeder } from './entities/feeder.entity';
 import { User } from '../users/entities/user.entity';
@@ -12,6 +13,23 @@ export class FeedersService {
     @InjectRepository(Feeder)
     private feedersRepository: Repository<Feeder>,
   ) {}
+
+  findByUserId(userId: number) {
+    return this.feedersRepository.findOne({ where: { user: { id: userId } } });
+  }
+
+  async apply(userId: number, dto: ApplyFeederDto) {
+    const existing = await this.findByUserId(userId);
+    if (existing) {
+      Object.assign(existing, dto, { status: 0, rejectReason: null });
+      return this.feedersRepository.save(existing);
+    }
+    const feeder = this.feedersRepository.create({
+      ...dto,
+      user: { id: userId } as User,
+    });
+    return this.feedersRepository.save(feeder);
+  }
 
   create(createFeederDto: CreateFeederDto) {
     const feeder = this.feedersRepository.create({
