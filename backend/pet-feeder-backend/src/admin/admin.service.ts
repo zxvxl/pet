@@ -27,6 +27,7 @@ export class AdminService {
     const status = dto.approve ? 1 : 2;
     return this.feedersRepository.update(dto.feederId, {
       status,
+      rejectReason: dto.approve ? null : dto.reason,
     });
   }
 

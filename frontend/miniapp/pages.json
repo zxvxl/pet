@@ -9,7 +9,9 @@
     {"path": "pages/orders/track", "style": {"navigationBarTitleText": "服务追踪"}},
     {"path": "pages/im/chat", "style": {"navigationBarTitleText": "聊天"}},
     {"path": "pages/user/profile", "style": {"navigationBarTitleText": "个人中心"}},
-    {"path": "pages/pay/result", "style": {"navigationBarTitleText": "支付结果"}}
+    {"path": "pages/pay/result", "style": {"navigationBarTitleText": "支付结果"}},
+    {"path": "pages/feeder/apply", "style": {"navigationBarTitleText": "喂养员申请"}},
+    {"path": "pages/feeder/status", "style": {"navigationBarTitleText": "审核状态"}}
   ],
   "globalStyle": {
     "navigationBarTitleText": "Pet Feeder",

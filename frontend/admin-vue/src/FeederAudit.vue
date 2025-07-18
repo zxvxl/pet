@@ -9,10 +9,19 @@ const fetchFeeders = async () => {
   feeders.value = json.data || [];
 };
 const audit = async (id, approve) => {
-  await fetch(baseUrl + '/admin/feeders/audit', {
-    method: 'POST',
+  let reason = '';
+  if (!approve) {
+    const res = await ElMessageBox.prompt('请输入拒绝原因', '驳回', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+    }).catch(() => null);
+    if (!res) return;
+    reason = res.value;
+  }
+  await fetch(baseUrl + `/admin/feeders/${id}/audit`, {
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ feederId: id, approve }),
+    body: JSON.stringify({ approve, reason }),
   });
   fetchFeeders();
 };

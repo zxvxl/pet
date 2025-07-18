@@ -7,8 +7,6 @@ import { Feeder } from '../../feeders/entities/feeder.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { TrackingGateway } from '../../tracking/tracking.gateway';
 import { WxTemplateService } from '../../tracking/wx-template.service';
-import { Feeder } from '../../feeders/entities/feeder.entity';
-import { Order } from '../../orders/entities/order.entity';
 import { ServiceStatus } from '../status.enum';
 
 describe('ServiceOrdersService status flow', () => {

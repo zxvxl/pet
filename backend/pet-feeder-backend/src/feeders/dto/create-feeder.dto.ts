@@ -5,4 +5,5 @@ export class CreateFeederDto {
   idCard: string;
   avatar?: string;
   rating?: number;
+  rejectReason?: string;
 }
