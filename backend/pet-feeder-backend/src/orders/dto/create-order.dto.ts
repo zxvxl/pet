@@ -4,5 +4,5 @@ export class CreateOrderDto {
   feederId?: number;
   startTime: Date;
   endTime: Date;
-  status: string;
+  status?: string;
 }

@@ -28,6 +28,6 @@ export class Order {
   @Column('datetime')
   endTime: Date;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, default: 'pending' })
   status: string;
 }
