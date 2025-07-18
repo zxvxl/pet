@@ -14,6 +14,7 @@ import { TrackingModule } from './tracking/tracking.module';
 import { EvaluationsModule } from './evaluations/evaluations.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ComplaintsModule } from './complaints/complaints.module';
+import { FeederOrdersModule } from './feeder-orders/feeder-orders.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ComplaintsModule } from './complaints/complaints.module';
     EvaluationsModule,
     FeedbackModule,
     ComplaintsModule,
+    FeederOrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
