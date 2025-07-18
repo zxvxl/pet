@@ -11,12 +11,24 @@ export class AuthService {
   ) {}
 
   async validateOrCreateUser(loginDto: LoginDto) {
-    const user =
-      (await this.usersService.findByOpenid?.(loginDto.openid)) ||
-      (await this.usersService.create({
+    let user = await this.usersService.findByOpenid?.(loginDto.openid);
+    if (!user) {
+      user = await this.usersService.create({
         openid: loginDto.openid,
         nickname: loginDto.nickname,
-      }));
+        avatar: loginDto.avatar,
+      });
+    } else if (
+      user.nickname !== loginDto.nickname ||
+      user.avatar !== loginDto.avatar
+    ) {
+      await this.usersService.update(user.id, {
+        nickname: loginDto.nickname,
+        avatar: loginDto.avatar,
+      });
+      user.nickname = loginDto.nickname;
+      user.avatar = loginDto.avatar;
+    }
     return user;
   }
 
@@ -26,5 +38,9 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async profile(userId: number) {
+    return this.usersService.findOne(userId);
   }
 }

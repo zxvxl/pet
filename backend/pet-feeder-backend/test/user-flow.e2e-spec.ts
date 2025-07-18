@@ -59,7 +59,10 @@ async function createTestApp() {
   }).compile();
 
   const app = moduleFixture.createNestApplication();
-  app.useGlobalInterceptors(new LoggingInterceptor(), new ResponseInterceptor());
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(),
+    new ResponseInterceptor(),
+  );
   await app.init();
   return app;
 }
@@ -108,9 +111,14 @@ describe('User core flow (e2e)', () => {
 
     // login to obtain JWT
     const loginRes = await request(server)
-      .post('/auth/login')
-      .send({ openid: 'user_openid', nickname: 'TestUser' });
+      .post('/auth/wx-login')
+      .send({ openid: 'user_openid', nickname: 'TestUser', avatar: 'a.jpg' });
     token = loginRes.body.data.access_token;
+
+    const profileRes = await request(server)
+      .get('/auth/profile')
+      .set('Authorization', `Bearer ${token}`);
+    expect(profileRes.body.data.nickname).toBe('TestUser');
   });
 
   afterAll(async () => {
@@ -133,7 +141,13 @@ describe('User core flow (e2e)', () => {
     const orderRes = await request(server)
       .post('/orders')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId: 1, petId, startTime: start, endTime: end, status: 'reserved' });
+      .send({
+        userId: 1,
+        petId,
+        startTime: start,
+        endTime: end,
+        status: 'reserved',
+      });
     expect(orderRes.status).toBe(201);
     expectOrderShape(orderRes.body.data);
     expect(orderRes.body.data.status).toBe('reserved');
@@ -150,14 +164,12 @@ describe('User core flow (e2e)', () => {
     const uRes = await request(server)
       .post('/users')
       .send({ openid: 'feeder_openid', nickname: 'Feeder' });
-    const feederRes = await request(server)
-      .post('/feeders')
-      .send({
-        userId: uRes.body.data.id,
-        name: 'Feeder',
-        phone: '13900000000',
-        idCard: '110101199001010000',
-      });
+    const feederRes = await request(server).post('/feeders').send({
+      userId: uRes.body.data.id,
+      name: 'Feeder',
+      phone: '13900000000',
+      idCard: '110101199001010000',
+    });
     const feederId = feederRes.body.data.id;
 
     const serviceRes = await request(server)
@@ -167,7 +179,9 @@ describe('User core flow (e2e)', () => {
     expect(serviceRes.body.data.status).toBe(ServiceStatus.ACCEPTED);
 
     // depart
-    await request(server).patch(`/service-orders/${serviceOrderId}/depart`).send();
+    await request(server)
+      .patch(`/service-orders/${serviceOrderId}/depart`)
+      .send();
     let detail = await request(server).get(`/service-orders/${serviceOrderId}`);
     expect(detail.body.data.status).toBe(ServiceStatus.DEPARTED);
 
@@ -179,7 +193,9 @@ describe('User core flow (e2e)', () => {
     expect(detail.body.data.status).toBe(ServiceStatus.SIGNED_IN);
 
     // start service
-    await request(server).patch(`/service-orders/${serviceOrderId}/start`).send();
+    await request(server)
+      .patch(`/service-orders/${serviceOrderId}/start`)
+      .send();
     detail = await request(server).get(`/service-orders/${serviceOrderId}`);
     expect(detail.body.data.status).toBe(ServiceStatus.SERVING);
 
@@ -189,6 +205,7 @@ describe('User core flow (e2e)', () => {
       .send({ description: 'done', images: [] });
     detail = await request(server).get(`/service-orders/${serviceOrderId}`);
     expect(detail.body.data.status).toBe(ServiceStatus.COMPLETED);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(wxService.send).toHaveBeenCalled();
   });
 
@@ -204,7 +221,9 @@ describe('User core flow (e2e)', () => {
       .patch(`/service-orders/${serviceOrderId}/cancel`)
       .send();
     expect(cancelRes.status).toBe(200);
-    const detail = await request(server).get(`/service-orders/${serviceOrderId}`);
+    const detail = await request(server).get(
+      `/service-orders/${serviceOrderId}`,
+    );
     expect(detail.body.data.status).toBe(ServiceStatus.CANCELED);
   });
 });

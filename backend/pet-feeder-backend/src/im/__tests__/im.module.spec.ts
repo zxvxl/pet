@@ -40,16 +40,24 @@ describe('IM module', () => {
   });
 
   it('should join room on connection', () => {
-    const socket: any = { handshake: { query: { orderId: 5 } }, join: jest.fn() };
+    const socket: any = {
+      handshake: { query: { orderId: 5 } },
+      join: jest.fn(),
+    };
     gateway.handleConnection(socket);
     expect(socket.join).toHaveBeenCalledWith('5');
   });
 
   const dtoBase = { receiverId: 2, orderId: 5, payload: {} };
-  const types = [MessageType.TEXT, MessageType.IMAGE, MessageType.VOICE, MessageType.LOCATION];
+  const types = [
+    MessageType.TEXT,
+    MessageType.IMAGE,
+    MessageType.VOICE,
+    MessageType.LOCATION,
+  ];
 
   it.each(types)('should store %s message', async (type) => {
-    repo.create.mockImplementation((d) => d);
+    repo.create.mockImplementation((d: any) => d as Message);
     repo.save.mockResolvedValue({ id: 1, senderId: 1, type });
     const dto = { ...dtoBase, type } as any;
     const msg = await service.send(1, dto);
