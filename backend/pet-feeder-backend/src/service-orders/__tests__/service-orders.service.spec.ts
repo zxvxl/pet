@@ -3,6 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ServiceOrdersService } from '../service-orders.service';
 import { ServiceOrder } from '../entities/service-order.entity';
+import { Feeder } from '../../feeders/entities/feeder.entity';
+import { Order } from '../../orders/entities/order.entity';
 import { TrackingGateway } from '../../tracking/tracking.gateway';
 import { WxTemplateService } from '../../tracking/wx-template.service';
 import { Feeder } from '../../feeders/entities/feeder.entity';
@@ -15,6 +17,8 @@ describe('ServiceOrdersService status flow', () => {
     update: jest.fn(),
     findOne: jest.fn(),
   };
+  const feederRepo = {} as Repository<any>;
+  const orderRepo = {} as Repository<any>;
   const gateway: any = { notifyStatus: jest.fn() };
   const wx: any = { send: jest.fn(), logger: { error: jest.fn() } };
 
@@ -23,8 +27,8 @@ describe('ServiceOrdersService status flow', () => {
       providers: [
         ServiceOrdersService,
         { provide: getRepositoryToken(ServiceOrder), useValue: repo },
-        { provide: getRepositoryToken(Feeder), useValue: {} },
-        { provide: getRepositoryToken(Order), useValue: {} },
+        { provide: getRepositoryToken(Feeder), useValue: feederRepo },
+        { provide: getRepositoryToken(Order), useValue: orderRepo },
         { provide: TrackingGateway, useValue: gateway },
         { provide: WxTemplateService, useValue: wx },
       ],
