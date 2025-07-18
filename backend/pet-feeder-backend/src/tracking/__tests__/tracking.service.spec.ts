@@ -23,14 +23,19 @@ describe('TrackingService', () => {
     }).compile();
     service = module.get(TrackingService);
     jest.clearAllMocks();
-    locations.create.mockImplementation((d) => d);
-    locations.save.mockImplementation((d) => Promise.resolve({ id: 1, ...d, createTime: new Date() }));
+    locations.create.mockImplementation((d: any) => d as FeederLocation);
+    locations.save.mockImplementation((d) =>
+      Promise.resolve({ id: 1, ...d, createTime: new Date() }),
+    );
   });
 
   it('should save location and notify gateway', async () => {
     await service.reportLocation(5, { lat: 1, lng: 2 });
     expect(locations.create).toHaveBeenCalled();
     expect(locations.save).toHaveBeenCalled();
-    expect(gateway.notifyLocation).toHaveBeenCalledWith(5, expect.objectContaining({ lat: 1, lng: 2 }));
+    expect(gateway.notifyLocation).toHaveBeenCalledWith(
+      5,
+      expect.objectContaining({ lat: 1, lng: 2 }),
+    );
   });
 });

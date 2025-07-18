@@ -13,6 +13,9 @@ export class User {
   @Column({ length: 100 })
   nickname: string;
 
+  @Column({ length: 255, nullable: true })
+  avatar?: string;
+
   @Column({
     type: 'varchar',
     length: 20,

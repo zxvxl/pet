@@ -7,8 +7,6 @@ import { Feeder } from '../../feeders/entities/feeder.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { TrackingGateway } from '../../tracking/tracking.gateway';
 import { WxTemplateService } from '../../tracking/wx-template.service';
-import { Feeder } from '../../feeders/entities/feeder.entity';
-import { Order } from '../../orders/entities/order.entity';
 import { ServiceStatus } from '../status.enum';
 
 describe('ServiceOrdersService status flow', () => {
@@ -35,20 +33,39 @@ describe('ServiceOrdersService status flow', () => {
     }).compile();
     service = module.get(ServiceOrdersService);
     jest.clearAllMocks();
-    repo.findOne.mockResolvedValue({ id: 1, order: { id: 2, user: { openid: 'o' } } });
+    repo.findOne.mockResolvedValue({
+      id: 1,
+      order: { id: 2, user: { openid: 'o' } },
+    });
     repo.update.mockResolvedValue({ affected: 1 });
   });
 
   it('should notify status and send template on sign in', async () => {
     await service.signIn(1, { lat: 1, lng: 2 });
-    expect(gateway.notifyStatus).toHaveBeenCalledWith(1, ServiceStatus.SIGNED_IN);
+    expect(gateway.notifyStatus).toHaveBeenCalledWith(
+      1,
+      ServiceStatus.SIGNED_IN,
+    );
     expect(repo.update).toHaveBeenCalled();
-    expect(wx.send).toHaveBeenCalledWith('o', 'signin_tpl', { status: ServiceStatus.SIGNED_IN }, '/pages/orders/detail?id=2');
+    expect(wx.send).toHaveBeenCalledWith(
+      'o',
+      'signin_tpl',
+      { status: ServiceStatus.SIGNED_IN },
+      '/pages/orders/detail?id=2',
+    );
   });
 
   it('should notify status on complete', async () => {
     await service.complete(1, { description: 'done', images: [] });
-    expect(gateway.notifyStatus).toHaveBeenCalledWith(1, ServiceStatus.COMPLETED);
-    expect(wx.send).toHaveBeenCalledWith('o', 'complete_tpl', { status: ServiceStatus.COMPLETED }, '/pages/orders/detail?id=2');
+    expect(gateway.notifyStatus).toHaveBeenCalledWith(
+      1,
+      ServiceStatus.COMPLETED,
+    );
+    expect(wx.send).toHaveBeenCalledWith(
+      'o',
+      'complete_tpl',
+      { status: ServiceStatus.COMPLETED },
+      '/pages/orders/detail?id=2',
+    );
   });
 });

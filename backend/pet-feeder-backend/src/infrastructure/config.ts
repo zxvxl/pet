@@ -38,13 +38,17 @@ export function loadConfig(): AppConfig {
 
   const env = process.env.APP_ENV || 'development';
   const basePath = path.join(__dirname, '../../config');
-  const configPath = process.env.APP_CONFIG_PATH ||
-    path.join(basePath, `${env}.json`);
+  const configPath =
+    process.env.APP_CONFIG_PATH || path.join(basePath, `${env}.json`);
 
   try {
     const raw = readFileSync(configPath, 'utf8');
-    const parsed = JSON.parse(raw);
-    return { ...defaults, ...parsed, db: { ...defaults.db, ...(parsed.db || {}) } };
+    const parsed = JSON.parse(raw) as Partial<AppConfig>;
+    return {
+      ...defaults,
+      ...parsed,
+      db: { ...defaults.db, ...(parsed.db || {}) },
+    };
   } catch {
     return defaults;
   }

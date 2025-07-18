@@ -56,7 +56,10 @@ async function createTestApp() {
   }).compile();
 
   const app = moduleFixture.createNestApplication();
-  app.useGlobalInterceptors(new LoggingInterceptor(), new ResponseInterceptor());
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(),
+    new ResponseInterceptor(),
+  );
   await app.init();
   return app;
 }
@@ -82,8 +85,8 @@ describe('Feeder workflow (e2e)', () => {
     const wxService = app.get(WxTemplateService);
     jest.spyOn(wxService, 'send').mockResolvedValue(undefined);
     const loginRes = await request(server)
-      .post('/auth/login')
-      .send({ openid: 'user', nickname: 'user' });
+      .post('/auth/wx-login')
+      .send({ openid: 'user', nickname: 'user', avatar: 'a.jpg' });
     token = loginRes.body.data.access_token;
   });
 
@@ -95,19 +98,15 @@ describe('Feeder workflow (e2e)', () => {
     const userRes = await request(server)
       .post('/users')
       .send({ openid: 'feeder1', nickname: 'feeder1' });
-    const feederRes = await request(server)
-      .post('/feeders')
-      .send({
-        userId: userRes.body.data.id,
-        name: 'Feeder 1',
-        phone: '13900000000',
-        idCard: '110101199001010000',
-      });
+    const feederRes = await request(server).post('/feeders').send({
+      userId: userRes.body.data.id,
+      name: 'Feeder 1',
+      phone: '13900000000',
+      idCard: '110101199001010000',
+    });
     const feederId = feederRes.body.data.id;
 
-    await request(server)
-      .patch(`/feeders/${feederId}/status/1`)
-      .send();
+    await request(server).patch(`/feeders/${feederId}/status/1`).send();
 
     const ownerRes = await request(server)
       .post('/users')
@@ -134,15 +133,11 @@ describe('Feeder workflow (e2e)', () => {
     const serviceId = serviceRes.body.data.id;
     expect(serviceRes.body.data.status).toBe(ServiceStatus.ACCEPTED);
 
-    await request(server)
-      .patch(`/service-orders/${serviceId}/depart`)
-      .send();
+    await request(server).patch(`/service-orders/${serviceId}/depart`).send();
     await request(server)
       .patch(`/service-orders/${serviceId}/sign-in`)
       .send({ lat: 30.1, lng: 120.2 });
-    await request(server)
-      .patch(`/service-orders/${serviceId}/start`)
-      .send();
+    await request(server).patch(`/service-orders/${serviceId}/start`).send();
     await request(server)
       .patch(`/service-orders/${serviceId}/complete`)
       .send({ description: 'ok', images: ['a.jpg'] });
@@ -156,14 +151,12 @@ describe('Feeder workflow (e2e)', () => {
     const uRes = await request(server)
       .post('/users')
       .send({ openid: 'feeder2', nickname: 'feeder2' });
-    const fRes = await request(server)
-      .post('/feeders')
-      .send({
-        userId: uRes.body.data.id,
-        name: 'Feeder 2',
-        phone: '13900000001',
-        idCard: '110101199001010001',
-      });
+    const fRes = await request(server).post('/feeders').send({
+      userId: uRes.body.data.id,
+      name: 'Feeder 2',
+      phone: '13900000001',
+      idCard: '110101199001010001',
+    });
     const feederId = fRes.body.data.id;
 
     await request(server).patch(`/feeders/${feederId}/status/1`).send();
@@ -299,7 +292,12 @@ describe('Feeder workflow (e2e)', () => {
       .send({ lat, lng });
 
     const detail = await request(server).get(`/service-orders/${sid}`);
-    const d = distance(lat, lng, detail.body.data.signInLat, detail.body.data.signInLng);
+    const d = distance(
+      lat,
+      lng,
+      detail.body.data.signInLat,
+      detail.body.data.signInLng,
+    );
     expect(d).toBeLessThan(1000);
   });
 
@@ -312,7 +310,9 @@ describe('Feeder workflow (e2e)', () => {
       .send({ userId: uRes.body.data.id, name: 'f6', phone: '1', idCard: '4' });
     const feederId = fRes.body.data.id;
 
-    await request(server).patch(`/feeders/${feederId}`).send({ isBlacklist: 1 });
+    await request(server)
+      .patch(`/feeders/${feederId}`)
+      .send({ isBlacklist: 1 });
 
     const owner = await request(server)
       .post('/users')
