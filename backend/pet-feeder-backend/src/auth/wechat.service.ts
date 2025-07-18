@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import axios from 'axios';
+import { loadConfig } from '../infrastructure/config';
 
 export interface WechatSession {
   openid: string;
@@ -9,8 +10,9 @@ export interface WechatSession {
 @Injectable()
 export class WechatService {
   async getSession(code: string): Promise<WechatSession> {
-    const appid = process.env.WECHAT_APPID || '';
-    const secret = process.env.WECHAT_SECRET || '';
+    const cfg = loadConfig();
+    const appid = cfg.wechat.appid;
+    const secret = cfg.wechat.secret;
     if (!appid || !secret) {
       throw new UnauthorizedException('Missing wechat credentials');
     }

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { loadConfig } from './infrastructure/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -16,15 +17,21 @@ import { ComplaintsModule } from './complaints/complaints.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.MYSQL_HOST || 'localhost',
-      port: +(process.env.MYSQL_PORT || 3306),
-      username: process.env.MYSQL_USER || 'root',
-      password: process.env.MYSQL_PASSWORD || 'password',
-      database: process.env.MYSQL_DB || 'pet_feeder',
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => {
+        const cfg = loadConfig();
+        const db = cfg.db;
+        return {
+          type: 'mysql',
+          host: db.host,
+          port: db.port,
+          username: db.username,
+          password: db.password,
+          database: db.database,
+          synchronize: true,
+          autoLoadEntities: true,
+        };
+      },
     }),
     UsersModule,
     PetsModule,

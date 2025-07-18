@@ -30,14 +30,13 @@ brew install mysql
    cd backend/pet-feeder-backend
    npm install
    ```
-2. 配置环境变量（可写入 `~/.bashrc` 或系统服务文件）：
-   - `PORT`：服务端口，默认 `3000`
-   - `MYSQL_HOST`：数据库地址
-   - `MYSQL_PORT`：数据库端口，默认 `3306`
-   - `MYSQL_USER`：数据库用户名
-   - `MYSQL_PASSWORD`：数据库密码
-   - `MYSQL_DB`：数据库名称
-   - `JWT_SECRET`：JWT 加密密钥
+2. 根据环境修改 `backend/pet-feeder-backend/config/<env>.json` 配置：
+   - `port`：服务端口
+   - `jwtSecret`：JWT 加密密钥
+   - `wechat.appid`、`wechat.secret`：微信相关配置
+   - `frontendDomain`：前端域名
+   - `redis`、`kafka` 等服务信息
+   - `db`：数据库连接参数
 3. 构建并启动：
    ```bash
    npm run build
