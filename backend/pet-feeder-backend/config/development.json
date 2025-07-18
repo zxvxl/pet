@@ -1,6 +1,6 @@
 {
   "port": 3000,
-  "jwtSecret": "secret",
+  "jwtSecret": "3KMV+fuV54n1V7JmT6pAxKX+1Lh4zUj3Tx6Dw5TZtZ8dG9pK6UvXRA==",
   "frontendDomain": "http://localhost:8080",
   "wechat": { "appid": "", "secret": "" },
   "redis": { "host": "localhost", "port": 6379 },
@@ -9,7 +9,7 @@
     "host": "localhost",
     "port": 3306,
     "username": "root",
-    "password": "password",
+    "password": "root",
     "database": "pet_feeder"
   }
 }
