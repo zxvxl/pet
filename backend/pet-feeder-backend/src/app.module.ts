@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { loadConfig } from './infrastructure/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import wechatConfig from './config/wechat.config';
+import databaseConfig from './config/database.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -21,17 +23,22 @@ import { ReserveOrdersModule } from './reserve-orders/reserve-orders.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
+      load: [wechatConfig, databaseConfig],
+    }),
     TypeOrmModule.forRootAsync({
-      useFactory: () => {
-        const cfg = loadConfig();
-        const db = cfg.db;
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const db = config.get('database');
         return {
           type: 'mysql',
           host: db.host,
           port: db.port,
-          username: db.username,
+          username: db.user,
           password: db.password,
-          database: db.database,
+          database: db.name,
           synchronize: true,
           autoLoadEntities: true,
         };
