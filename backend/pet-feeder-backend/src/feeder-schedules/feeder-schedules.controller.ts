@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { FeederSchedulesService } from './feeder-schedules.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -36,6 +37,26 @@ export class FeederSchedulesController {
     const feederId = await this.service.findFeederIdByUser(req.user.id);
     if (!feederId) throw new NotFoundException('feeder not found');
     return this.service.findByFeeder(feederId);
+  }
+
+  @Get('available')
+  async available(@Query('start') start: string, @Query('end') end: string) {
+    const s = new Date(start);
+    const e = end ? new Date(end) : new Date(start);
+    return this.service.findAvailableFeeders(s, e);
+  }
+
+  @Get()
+  @UseGuards(AdminJwtGuard, RolesGuard)
+  @Roles('super', 'operator')
+  async list(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('name') name?: string,
+  ) {
+    const p = parseInt(page, 10) || 1;
+    const l = parseInt(limit, 10) || 10;
+    return this.service.paginateAll(p, l, name);
   }
 
   @Get(':feederId')
