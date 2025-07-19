@@ -3,6 +3,7 @@
   "jwtSecret": "change-me",
   "frontendDomain": "https://example.com",
   "wechat": { "appid": "", "secret": "" },
+  "wechatPay": { "appid": "", "mchid": "", "key": "", "notifyUrl": "" },
   "redis": { "host": "redis", "port": 6379 },
   "kafka": { "brokers": ["kafka:9092"] },
   "db": {
