@@ -14,7 +14,8 @@
     {"path": "pages/user/profile", "style": {"navigationBarTitleText": "个人中心"}},
     {"path": "pages/pay/result", "style": {"navigationBarTitleText": "支付结果"}},
     {"path": "pages/feeder/apply", "style": {"navigationBarTitleText": "喂养员申请"}},
-    {"path": "pages/feeder/status", "style": {"navigationBarTitleText": "审核状态"}}
+    {"path": "pages/feeder/status", "style": {"navigationBarTitleText": "审核状态"}},
+    {"path": "pages/feeder/schedule", "style": {"navigationBarTitleText": "排班设置"}}
   ],
   "globalStyle": {
     "navigationBarTitleText": "Pet Feeder",
