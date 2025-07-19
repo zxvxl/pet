@@ -1,4 +1,5 @@
-import { Injectable, ConflictException, ForbiddenException } from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
+import { BusinessException } from '../common/exceptions/business.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { ServiceOrder } from './entities/service-order.entity';
@@ -27,13 +28,13 @@ export class ServiceOrdersService {
   async create(dto: CreateServiceOrderDto) {
     const feeder = await this.feeders.findOne({ where: { id: dto.feederId } });
     if (feeder?.isBlacklist) {
-      throw new ForbiddenException('BLACKLIST');
+      throw new BusinessException(3001, 'BLACKLIST', HttpStatus.FORBIDDEN);
     }
     const existing = await this.repository.findOne({
       where: { order: { id: dto.orderId } },
     });
     if (existing) {
-      throw new ConflictException('ORDER_TAKEN');
+      throw new BusinessException(3002, 'ORDER_TAKEN', HttpStatus.CONFLICT);
     }
 
     const entity = this.repository.create({
@@ -47,7 +48,7 @@ export class ServiceOrdersService {
       return saved;
     } catch (err) {
       if (err instanceof QueryFailedError) {
-        throw new ConflictException('ORDER_TAKEN');
+        throw new BusinessException(3002, 'ORDER_TAKEN', HttpStatus.CONFLICT);
       }
       throw err;
     }
