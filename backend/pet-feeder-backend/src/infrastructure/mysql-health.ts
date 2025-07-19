@@ -1,14 +1,12 @@
 import { createConnection } from 'mysql2/promise';
-import { loadConfig } from './config';
 
 export async function mysqlHealthCheck() {
-  const db = loadConfig().db;
   const connection = await createConnection({
-    host: db.host,
-    port: db.port,
-    user: db.username,
-    password: db.password,
-    database: db.database,
+    host: process.env.DB_HOST ?? 'localhost',
+    port: parseInt(process.env.DB_PORT ?? '3306', 10),
+    user: process.env.DB_USER ?? 'root',
+    password: process.env.DB_PASS ?? 'password',
+    database: process.env.DB_NAME ?? 'pet_feeder',
   });
 
   await connection.execute('SELECT 1');
