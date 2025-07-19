@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -7,6 +11,8 @@ import { Order } from './entities/order.entity';
 import { User } from '../users/entities/user.entity';
 import { Pet } from '../pets/entities/pet.entity';
 import { Feeder } from '../feeders/entities/feeder.entity';
+import { PayOrderDto } from './dto/pay-order.dto';
+import { WxPayService } from './wx-pay.service';
 
 @Injectable()
 export class OrdersService {
@@ -15,6 +21,7 @@ export class OrdersService {
     private ordersRepository: Repository<Order>,
     @InjectRepository(Feeder)
     private feedersRepository: Repository<Feeder>,
+    private wxPay: WxPayService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -68,6 +75,22 @@ export class OrdersService {
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
     return this.ordersRepository.update(id, updateOrderDto);
+  }
+
+  async createPrepay(dto: PayOrderDto) {
+    const order = await this.ordersRepository.findOne({
+      where: { id: parseInt(dto.orderId, 10) },
+    });
+    if (!order) throw new NotFoundException('ORDER_NOT_FOUND');
+    return this.wxPay.createJsapiTransaction(dto.openid, 1, dto.orderId);
+  }
+
+  async handlePayNotify(body: any, headers: Record<string, any>) {
+    const result = await this.wxPay.handleNotify(body, headers);
+    const id = parseInt(result.out_trade_no, 10);
+    if (!isNaN(id)) {
+      await this.ordersRepository.update(id, { status: 'paid' });
+    }
   }
 
   remove(id: number) {

@@ -14,6 +14,7 @@ export interface AppConfig {
   jwtSecret: string;
   frontendDomain: string;
   wechat: { appid: string; secret: string };
+  wechatPay?: { appid: string; mchid: string; key: string; notifyUrl: string };
   redis: { host: string; port: number };
   kafka: { brokers: string[] };
   db: DbConfig;
@@ -25,6 +26,7 @@ export function loadConfig(): AppConfig {
     jwtSecret: 'secret',
     frontendDomain: 'http://localhost:8080',
     wechat: { appid: '', secret: '' },
+    wechatPay: { appid: '', mchid: '', key: '', notifyUrl: '' },
     redis: { host: 'localhost', port: 6379 },
     kafka: { brokers: ['localhost:9092'] },
     db: {
