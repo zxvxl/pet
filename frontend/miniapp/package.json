@@ -1,0 +1,8 @@
+{
+  "name": "miniapp",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No tests\""
+  },
+  "dependencies": {}
+}
