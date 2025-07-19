@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '../infrastructure/config.service';
+import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
 
 export interface JsapiPayParams {
