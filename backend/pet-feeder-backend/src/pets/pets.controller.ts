@@ -12,31 +12,31 @@ export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
   @Post()
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   create(@Body() createPetDto: CreatePetDto) {
     return this.petsService.create(createPetDto);
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('operator', 'super')
   findAll() {
     return this.petsService.findAll();
   }
 
   @Get(':id')
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   findOne(@Param('id') id: string) {
     return this.petsService.findOne(+id);
   }
 
   @Patch(':id')
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {
     return this.petsService.update(+id, updatePetDto);
   }
 
   @Delete(':id')
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   remove(@Param('id') id: string) {
     return this.petsService.remove(+id);
   }

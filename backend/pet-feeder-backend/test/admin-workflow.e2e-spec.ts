@@ -21,6 +21,7 @@ import { Feeder } from '../src/feeders/entities/feeder.entity';
 import { AdminUser } from '../src/admin/entities/admin-user.entity';
 import { AdminOperationLog } from '../src/admin/entities/admin-operation-log.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 
 @Controller('protected')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -109,7 +110,20 @@ describe('Admin & order workflow (e2e)', () => {
   });
 
   it('audits feeder approval and rejection', async () => {
-    const adminToken = await jwt.signAsync({ sub: 99, role: 'admin' });
+    const adminRepo = app.get<Repository<AdminUser>>(getRepositoryToken(AdminUser));
+    const hashed = await bcrypt.hash('pwd', 10);
+    await adminRepo.save({ username: 'operator', password: hashed, role: 'operator' } as any);
+
+    const loginRes = await request(server)
+      .post('/admin/login')
+      .send({ username: 'operator', password: 'pwd' });
+    const adminToken = loginRes.body.data.access_token;
+
+    const profileRes = await request(server)
+      .get('/admin/profile')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+    expect(profileRes.body.data.username).toBe('operator');
     const userRes = await request(server)
       .post('/users')
       .send({ openid: 'f1', nickname: 'F1' });
@@ -155,6 +169,7 @@ describe('Admin & order workflow (e2e)', () => {
     for (let i = 0; i < 5; i++) {
       await request(server)
         .post('/orders')
+        .set('Authorization', `Bearer ${userToken}`)
         .send({ userId, petId, startTime: now, endTime: now, status: i % 2 ? 'new' : 'done' });
     }
     const total = await orderRepo.count();
@@ -164,7 +179,11 @@ describe('Admin & order workflow (e2e)', () => {
     expect(page.length).toBeLessThanOrEqual(2);
 
     const firstId = page[0].id;
-    await request(server).patch(`/orders/${firstId}`).send({ status: 'updated' }).expect(200);
+    await request(server)
+      .patch(`/orders/${firstId}`)
+      .set('Authorization', `Bearer ${userToken}`)
+      .send({ status: 'updated' })
+      .expect(200);
     const updated = await orderRepo.findOne({ where: { id: firstId } });
     expect(updated?.status).toBe('updated');
   });

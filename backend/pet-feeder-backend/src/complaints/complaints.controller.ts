@@ -25,7 +25,7 @@ export class ComplaintsController {
   }
 
   @Get(':id')
-  @Roles('admin')
+  @Roles('operator', 'super')
   findOne(@Param('id') id: string) {
     return this.service.findOne(Number(id));
   }
