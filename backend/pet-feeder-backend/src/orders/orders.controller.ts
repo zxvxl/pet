@@ -22,7 +22,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   create(@Req() req, @Body() createOrderDto: CreateOrderDto) {
     if (!createOrderDto.userId) {
       createOrderDto.userId = req.user.userId;
@@ -37,25 +37,25 @@ export class OrdersController {
   }
 
   @Get('all')
-  @Roles('admin')
+  @Roles('operator', 'super')
   findAll() {
     return this.ordersService.findAll();
   }
 
   @Get(':id')
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(+id);
   }
 
   @Patch(':id')
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(+id, updateOrderDto);
   }
 
   @Delete(':id')
-  @Roles('user', 'admin')
+  @Roles('user', 'operator', 'super')
   remove(@Param('id') id: string) {
     return this.ordersService.remove(+id);
   }

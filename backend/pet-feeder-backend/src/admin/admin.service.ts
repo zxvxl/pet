@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
@@ -118,4 +118,8 @@ export class AdminService {
     });
     await this.logRepository.save(log);
   }
+  async findById(id: number) {
+    return this.adminRepository.findOne({ where: { id } });
+  }
+
 }
