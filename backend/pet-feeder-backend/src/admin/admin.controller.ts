@@ -4,20 +4,20 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Param,
   Query,
   UseGuards,
   Req,
   UnauthorizedException
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminJwtGuard } from './admin-jwt.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { AdminService } from './admin.service';
 import { AuditFeederDto } from './dto/audit-feeder.dto';
 import { AdminLoginDto } from './dto/admin-login.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
-import { AdminLoginDto } from './dto/admin-login.dto';
 import { HandleComplaintDto } from './dto/handle-complaint.dto';
 
 @Controller('admin')
@@ -32,29 +32,36 @@ export class AdminController {
   }
 
   @Get('profile')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   profile(@Req() req) {
     return this.service.profile(req.user.userId);
   }
 
   @Get('feeders')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   getFeeders(@Query('status') status?: string) {
     const s = status ? parseInt(status, 10) : undefined;
     return this.service.findFeeders(s);
   }
 
+  @Delete('feeders/:id')
+  @UseGuards(AdminJwtGuard, RolesGuard)
+  @Roles('super')
+  removeFeeder(@Param('id') id: string, @Req() req) {
+    return this.service.removeFeeder(parseInt(id, 10), req.user.userId);
+  }
+
   @Post('feeders/audit')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   auditFeeder(@Req() req, @Body() dto: AuditFeederDto) {
     return this.service.auditFeeder(dto, req.user.userId);
   }
 
   @Patch('feeders/:id/audit')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   auditFeederById(
     @Param('id') id: string,
@@ -72,21 +79,21 @@ export class AdminController {
   }
 
   @Post('orders/update-status')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   updateOrderStatus(@Req() req, @Body() dto: UpdateOrderStatusDto) {
     return this.service.updateOrderStatus(dto, req.user.userId);
   }
 
   @Get('complaints')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   getComplaints(@Query('status') status?: string) {
     return this.service.listComplaints(status);
   }
 
   @Patch('complaints/:id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   handleComplaint(
     @Param('id') id: string,
@@ -97,14 +104,14 @@ export class AdminController {
   }
 
   @Get('feedback')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   getFeedback() {
     return this.service.listFeedback();
   }
 
   @Get('logs')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('super', 'operator')
   getLogs() {
     return this.service.listLogs();
