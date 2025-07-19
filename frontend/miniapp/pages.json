@@ -16,6 +16,10 @@
     {"path": "pages/feeder/apply", "style": {"navigationBarTitleText": "喂养员申请"}},
     {"path": "pages/feeder/status", "style": {"navigationBarTitleText": "审核状态"}},
     {"path": "pages/feeder/schedule", "style": {"navigationBarTitleText": "排班设置"}}
+    {"path": "pages/service/select", "style": {"navigationBarTitleText": "选择服务"}},
+    {"path": "pages/service/pet-bind", "style": {"navigationBarTitleText": "绑定宠物"}},
+    {"path": "pages/service/reserve", "style": {"navigationBarTitleText": "填写预约"}},
+    {"path": "pages/service/confirm", "style": {"navigationBarTitleText": "确认预约"}}
   ],
   "globalStyle": {
     "navigationBarTitleText": "Pet Feeder",

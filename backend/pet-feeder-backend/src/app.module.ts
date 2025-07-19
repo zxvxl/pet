@@ -16,6 +16,8 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { ComplaintsModule } from './complaints/complaints.module';
 import { FeederOrdersModule } from './feeder-orders/feeder-orders.module';
 import { FeederSchedulesModule } from './feeder-schedules/feeder-schedules.module';
+import { ServiceTypesModule } from './service-types/service-types.module';
+import { ReserveOrdersModule } from './reserve-orders/reserve-orders.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { FeederSchedulesModule } from './feeder-schedules/feeder-schedules.modul
     OrdersModule,
     FeedersModule,
     ServiceOrdersModule,
+    ServiceTypesModule,
+    ReserveOrdersModule,
     TrackingModule,
     AuthModule,
     AdminModule,
