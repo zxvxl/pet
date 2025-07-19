@@ -171,3 +171,40 @@ CREATE TABLE orders (
   FOREIGN KEY (petId) REFERENCES pets(id),
   FOREIGN KEY (feederId) REFERENCES feeders(id)
 );
+
+-- service_types table
+CREATE TABLE service_types (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  member_price DECIMAL(10,2) NOT NULL,
+  description VARCHAR(255) NULL,
+  supported_species VARCHAR(50) NULL,
+  cover_url VARCHAR(255) NULL
+);
+
+-- reserve_orders table
+CREATE TABLE reserve_orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  userId INT NOT NULL,
+  reserveTime DATETIME NOT NULL,
+  address VARCHAR(200) NOT NULL,
+  remark TEXT NULL,
+  totalAmount DECIMAL(10,2) NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending',
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+-- reserve_order_items table
+CREATE TABLE reserve_order_items (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  orderId INT NOT NULL,
+  serviceId INT NOT NULL,
+  petId INT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  serviceName VARCHAR(50) NOT NULL,
+  FOREIGN KEY (orderId) REFERENCES reserve_orders(id),
+  FOREIGN KEY (serviceId) REFERENCES service_types(id),
+  FOREIGN KEY (petId) REFERENCES pets(id)
+);
