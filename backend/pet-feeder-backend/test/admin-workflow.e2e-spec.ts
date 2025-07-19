@@ -154,6 +154,41 @@ describe('Admin & order workflow (e2e)', () => {
     expect(afterReject?.status).toBe(2);
   });
 
+  it('restricts feeder removal to super admins', async () => {
+    const adminRepo = app.get<Repository<AdminUser>>(getRepositoryToken(AdminUser));
+    const hashed = await bcrypt.hash('pwd', 10);
+    await adminRepo.save([
+      { username: 'super1', password: hashed, role: 'super' } as any,
+      { username: 'op1', password: hashed, role: 'operator' } as any,
+    ]);
+
+    const superToken = (
+      await request(server).post('/admin/login').send({ username: 'super1', password: 'pwd' })
+    ).body.data.access_token;
+    const opToken = (
+      await request(server).post('/admin/login').send({ username: 'op1', password: 'pwd' })
+    ).body.data.access_token;
+
+    const uRes = await request(server).post('/users').send({ openid: 'del1', nickname: 'd' });
+    const feeder = await request(server)
+      .post('/feeders')
+      .send({ userId: uRes.body.data.id, name: 'D', phone: '13000000002', idCard: '110101199001011111' });
+    const id = feeder.body.data.id;
+
+    await request(server)
+      .delete(`/admin/feeders/${id}`)
+      .set('Authorization', `Bearer ${opToken}`)
+      .expect(403);
+
+    await request(server)
+      .delete(`/admin/feeders/${id}`)
+      .set('Authorization', `Bearer ${superToken}`)
+      .expect(200);
+
+    const removed = await feederRepo.findOne({ where: { id } });
+    expect(removed).toBeNull();
+  });
+
   it('manages orders with status updates and pagination', async () => {
     const userRes = await request(server)
       .post('/users')

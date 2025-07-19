@@ -52,6 +52,12 @@ export class AdminService {
     return res;
   }
 
+  async removeFeeder(id: number, adminId: number) {
+    const res = await this.feedersRepository.delete(id);
+    await this.logOperation(id, 'feeder', 'delete', undefined, adminId);
+    return res;
+  }
+
   async createAdminUser(username: string, password: string, role: AdminRole) {
     const hash = await bcrypt.hash(password, 10);
     const user = this.adminRepository.create({ username, password: hash, role });
@@ -75,7 +81,7 @@ export class AdminService {
     if (!user) return null;
     const payload = { sub: user.id, role: user.role };
     const token = await this.jwtService.signAsync(payload);
-    return { token };
+    return { access_token: token };
   }
 
   async profile(userId: number) {
