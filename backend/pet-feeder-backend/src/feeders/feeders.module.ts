@@ -9,5 +9,6 @@ import { Feeder } from './entities/feeder.entity';
   imports: [TypeOrmModule.forFeature([Feeder])],
   controllers: [FeedersController, FeederSelfController],
   providers: [FeedersService],
+  exports: [FeedersService],
 })
 export class FeedersModule {}
