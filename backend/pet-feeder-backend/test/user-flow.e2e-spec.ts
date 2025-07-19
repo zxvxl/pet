@@ -135,6 +135,18 @@ describe('User core flow (e2e)', () => {
     expectPetShape(petRes.body.data);
     petId = petRes.body.data.id;
 
+    // ensure there is an available feeder
+    const fUserRes = await request(server)
+      .post('/users')
+      .send({ openid: 'feeder_avail', nickname: 'fa' });
+    const feeder0 = await request(server).post('/feeders').send({
+      userId: fUserRes.body.data.id,
+      name: 'Available',
+      phone: '13800000000',
+      idCard: '110101199001010999',
+    });
+    await request(server).patch(`/feeders/${feeder0.body.data.id}/status/1`).send();
+
     // create order
     const start = new Date().toISOString();
     const end = new Date(Date.now() + 60 * 60 * 1000).toISOString();
