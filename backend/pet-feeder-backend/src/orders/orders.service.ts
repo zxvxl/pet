@@ -1,8 +1,5 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
+import { BusinessException } from '../common/exceptions/business.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -33,7 +30,7 @@ export class OrdersService {
           where: { status: 1, isBlacklist: 0 },
         });
         if (available.length === 0) {
-          throw new BadRequestException('NO_FEEDER');
+          throw new BusinessException(2001, 'NO_FEEDER');
         }
         feederId =
           available[Math.floor(Math.random() * available.length)].id;
@@ -81,7 +78,7 @@ export class OrdersService {
     const order = await this.ordersRepository.findOne({
       where: { id: parseInt(dto.orderId, 10) },
     });
-    if (!order) throw new NotFoundException('ORDER_NOT_FOUND');
+    if (!order) throw new BusinessException(2002, 'ORDER_NOT_FOUND', HttpStatus.NOT_FOUND);
     return this.wxPay.createJsapiTransaction(dto.openid, 1, dto.orderId);
   }
 
