@@ -6,9 +6,9 @@
         <text v-if="msg.type === 'text'">{{ msg.payload.text }}</text>
       </view>
     </scroll-view>
-    <input v-model="inputText" />
-    <button type="primary" @click="send">发送</button>
-    <button type="warn" @click="call">紧急联系</button>
+    <t-input v-model="inputText" />
+    <t-button theme="primary" @click="send">发送</t-button>
+    <t-button theme="danger" @click="call">紧急联系</t-button>
   </view>
 </template>
 
@@ -16,8 +16,10 @@
 import { connect, send, onMessage } from '@/utils/im'
 import store from '@/store'
 import { request } from '@/utils/request'
+import { Input, Button } from 'tdesign-miniprogram/vue'
 
 export default {
+  components: { 't-input': Input, 't-button': Button },
   data() {
     return {
       orderId: 0,

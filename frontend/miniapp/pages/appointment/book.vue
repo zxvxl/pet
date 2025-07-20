@@ -1,19 +1,26 @@
 <template>
   <view class="container">
-    <picker mode="date" @change="onDateChange">
+    <t-date-time-picker mode="date" @change="onDateChange">
       <view>{{ date || '选择日期' }}</view>
-    </picker>
-    <input v-model="time" placeholder="服务时间" />
-    <input v-model="address" placeholder="服务地址" />
-    <textarea v-model="remark" placeholder="备注"></textarea>
-    <button type="primary" @click="submit">预约</button>
+    </t-date-time-picker>
+    <t-input v-model="time" placeholder="服务时间" />
+    <t-input v-model="address" placeholder="服务地址" />
+    <t-textarea v-model="remark" placeholder="备注" />
+    <t-button theme="primary" @click="submit">预约</t-button>
   </view>
 </template>
 
 <script>
 import { request } from '@/utils/request'
+import { DateTimePicker, Input, Textarea, Button } from 'tdesign-miniprogram/vue'
 
 export default {
+  components: {
+    't-date-time-picker': DateTimePicker,
+    't-input': Input,
+    't-textarea': Textarea,
+    't-button': Button
+  },
   data() {
     return {
       date: '',

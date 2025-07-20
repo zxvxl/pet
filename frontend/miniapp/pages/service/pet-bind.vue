@@ -2,22 +2,24 @@
   <view class="pet-bind">
     <view v-if="pets.length === 0">
       <text>暂无宠物</text>
-      <button @click="goAdd">添加宠物</button>
+      <t-button @click="goAdd">添加宠物</t-button>
     </view>
     <view v-else>
       <view v-for="srv in services" :key="srv.id" class="bind-row">
         <text>{{ srv.name }}</text>
-        <picker :range="pets" range-key="name" @change="e => select(srv.id, e.detail.value)">
+        <t-picker :columns="pets" keys="name" @change="e => select(srv.id, e.detail.value)">
           <view>{{ pickText(srv.id) }}</view>
-        </picker>
+        </t-picker>
       </view>
-      <button type="primary" @click="next">下一步</button>
+      <t-button theme="primary" @click="next">下一步</t-button>
     </view>
   </view>
 </template>
 <script>
 import { request } from '@/utils/request'
+import { Picker, Button } from 'tdesign-miniprogram/vue'
 export default {
+  components: { 't-picker': Picker, 't-button': Button },
   data() {
     return { services: [], pets: [], map: {} }
   },

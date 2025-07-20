@@ -1,25 +1,33 @@
 <template>
   <view class="container">
-    <picker :range="pets" range-key="name" @change="selectPet">
-      <view>{{ petText }}</view>
-    </picker>
+    <t-picker :columns="pets" keys="name" @change="selectPet">
+      <t-input readonly :value="petText" placeholder="选择宠物" />
+    </t-picker>
     <view class="time-row">
-      <picker mode="datetime" @change="pickStart">
+      <t-date-time-picker @change="pickStart">
         <view>{{ startTime || '开始时间' }}</view>
-      </picker>
-      <picker mode="datetime" @change="pickEnd">
+      </t-date-time-picker>
+      <t-date-time-picker @change="pickEnd">
         <view>{{ endTime || '结束时间' }}</view>
-      </picker>
+      </t-date-time-picker>
     </view>
-    <textarea v-model="remark" placeholder="地址备注" />
-    <button type="primary" @click="submit">立即预约</button>
+    <t-textarea v-model="remark" placeholder="地址备注" />
+    <t-button theme="primary" @click="submit">立即预约</t-button>
   </view>
 </template>
 
 <script>
 import { request } from '@/utils/request'
+import { Picker, DateTimePicker, Textarea, Button, Input } from 'tdesign-miniprogram/vue'
 
 export default {
+  components: {
+    't-picker': Picker,
+    't-date-time-picker': DateTimePicker,
+    't-textarea': Textarea,
+    't-button': Button,
+    't-input': Input
+  },
   data() {
     return {
       pets: [],

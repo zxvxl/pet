@@ -1,27 +1,30 @@
 <template>
   <view class="container">
     <view class="form-item">
-      <input v-model="form.name" placeholder="名字" />
+      <t-input v-model="form.name" placeholder="名字" />
     </view>
     <view class="form-item">
-      <input v-model="form.type" placeholder="种类" />
+      <t-input v-model="form.type" placeholder="种类" />
     </view>
     <view class="form-item">
-      <picker :range="genderOptions" @change="changeGender">
-        <view>{{ genderText }}</view>
-      </picker>
+      <t-picker :columns="genderOptions" @change="changeGender">
+        <t-input readonly :value="genderText" placeholder="选择性别" />
+      </t-picker>
     </view>
     <view class="form-item">
-      <input v-model="form.age" placeholder="年龄" />
+      <t-input v-model="form.age" placeholder="年龄" />
     </view>
-    <button type="primary" @click="submit">保存</button>
+    <t-button theme="primary" @click="submit">保存</t-button>
   </view>
 </template>
 
 <script>
 import { request } from '@/utils/request'
+// Import TDesign mini program components
+import { Input, Button, Picker } from 'tdesign-miniprogram/vue'
 
 export default {
+  components: { 't-input': Input, 't-button': Button, 't-picker': Picker },
   data() {
     return {
       form: {

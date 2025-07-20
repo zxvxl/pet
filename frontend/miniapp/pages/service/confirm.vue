@@ -6,12 +6,14 @@
     <view>预约时间：{{ data.reserveTime }}</view>
     <view>地址：{{ data.address }}</view>
     <view>备注：{{ data.remark }}</view>
-    <button type="primary" @click="submit">立即预约</button>
+    <t-button theme="primary" @click="submit">立即预约</t-button>
   </view>
 </template>
 <script>
 import { request } from '@/utils/request'
+import { Button } from 'tdesign-miniprogram/vue'
 export default {
+  components: { 't-button': Button },
   data() {
     return { data: {}, total: 0 }
   },

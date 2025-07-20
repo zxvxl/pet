@@ -1,6 +1,6 @@
 <template>
   <view>
-    <uni-steps :options="steps" :active="active" direction="column" />
+    <t-steps :options="steps" :current="active" layout="vertical" />
     <map :longitude="location.lng" :latitude="location.lat" style="width:100%;height:300rpx" />
   </view>
 </template>
@@ -8,8 +8,10 @@
 <script>
 import { request } from '@/utils/request'
 import { baseUrl } from '@/config'
+import { Steps } from 'tdesign-miniprogram/vue'
 
 export default {
+  components: { 't-steps': Steps },
   data() {
     return {
       id: 0,
