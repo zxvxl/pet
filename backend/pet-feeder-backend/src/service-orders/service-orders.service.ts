@@ -31,7 +31,7 @@ export class ServiceOrdersService {
       throw new BusinessException(3001, 'BLACKLIST', HttpStatus.FORBIDDEN);
     }
     const existing = await this.repository.findOne({
-      where: { order: { id: dto.orderId } },
+      where: { baseOrder: { id: dto.orderId } },
     });
     if (existing) {
       throw new BusinessException(3002, 'ORDER_TAKEN', HttpStatus.CONFLICT);
@@ -39,7 +39,7 @@ export class ServiceOrdersService {
 
     const entity = this.repository.create({
       feeder: { id: dto.feederId } as Feeder,
-      order: { id: dto.orderId } as Order,
+      baseOrder: { id: dto.orderId } as Order,
       status: ServiceStatus.ACCEPTED,
     });
     try {
@@ -57,7 +57,7 @@ export class ServiceOrdersService {
   findOne(id: number) {
     return this.repository.findOne({
       where: { id },
-      relations: ['feeder', 'order', 'order.user'],
+      relations: ['feeder', 'baseOrder', 'baseOrder.user'],
     });
   }
 
@@ -89,7 +89,7 @@ export class ServiceOrdersService {
     this.gateway.notifyStatus(id, status);
     const res = await this.repository.update(id, { status, ...extra });
     // trigger wx template message
-    const templateMap: Record<ServiceStatus, string> = {
+    const templateMap: Partial<Record<ServiceStatus, string>> = {
       [ServiceStatus.ACCEPTED]: 'accept_tpl',
       [ServiceStatus.DEPARTED]: 'depart_tpl',
       [ServiceStatus.SIGNED_IN]: 'signin_tpl',
@@ -100,9 +100,9 @@ export class ServiceOrdersService {
     const tpl = templateMap[status];
     if (tpl) {
       const detail = await this.findOne(id);
-      const openid = detail?.order?.user?.openid;
+      const openid = detail?.baseOrder?.user?.openid;
       if (openid) {
-        this.wxService.send(openid, tpl, { status }, `/pages/orders/detail?id=${detail!.order.id}`);
+        this.wxService.send(openid, tpl, { status }, `/pages/orders/detail?id=${detail!.baseOrder.id}`);
       }
     }
     return res;

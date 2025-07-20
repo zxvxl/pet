@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { FeederOrdersService } from './feeder-orders.service';
 import { CreateFeederOrderDto } from './dto/create-feeder-order.dto';
@@ -49,6 +50,9 @@ export class FeederOrdersController {
   @Roles('feeder')
   async my(@Req() req, @Query() query: PaginateFeederOrderDto) {
     const feeder = await this.feedersService.findByUserId(req.user.userId);
+    if (!feeder) {
+      throw new NotFoundException('Feeder not found');
+    }
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 10;
     return this.service.paginateByFeeder(feeder.id, page, limit);
