@@ -12,3 +12,4 @@ export default {
 
 <!-- Replace ColorUI/ThorUI styles with TDesign styles -->
 <style src="./static/tdesign/index.css"></style>
+<style src="./styles/theme.scss" lang="scss"></style>

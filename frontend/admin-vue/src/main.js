@@ -1,4 +1,6 @@
-import { createApp } from 'vue';
-import naive from 'naive-ui';
-import FeederAudit from './FeederAudit.vue';
-createApp(FeederAudit).use(naive).mount('#app');
+import { createApp } from 'vue'
+import naive from 'naive-ui'
+import { themeOverrides } from './theme.js'
+import Dashboard from './Dashboard.vue'
+
+createApp(Dashboard).use(naive, { themeOverrides }).mount('#app')

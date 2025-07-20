@@ -1,0 +1,11 @@
+$brand-color: #F5A623;
+$brand-color-light: #FFEDDA;
+$text-color: #333333;
+$accent-color: #62C7C0;
+
+page {
+  --td-brand-color: $brand-color;
+  --td-brand-color-light: $brand-color-light;
+  --td-text-color-primary: $text-color;
+  --td-brand-color-focus: $accent-color;
+}
