@@ -2,13 +2,15 @@
   <view class="container">
     <view>状态：{{ statusText }}</view>
     <view v-if="profile && profile.status === 2">原因：{{ profile.rejectReason }}</view>
-    <button v-if="profile && profile.status === 2" @click="reapply">重新申请</button>
+    <t-button v-if="profile && profile.status === 2" @click="reapply">重新申请</t-button>
   </view>
 </template>
 
 <script>
 import { request } from '@/utils/request'
+import { Button } from 'tdesign-miniprogram/vue'
 export default {
+  components: { 't-button': Button },
   data() {
     return { profile: null }
   },

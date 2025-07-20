@@ -2,14 +2,16 @@
   <view>
     <view>订单号: {{ detail.id }}</view>
     <view>状态: {{ detail.status }}</view>
-    <button v-if="detail.status === 'pending'" type="primary" @click="pay">支付</button>
+    <t-button v-if="detail.status === 'pending'" theme="primary" @click="pay">支付</t-button>
   </view>
 </template>
 
 <script>
 import { request } from '@/utils/request'
+import { Button } from 'tdesign-miniprogram/vue'
 
 export default {
+  components: { 't-button': Button },
   data() {
     return { detail: {} }
   },

@@ -1,17 +1,19 @@
 <template>
   <view class="container">
-    <input v-model="form.name" placeholder="姓名" />
-    <input v-model="form.phone" placeholder="手机号" />
-    <input v-model="form.idCard" placeholder="身份证号" />
-    <button @click="chooseAvatar">选择头像</button>
+    <t-input v-model="form.name" placeholder="姓名" />
+    <t-input v-model="form.phone" placeholder="手机号" />
+    <t-input v-model="form.idCard" placeholder="身份证号" />
+    <t-button @click="chooseAvatar">选择头像</t-button>
     <image v-if="form.avatar" :src="form.avatar" style="width:100px;height:100px" />
-    <button type="primary" @click="submit">提交</button>
+    <t-button theme="primary" @click="submit">提交</t-button>
   </view>
 </template>
 
 <script>
 import { request } from '@/utils/request'
+import { Input, Button } from 'tdesign-miniprogram/vue'
 export default {
+  components: { 't-input': Input, 't-button': Button },
   data() {
     return { form: { name: '', phone: '', idCard: '', avatar: '' } }
   },

@@ -9,22 +9,24 @@
       >{{ d }}</view>
     </view>
     <view class="item" v-for="(r, idx) in dayRanges" :key="idx">
-      <picker mode="time" :value="r.startTime" @change="changeTime(idx, 'startTime', $event)">
+      <t-time-picker :value="r.startTime" @change="changeTime(idx, 'startTime', $event)">
         <view class="time">{{ r.startTime || '开始时间' }}</view>
-      </picker>
-      <picker mode="time" :value="r.endTime" @change="changeTime(idx, 'endTime', $event)">
+      </t-time-picker>
+      <t-time-picker :value="r.endTime" @change="changeTime(idx, 'endTime', $event)">
         <view class="time">{{ r.endTime || '结束时间' }}</view>
-      </picker>
-      <button size="mini" @click="removeRange(idx)">删除</button>
+      </t-time-picker>
+      <t-button size="small" @click="removeRange(idx)">删除</t-button>
     </view>
-    <button size="mini" @click="addRange">添加时间段</button>
-    <button type="primary" @click="save" :loading="isLoading">保存</button>
+    <t-button size="small" @click="addRange">添加时间段</t-button>
+    <t-button theme="primary" @click="save" :loading="isLoading">保存</t-button>
   </view>
 </template>
 
 <script>
 import { request } from '@/utils/request'
+import { TimePicker, Button } from 'tdesign-miniprogram/vue'
 export default {
+  components: { 't-time-picker': TimePicker, 't-button': Button },
   data() {
     return {
       weekdays: ['周一','周二','周三','周四','周五','周六','周日'],

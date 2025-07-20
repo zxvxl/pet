@@ -1,13 +1,15 @@
 <template>
   <view class="container">
-    <button type="primary" @click="doLogin">微信登录</button>
+    <t-button theme="primary" @click="doLogin">微信登录</t-button>
   </view>
 </template>
 
 <script>
 import { login } from '@/utils/auth'
+import { Button } from 'tdesign-miniprogram/vue'
 
 export default {
+  components: { 't-button': Button },
   methods: {
     async doLogin() {
       try {

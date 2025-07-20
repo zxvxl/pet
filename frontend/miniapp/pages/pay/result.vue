@@ -1,12 +1,14 @@
 <template>
   <view>
     <view>支付结果: {{ status }}</view>
-    <button @click="goOrders">查看订单</button>
+    <t-button @click="goOrders">查看订单</t-button>
   </view>
 </template>
 
 <script>
+import { Button } from 'tdesign-miniprogram/vue'
 export default {
+  components: { 't-button': Button },
   data() {
     return { status: '成功' }
   },

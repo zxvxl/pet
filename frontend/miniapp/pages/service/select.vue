@@ -1,21 +1,27 @@
 <template>
   <view class="service-select">
-    <checkbox-group v-model="selected">
+    <t-checkbox-group v-model="selected">
       <label v-for="item in list" :key="item.id" class="service-item">
         <image :src="item.coverUrl" class="cover" />
         <view class="info">
           <view class="name">{{ item.name }}</view>
           <view class="price">￥{{ item.price }} / 会员￥{{ item.memberPrice }}</view>
-        <checkbox :value="String(item.id)" />
+        <t-checkbox :value="String(item.id)" />
         </view>
       </label>
-    </checkbox-group>
-    <button type="primary" @click="next">下一步</button>
+    </t-checkbox-group>
+    <t-button theme="primary" @click="next">下一步</t-button>
   </view>
 </template>
 <script>
 import { request } from '@/utils/request'
+import { CheckboxGroup, Checkbox, Button } from 'tdesign-miniprogram/vue'
 export default {
+  components: {
+    't-checkbox-group': CheckboxGroup,
+    't-checkbox': Checkbox,
+    't-button': Button
+  },
   data() {
     return { list: [], selected: [] }
   },

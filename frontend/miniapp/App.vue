@@ -10,5 +10,5 @@ export default {
 }
 </script>
 
-<style src="./static/colorui/main.css"></style>
-<style src="./static/ThorUI/thorui.css"></style>
+<!-- Replace ColorUI/ThorUI styles with TDesign styles -->
+<style src="./static/tdesign/index.css"></style>
