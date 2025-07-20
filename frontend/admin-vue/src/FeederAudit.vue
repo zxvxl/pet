@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { baseUrl } from '../config';
-import { ElMessageBox } from 'element-plus';
+// Naive UI does not provide a built-in prompt dialog, use browser prompt
 const feeders = ref([]);
 const fetchFeeders = async () => {
   const res = await fetch(baseUrl + '/admin/feeders');
@@ -11,12 +11,8 @@ const fetchFeeders = async () => {
 const audit = async (id, approve) => {
   let reason = '';
   if (!approve) {
-    const res = await ElMessageBox.prompt('请输入拒绝原因', '驳回', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-    }).catch(() => null);
-    if (!res) return;
-    reason = res.value;
+    reason = window.prompt('请输入拒绝原因') || '';
+    if (!reason) return;
   }
   await fetch(baseUrl + `/admin/feeders/${id}/audit`, {
     method: 'PATCH',
@@ -28,14 +24,23 @@ const audit = async (id, approve) => {
 onMounted(fetchFeeders);
 </script>
 <template>
-  <el-table :data="feeders" style="width: 100%">
-    <el-table-column prop="name" label="Name" />
-    <el-table-column prop="phone" label="Phone" />
-    <el-table-column>
-      <template #default="{ row }">
-        <el-button type="success" @click="audit(row.id, true)">Approve</el-button>
-        <el-button type="danger" @click="audit(row.id, false)">Reject</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+  <n-table :bordered="false" :single-line="false">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="row in feeders" :key="row.id">
+        <td>{{ row.name }}</td>
+        <td>{{ row.phone }}</td>
+        <td>
+          <n-button size="small" type="success" @click="audit(row.id, true)">Approve</n-button>
+          <n-button size="small" type="error" @click="audit(row.id, false)">Reject</n-button>
+        </td>
+      </tr>
+    </tbody>
+  </n-table>
 </template>

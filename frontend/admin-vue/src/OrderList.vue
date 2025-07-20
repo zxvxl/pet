@@ -12,8 +12,18 @@ const fetchOrders = async () => {
 onMounted(fetchOrders);
 </script>
 <template>
-  <el-table :data="orders" style="width: 100%">
-    <el-table-column prop="id" label="ID" />
-    <el-table-column prop="status" label="Status" />
-  </el-table>
+  <n-table :bordered="false" :single-line="false">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="order in orders" :key="order.id">
+        <td>{{ order.id }}</td>
+        <td>{{ order.status }}</td>
+      </tr>
+    </tbody>
+  </n-table>
 </template>
