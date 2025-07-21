@@ -5,7 +5,7 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { getSettlementList } from '@/api/pet/settlement'
+import { getSettlementList } from '@/api/settlement'
 
 const list = ref([])
 const page = ref(1)

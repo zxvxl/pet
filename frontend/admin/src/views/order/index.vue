@@ -10,7 +10,7 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { getOrderList } from '@/api/pet/order'
+import { getOrderList } from '@/api/order'
 
 const list = ref([])
 const page = ref(1)

@@ -4,8 +4,8 @@
   </n-card>
 </template>
 <script setup lang="ts">
-import { ref, reactive, watch, h } from 'vue'
-import { getFeederPending, approveFeeder } from '@/api/pet/feeder'
+import { ref, reactive, watch, h, resolveDirective, withDirectives } from 'vue'
+import { getFeederPending, approveFeeder } from '@/api/feeder'
 
 const list = ref([])
 const page = ref(1)
@@ -20,7 +20,9 @@ const columns = [
     title: '操作',
     key: 'actions',
     render(row:any){
-      return h('n-button',{size:'small',type:'primary',onClick:()=>approve(row)},'审核')
+      const directive = resolveDirective('permission')
+      const button = h('n-button',{size:'small',type:'primary',onClick:()=>approve(row)},'审核')
+      return withDirectives(button, [[directive as any, 'feeder:approve']])
     }
   }
 ]

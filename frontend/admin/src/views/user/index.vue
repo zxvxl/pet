@@ -9,7 +9,7 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { getUserList } from '@/api/pet/user'
+import { getUserList } from '@/api/user'
 
 const list = ref([])
 const page = ref(1)

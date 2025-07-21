@@ -1,7 +1,7 @@
 <template>
   <n-card>
     <n-space>
-      <n-button type="primary" @click="showAdd = true">新增服务</n-button>
+      <n-button type="primary" @click="showAdd = true" v-permission="'service:create'">新增服务</n-button>
     </n-space>
     <n-data-table :columns="columns" :data="list" :pagination="pagination" @update:page="onPage" @update:page-size="onPageSize" />
     <n-modal v-model:show="showAdd" title="新增服务">
@@ -18,14 +18,14 @@
       </n-form>
       <template #action>
         <n-button @click="showAdd=false">取消</n-button>
-        <n-button type="primary" @click="addService">提交</n-button>
+        <n-button type="primary" @click="addService" v-permission="'service:create'">提交</n-button>
       </template>
     </n-modal>
   </n-card>
 </template>
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { getServiceList, createService } from '@/api/pet/service'
+import { getServiceList, createService } from '@/api/service'
 
 const list = ref([])
 const page = ref(1)
