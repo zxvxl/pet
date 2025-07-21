@@ -7,6 +7,7 @@ import { Server, Socket } from 'socket.io';
 import { ImService } from './im.service';
 import { Message } from './entities/message.entity';
 
+// Separate namespace for chat messages to avoid conflicts with other gateways
 @WebSocketGateway({ namespace: 'im', cors: true })
 export class ImGateway implements OnGatewayConnection {
   @WebSocketServer()

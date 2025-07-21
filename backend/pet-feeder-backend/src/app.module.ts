@@ -25,7 +25,8 @@ import { ReserveOrdersModule } from './reserve-orders/reserve-orders.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
+      // Support per-environment, local and example env files
+      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env', '.env.example'],
       load: [wechatConfig, databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
