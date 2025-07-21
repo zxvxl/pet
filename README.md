@@ -8,7 +8,8 @@ This repository contains the backend and frontend code for the pet feeding mini-
 - `frontend/miniapp/` - Uni-app based WeChat mini-program
 - `ui-tests/` - Example UI automation tests
 
-- `frontend/admin-vue/` - Simple Vue3 + Naive UI admin console
+- `frontend/admin/` - Naive UI based admin console
 
 See `docs/ui-testing.md` for running the UI tests with miniprogram-automator.
-\nBrand styles are configured in `frontend/miniapp/styles/theme.scss` and `frontend/admin-vue/src/theme.js`.
+Brand styles are configured in `frontend/miniapp/styles/theme.scss` and `frontend/admin`.
+See [docs/admin-start.md](docs/admin-start.md) for running the admin console.
