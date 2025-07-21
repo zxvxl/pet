@@ -31,6 +31,9 @@
 $ npm install
 ```
 
+Copy `.env.example` to `.env` and adjust values if needed. The application will
+also fall back to `.env.example` when `.env` is missing.
+
 ## Compile and run the project
 
 ```bash

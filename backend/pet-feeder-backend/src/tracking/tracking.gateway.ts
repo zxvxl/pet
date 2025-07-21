@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { ServiceStatus } from '../service-orders/status.enum';
 import { FeederLocation } from './entities/feeder-location.entity';
 
+// The namespace isolates service order tracking events from other gateways
 @WebSocketGateway({ namespace: 'service', cors: true })
 export class TrackingGateway implements OnGatewayConnection {
   @WebSocketServer()
