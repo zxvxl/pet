@@ -18,9 +18,9 @@ const total = ref(0)
 const keyword = ref('')
 
 const columns = [
-  { title: '用户ID', key: 'user_id' },
+  { title: '用户ID', key: 'id' },
   { title: '昵称', key: 'nickname' },
-  { title: '状态', key: 'status' }
+  { title: '角色', key: 'role' }
 ]
 
 const pagination = reactive({

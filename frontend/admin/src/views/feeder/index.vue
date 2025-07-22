@@ -14,8 +14,9 @@ const total = ref(0)
 
 const columns = [
   { title: '姓名', key: 'name' },
-  { title: '电话', key: 'mobile' },
-  { title: '状态', key: 'audit_status' },
+  // backend uses `phone` field
+  { title: '电话', key: 'phone' },
+  { title: '状态', key: 'status' },
   {
     title: '操作',
     key: 'actions',
@@ -40,13 +41,13 @@ watch([page, pageSize, total], () => {
 })
 
 async function fetchList() {
-  const res = await getFeederPending({ page: page.value })
+  const res = await getFeederPending({ page: page.value, status: 0 })
   list.value = res.list || []
   total.value = res.itemCount || 0
 }
 
 async function approve(row:any){
-  await approveFeeder({ id: row.id })
+  await approveFeeder({ feederId: row.id, approve: true })
   fetchList()
 }
 

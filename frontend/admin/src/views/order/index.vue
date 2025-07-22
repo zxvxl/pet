@@ -26,10 +26,16 @@ const statusOptions = [
 ]
 
 const columns = [
-  { title: '订单号', key: 'order_id' },
-  { title: '下单用户', key: 'user_name' },
+  { title: '订单号', key: 'id' },
+  {
+    title: '下单用户',
+    key: 'user',
+    render(row: any) {
+      return row.user?.nickname
+    }
+  },
   { title: '订单状态', key: 'status' },
-  { title: '下单时间', key: 'created_at' }
+  { title: '下单时间', key: 'startTime' }
 ]
 
 const pagination = reactive({
