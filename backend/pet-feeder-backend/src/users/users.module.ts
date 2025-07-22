@@ -1,3 +1,4 @@
+// 👉 模块：用户管理 users
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
@@ -10,4 +11,8 @@ import { User } from './entities/user.entity';
   providers: [UsersService],
   exports: [UsersService],
 })
+/**
+ * 用户模块
+ * 提供用户相关服务与控制器
+ */
 export class UsersModule {}

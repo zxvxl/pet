@@ -12,15 +12,27 @@ import { PayOrderDto } from './dto/pay-order.dto';
 import { WxPayService } from './wx-pay.service';
 
 @Injectable()
+/**
+ * 订单业务服务
+ * 负责订单的增删查改以及微信支付的相关处理
+ */
 export class OrdersService {
   constructor(
+    // 订单实体仓库
     @InjectRepository(Order)
     private ordersRepository: Repository<Order>,
+    // 喂养员实体仓库
     @InjectRepository(Feeder)
     private feedersRepository: Repository<Feeder>,
+    // 微信支付服务
     private wxPay: WxPayService,
   ) {}
 
+  /**
+   * 创建订单
+   * 在事务中分配可用喂养员并保存订单
+   * @param createOrderDto 新订单数据
+   */
   async create(createOrderDto: CreateOrderDto) {
     return this.ordersRepository.manager.transaction(async (manager) => {
       const feedersRepo = manager.getRepository(Feeder);
@@ -51,10 +63,18 @@ export class OrdersService {
     });
   }
 
+  /**
+   * 获取全部订单
+   * 仅运营人员使用
+   */
   findAll() {
     return this.ordersRepository.find({ relations: ['user', 'pet', 'feeder'] });
   }
 
+  /**
+   * 根据用户查询其订单
+   * @param userId 用户ID
+   */
   findByUser(userId: number) {
     return this.ordersRepository.find({
       where: { user: { id: userId } },
@@ -63,6 +83,9 @@ export class OrdersService {
     });
   }
 
+  /**
+   * 根据ID获取单个订单
+   */
   findOne(id: number) {
     return this.ordersRepository.findOne({
       where: { id },
@@ -70,10 +93,19 @@ export class OrdersService {
     });
   }
 
+  /**
+   * 更新订单信息
+   * @param id 订单ID
+   * @param updateOrderDto 更新内容
+   */
   update(id: number, updateOrderDto: UpdateOrderDto) {
     return this.ordersRepository.update(id, updateOrderDto);
   }
 
+  /**
+   * 创建微信支付预订单
+   * @param dto 订单编号及用户openid
+   */
   async createPrepay(dto: PayOrderDto) {
     const order = await this.ordersRepository.findOne({
       where: { id: parseInt(dto.orderId, 10) },
@@ -82,6 +114,9 @@ export class OrdersService {
     return this.wxPay.createJsapiTransaction(dto.openid, 1, dto.orderId);
   }
 
+  /**
+   * 处理微信支付回调通知
+   */
   async handlePayNotify(body: any, headers: Record<string, any>) {
     const result = await this.wxPay.handleNotify(body, headers);
     const id = parseInt(result.out_trade_no, 10);
@@ -90,6 +125,9 @@ export class OrdersService {
     }
   }
 
+  /**
+   * 删除订单
+   */
   remove(id: number) {
     return this.ordersRepository.delete(id);
   }
