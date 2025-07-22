@@ -32,10 +32,10 @@ const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 const showAdd = ref(false)
-const form = reactive({ service_name: '', price: 0, duration: 0 })
+const form = reactive({ name: '', price: 0, duration: 0 })
 
 const columns = [
-  { title: '服务名', key: 'service_name' },
+  { title: '服务名', key: 'name' },
   { title: '单价', key: 'price' },
   { title: '时长', key: 'duration' }
 ]

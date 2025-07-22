@@ -1,5 +1,6 @@
 import { Alova } from '@/utils/http/alova';
 
 export function getFeedbackList(params) {
-  return Alova.Get('/admin/feedback/list', { params });
+  // Feedback list endpoint
+  return Alova.Get('/admin/feedback', { params });
 }

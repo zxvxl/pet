@@ -1,8 +1,10 @@
 import { Alova } from '@/utils/http/alova';
 
 export function getFeederPending(params) {
-  return Alova.Get('/admin/feeder/pending', { params });
+  // Backend lists pending feeders via /admin/feeders with status query
+  return Alova.Get('/admin/feeders', { params });
 }
 export function approveFeeder(params) {
-  return Alova.Post('/admin/feeder/approve', { params });
+  // Approve feeder uses /admin/feeders/audit endpoint
+  return Alova.Post('/admin/feeders/audit', { params });
 }

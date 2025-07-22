@@ -18,9 +18,15 @@ const total = ref(0)
 const keyword = ref('')
 
 const columns = [
-  { title: '宠物名', key: 'pet_name' },
-  { title: '宠物种类', key: 'type' },
-  { title: '主人昵称', key: 'owner_name' }
+  { title: '宠物名', key: 'name' },
+  { title: '宠物种类', key: 'species' },
+  {
+    title: '主人昵称',
+    key: 'user',
+    render(row: any) {
+      return row.user?.nickname
+    }
+  }
 ]
 
 const pagination = reactive({

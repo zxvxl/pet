@@ -1,5 +1,6 @@
 import { Alova } from '@/utils/http/alova';
 
 export function getUserList(params) {
-  return Alova.Get('/admin/user/list', { params });
+  // User list is retrieved from /users
+  return Alova.Get('/users', { params });
 }

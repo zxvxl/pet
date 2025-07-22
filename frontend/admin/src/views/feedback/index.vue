@@ -13,9 +13,15 @@ const pageSize = ref(10)
 const total = ref(0)
 
 const columns = [
-  { title: '投诉人昵称', key: 'user_name' },
-  { title: '内容', key: 'content' },
-  { title: '状态', key: 'status' }
+  {
+    title: '投诉人昵称',
+    key: 'user',
+    render(row: any) {
+      return row.user?.nickname
+    }
+  },
+  { title: '内容', key: 'description' },
+  { title: '创建时间', key: 'createTime' }
 ]
 
 const pagination = reactive({
