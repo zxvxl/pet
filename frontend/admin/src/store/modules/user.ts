@@ -64,14 +64,16 @@ export const useUserStore = defineStore({
     // 登录
     async login(params: any) {
       const response = await login(params);
-      const token = response.token || response.result?.token;
+      console.log(response);
+      const token = response.data?.access_token;
+      console.log(token)
       if (token) {
         const ex = 7 * 24 * 60 * 60;
         storage.set(ACCESS_TOKEN, token, ex);
         storage.set(CURRENT_USER, response, ex);
         storage.set(IS_SCREENLOCKED, false);
         this.setToken(token);
-        this.setUserInfo(response);
+        this.setUserInfo(response.data);
       }
       return response;
     },

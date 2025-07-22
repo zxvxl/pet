@@ -136,7 +136,7 @@ import { images } from '@/assets';
         try {
           const res = await userStore.login(params);
           message.destroyAll();
-          if (res && res.token) {
+          if (res && res.data?.access_token) {
             const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
             message.success('登录成功，即将进入系统');
             if (route.name === LOGIN_NAME) {
