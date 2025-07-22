@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Post, Req, UseGuards, Query } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { FeedersService } from './feeders.service';
 import { ApplyFeederDto } from './dto/apply-feeder.dto';
-import { FeederSchedulesService } from '../feeder-schedules/feeder-schedules.service';
-import { BatchScheduleDto } from '../feeder-schedules/dto/batch-schedule.dto';
+import { FeederSchedulesService } from '../scheduling/feeder-schedules.service';
+import { BatchScheduleDto } from '../scheduling/dto/batch-schedule.dto';
 
 @Controller('feeder')
 @UseGuards(JwtAuthGuard, RolesGuard)

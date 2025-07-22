@@ -6,7 +6,7 @@ import { ScheduleItemDto } from './dto/schedule-item.dto';
 import { Feeder } from '../feeders/entities/feeder.entity';
 import { FeederOrder } from '../feeder-orders/entities/feeder-order.entity';
 import { FeederOrderStatus } from '../feeder-orders/status.enum';
-import { BusinessException } from '../common/exceptions/business.exception';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class FeederSchedulesService {

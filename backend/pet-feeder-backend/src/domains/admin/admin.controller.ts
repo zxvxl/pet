@@ -12,8 +12,8 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { AdminJwtGuard } from './admin-jwt.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { AdminService } from './admin.service';
 import { AuditFeederDto } from './dto/audit-feeder.dto';
 import { AdminLoginDto } from './dto/admin-login.dto';

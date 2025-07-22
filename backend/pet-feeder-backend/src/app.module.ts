@@ -1,25 +1,25 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import wechatConfig from './config/wechat.config';
-import databaseConfig from './config/database.config';
+import wechatConfig from './infrastructure/config/wechat.config';
+import databaseConfig from './infrastructure/config/database.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { PetsModule } from './pets/pets.module';
-import { OrdersModule } from './orders/orders.module';
-import { FeedersModule } from './feeders/feeders.module';
-import { AuthModule } from './auth/auth.module';
-import { ServiceOrdersModule } from './service-orders/service-orders.module';
-import { AdminModule } from './admin/admin.module';
-import { TrackingModule } from './tracking/tracking.module';
-import { EvaluationsModule } from './evaluations/evaluations.module';
-import { FeedbackModule } from './feedback/feedback.module';
-import { ComplaintsModule } from './complaints/complaints.module';
-import { FeederOrdersModule } from './feeder-orders/feeder-orders.module';
-import { FeederSchedulesModule } from './feeder-schedules/feeder-schedules.module';
-import { ServiceTypesModule } from './service-types/service-types.module';
-import { ReserveOrdersModule } from './reserve-orders/reserve-orders.module';
+import { UsersModule } from './domains/users/users.module';
+import { PetsModule } from './domains/pets/pets.module';
+import { OrdersModule } from './domains/orders/orders.module';
+import { FeedersModule } from './domains/feeders/feeders.module';
+import { AuthModule } from './domains/auth/auth.module';
+import { ServiceOrdersModule } from './domains/service-orders/service-orders.module';
+import { AdminModule } from './domains/admin/admin.module';
+import { TrackingModule } from './domains/tracking/tracking.module';
+import { EvaluationsModule } from './domains/evaluations/evaluations.module';
+import { FeedbackModule } from './domains/feedback/feedback.module';
+import { ComplaintsModule } from './domains/complaints/complaints.module';
+import { FeederOrdersModule } from './domains/feeder-orders/feeder-orders.module';
+import { FeederSchedulesModule } from './domains/scheduling/feeder-schedules.module';
+import { ServiceTypesModule } from './domains/service-types/service-types.module';
+import { ReserveOrdersModule } from './domains/reserve-orders/reserve-orders.module';
 
 @Module({
   imports: [

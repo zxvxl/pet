@@ -1,5 +1,5 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
-import { BusinessException } from '../common/exceptions/business.exception';
+import { BusinessException } from '../../common/exceptions/business.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { ServiceOrder } from './entities/service-order.entity';
@@ -11,7 +11,7 @@ import { Order } from '../orders/entities/order.entity';
 import { ServiceStatus } from './status.enum';
 import { TrackingGateway } from '../tracking/tracking.gateway';
 import { WxTemplateService } from '../tracking/wx-template.service';
-import { createStatusUpdater } from '../common/utils/update-status.util';
+import { createStatusUpdater } from '../../common/utils/update-status.util';
 
 @Injectable()
 export class ServiceOrdersService {
@@ -26,12 +26,14 @@ export class ServiceOrdersService {
     private wxService: WxTemplateService,
   ) {
     const templateMap: Record<ServiceStatus, string> = {
+      [ServiceStatus.PENDING]: '',
       [ServiceStatus.ACCEPTED]: 'accept_tpl',
       [ServiceStatus.DEPARTED]: 'depart_tpl',
       [ServiceStatus.SIGNED_IN]: 'signin_tpl',
       [ServiceStatus.SERVING]: 'serving_tpl',
       [ServiceStatus.COMPLETED]: 'complete_tpl',
       [ServiceStatus.CANCELED]: 'cancel_tpl',
+      [ServiceStatus.REJECTED]: 'reject_tpl'
     };
     this.updateStatus = createStatusUpdater(
       this.repository,
@@ -42,7 +44,7 @@ export class ServiceOrdersService {
     );
   }
 
-  private updateStatus: (
+  public updateStatus: (
     id: number,
     status: ServiceStatus,
     extra?: Record<string, any>,

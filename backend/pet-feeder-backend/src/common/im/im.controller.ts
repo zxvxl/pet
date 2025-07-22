@@ -7,7 +7,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../domains/auth/jwt-auth.guard';
 import { ImService } from './im.service';
 import { SendMessageDto } from './dto/send-message.dto';
 

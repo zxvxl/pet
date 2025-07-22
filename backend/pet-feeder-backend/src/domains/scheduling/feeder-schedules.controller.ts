@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { FeederSchedulesService } from './feeder-schedules.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { BatchScheduleDto } from './dto/batch-schedule.dto';
 import { AdminJwtGuard } from '../admin/admin-jwt.guard';
 

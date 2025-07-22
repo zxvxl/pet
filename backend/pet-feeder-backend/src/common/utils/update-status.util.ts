@@ -1,12 +1,13 @@
 import { Repository } from 'typeorm';
-import { TrackingGateway } from '../../tracking/tracking.gateway';
-import { WxTemplateService } from '../../tracking/wx-template.service';
+import { TrackingGateway } from '../../domains/tracking/tracking.gateway';
+import { WxTemplateService } from '../../domains/tracking/wx-template.service';
 
 /**
  * Create a reusable status update function for order-like entities.
  * It handles status persistence, real-time notifications and wx template push.
  */
-export function createStatusUpdater<T>(
+import { ObjectLiteral } from 'typeorm';
+export function createStatusUpdater<T extends ObjectLiteral>(
   repository: Repository<T>,
   gateway: TrackingGateway,
   wxService: WxTemplateService,

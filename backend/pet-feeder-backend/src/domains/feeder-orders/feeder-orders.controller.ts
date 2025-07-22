@@ -15,8 +15,8 @@ import { CompleteFeederOrderDto } from './dto/complete-feeder-order.dto';
 import { PaginateFeederOrderDto } from './dto/paginate-feeder-order.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { UseGuards } from '@nestjs/common';
 import { FeedersService } from '../feeders/feeders.service';
 
