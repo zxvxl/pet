@@ -17,9 +17,7 @@ export function getUserInfo() {
 export function login(params) {
   return Alova.Post(
     '/admin/login',
-    {
       params,
-    },
     {
       meta: {
         isReturnNativeResponse: true,
