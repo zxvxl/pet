@@ -13,6 +13,7 @@ import { Order } from '../orders/entities/order.entity';
 import { TrackingGateway } from '../tracking/tracking.gateway';
 import { WxTemplateService } from '../tracking/wx-template.service';
 import { BusinessException } from '../common/exceptions/business.exception';
+import { createStatusUpdater } from '../common/utils/update-status.util';
 
 @Injectable()
 export class FeederOrdersService {
@@ -23,7 +24,31 @@ export class FeederOrdersService {
     private feeders: Repository<Feeder>,
     private gateway: TrackingGateway,
     private wxService: WxTemplateService,
-  ) {}
+  ) {
+    const templateMap: Record<FeederOrderStatus, string> = {
+      [FeederOrderStatus.ACCEPTED]: 'accept_tpl',
+      [FeederOrderStatus.DEPARTED]: 'depart_tpl',
+      [FeederOrderStatus.SIGNED_IN]: 'signin_tpl',
+      [FeederOrderStatus.SERVING]: 'serving_tpl',
+      [FeederOrderStatus.COMPLETED]: 'complete_tpl',
+      [FeederOrderStatus.CANCELED]: 'cancel_tpl',
+      [FeederOrderStatus.REJECTED]: 'reject_tpl',
+      [FeederOrderStatus.PENDING]: 'pending_tpl',
+    };
+    this.updateStatus = createStatusUpdater(
+      this.orders,
+      this.gateway,
+      this.wxService,
+      templateMap,
+      this.get.bind(this),
+    );
+  }
+
+  private updateStatus: (
+    id: number,
+    status: FeederOrderStatus,
+    extra?: Record<string, any>,
+  ) => Promise<any>;
 
   async create(dto: CreateFeederOrderDto) {
     const feeder = await this.feeders.findOne({ where: { id: dto.feederId } });
@@ -75,33 +100,6 @@ export class FeederOrdersService {
     return order;
   }
 
-  private async updateStatus(
-    id: number,
-    status: FeederOrderStatus,
-    extra: Record<string, any> = {},
-  ) {
-    this.gateway.notifyStatus(id, status);
-    const res = await this.orders.update(id, { status, ...extra });
-    const templateMap: Record<FeederOrderStatus, string> = {
-      [FeederOrderStatus.ACCEPTED]: 'accept_tpl',
-      [FeederOrderStatus.DEPARTED]: 'depart_tpl',
-      [FeederOrderStatus.SIGNED_IN]: 'signin_tpl',
-      [FeederOrderStatus.SERVING]: 'serving_tpl',
-      [FeederOrderStatus.COMPLETED]: 'complete_tpl',
-      [FeederOrderStatus.CANCELED]: 'cancel_tpl',
-      [FeederOrderStatus.REJECTED]: 'reject_tpl',
-      [FeederOrderStatus.PENDING]: 'pending_tpl',
-    };
-    const tpl = templateMap[status];
-    if (tpl) {
-      const detail = await this.get(id);
-      const openid = detail?.user?.openid;
-      if (openid) {
-        this.wxService.send(openid, tpl, { status }, `/pages/orders/detail?id=${detail.baseOrder.id}`);
-      }
-    }
-    return res;
-  }
 
   confirm(id: number) {
     return this.updateStatus(id, FeederOrderStatus.ACCEPTED);

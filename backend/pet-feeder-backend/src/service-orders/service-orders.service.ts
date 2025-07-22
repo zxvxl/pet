@@ -11,6 +11,7 @@ import { Order } from '../orders/entities/order.entity';
 import { ServiceStatus } from './status.enum';
 import { TrackingGateway } from '../tracking/tracking.gateway';
 import { WxTemplateService } from '../tracking/wx-template.service';
+import { createStatusUpdater } from '../common/utils/update-status.util';
 
 @Injectable()
 export class ServiceOrdersService {
@@ -23,7 +24,29 @@ export class ServiceOrdersService {
     private orders: Repository<Order>,
     private gateway: TrackingGateway,
     private wxService: WxTemplateService,
-  ) {}
+  ) {
+    const templateMap: Record<ServiceStatus, string> = {
+      [ServiceStatus.ACCEPTED]: 'accept_tpl',
+      [ServiceStatus.DEPARTED]: 'depart_tpl',
+      [ServiceStatus.SIGNED_IN]: 'signin_tpl',
+      [ServiceStatus.SERVING]: 'serving_tpl',
+      [ServiceStatus.COMPLETED]: 'complete_tpl',
+      [ServiceStatus.CANCELED]: 'cancel_tpl',
+    };
+    this.updateStatus = createStatusUpdater(
+      this.repository,
+      this.gateway,
+      this.wxService,
+      templateMap,
+      this.findOne.bind(this),
+    );
+  }
+
+  private updateStatus: (
+    id: number,
+    status: ServiceStatus,
+    extra?: Record<string, any>,
+  ) => Promise<any>;
 
   async create(dto: CreateServiceOrderDto) {
     const feeder = await this.feeders.findOne({ where: { id: dto.feederId } });
@@ -81,30 +104,4 @@ export class ServiceOrdersService {
     return this.updateStatus(id, ServiceStatus.CANCELED);
   }
 
-  async updateStatus(
-    id: number,
-    status: ServiceStatus,
-    extra: Record<string, any> = {},
-  ) {
-    this.gateway.notifyStatus(id, status);
-    const res = await this.repository.update(id, { status, ...extra });
-    // trigger wx template message
-    const templateMap: Partial<Record<ServiceStatus, string>> = {
-      [ServiceStatus.ACCEPTED]: 'accept_tpl',
-      [ServiceStatus.DEPARTED]: 'depart_tpl',
-      [ServiceStatus.SIGNED_IN]: 'signin_tpl',
-      [ServiceStatus.SERVING]: 'serving_tpl',
-      [ServiceStatus.COMPLETED]: 'complete_tpl',
-      [ServiceStatus.CANCELED]: 'cancel_tpl',
-    };
-    const tpl = templateMap[status];
-    if (tpl) {
-      const detail = await this.findOne(id);
-      const openid = detail?.baseOrder?.user?.openid;
-      if (openid) {
-        this.wxService.send(openid, tpl, { status }, `/pages/orders/detail?id=${detail!.baseOrder.id}`);
-      }
-    }
-    return res;
-  }
 }
