@@ -8,6 +8,7 @@ class CustomSequencer extends Sequencer {
       'user-flow.e2e-spec.ts',
       'feeder-workflow.e2e-spec.ts',
       'admin-workflow.e2e-spec.ts',
+      'admin-user-role.e2e-spec.ts',
     ];
     const rank = (test) => {
       const file = path.basename(test.path);

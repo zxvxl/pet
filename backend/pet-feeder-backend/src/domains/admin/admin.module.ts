@@ -6,6 +6,10 @@ import { Feeder } from '../feeders/entities/feeder.entity';
 import { Order } from '../orders/entities/order.entity';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
+import { AdminUserController } from './admin-user.controller';
+import { AdminRoleController } from './admin-role.controller';
+import { AdminUserService } from './admin-user.service';
+import { AdminRoleService } from './admin-role.service';
 import { AdminJwtGuard } from './admin-jwt.guard';
 import { AdminUser } from './entities/admin-user.entity';
 import { AdminOperationLog } from './entities/admin-operation-log.entity';
@@ -32,8 +36,17 @@ import { Feedback } from '../feedback/entities/feedback.entity';
       }),
     }),
   ],
-  controllers: [AdminController],
-  providers: [AdminService, AdminJwtGuard],
-  exports: [AdminService, AdminJwtGuard],
+  controllers: [
+    AdminController,
+    AdminUserController,
+    AdminRoleController,
+  ],
+  providers: [
+    AdminService,
+    AdminJwtGuard,
+    AdminUserService,
+    AdminRoleService,
+  ],
+  exports: [AdminService, AdminJwtGuard, AdminUserService, AdminRoleService],
 })
 export class AdminModule {}
