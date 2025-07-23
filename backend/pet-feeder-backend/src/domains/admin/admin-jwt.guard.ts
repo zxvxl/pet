@@ -12,7 +12,8 @@ export class AdminJwtGuard extends AuthGuard('jwt') {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
-    if (user.role !== 'super' && user.role !== 'operator') {
+    const roles: string[] = user.roles || [];
+    if (!roles.includes('super') && !roles.includes('operator')) {
       throw new UnauthorizedException('admin access only');
     }
     return user;

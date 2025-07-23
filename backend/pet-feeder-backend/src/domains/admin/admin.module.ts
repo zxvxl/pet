@@ -15,8 +15,11 @@ import { AdminJwtGuard } from './admin-jwt.guard';
 import { AdminUser } from './entities/admin-user.entity';
 import { AdminOperationLog } from './entities/admin-operation-log.entity';
 import { AdminRole } from './entities/admin-role.entity';
+import { AdminPermission } from './entities/admin-permission.entity';
 import { Complaint } from '../complaints/entities/complaint.entity';
 import { Feedback } from '../feedback/entities/feedback.entity';
+import { AdminPermissionService } from './admin-permission.service';
+import { AdminPermissionController } from './admin-permission.controller';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { Feedback } from '../feedback/entities/feedback.entity';
       Order,
       AdminUser,
       AdminRole,
+      AdminPermission,
       AdminOperationLog,
       Complaint,
       Feedback,
@@ -41,6 +45,7 @@ import { Feedback } from '../feedback/entities/feedback.entity';
     AdminController,
     AdminUserController,
     AdminRoleController,
+    AdminPermissionController,
     AdminAuthController,
   ],
   providers: [
@@ -48,7 +53,14 @@ import { Feedback } from '../feedback/entities/feedback.entity';
     AdminJwtGuard,
     AdminUserService,
     AdminRoleService,
+    AdminPermissionService,
   ],
-  exports: [AdminService, AdminJwtGuard, AdminUserService, AdminRoleService],
+  exports: [
+    AdminService,
+    AdminJwtGuard,
+    AdminUserService,
+    AdminRoleService,
+    AdminPermissionService,
+  ],
 })
 export class AdminModule {}

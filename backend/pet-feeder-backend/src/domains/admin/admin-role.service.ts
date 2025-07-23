@@ -10,11 +10,11 @@ export class AdminRoleService {
   constructor(@InjectRepository(AdminRole) private roleRepo: Repository<AdminRole>) {}
 
   findAll() {
-    return this.roleRepo.find();
+    return this.roleRepo.find({ relations: ['permissions'] });
   }
 
   findById(id: number) {
-    return this.roleRepo.findOne({ where: { id } });
+    return this.roleRepo.findOne({ where: { id }, relations: ['permissions'] });
   }
 
   create(dto: CreateAdminRoleDto) {

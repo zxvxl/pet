@@ -7,6 +7,7 @@ export class AdminRoleDto {
   description?: string | null;
   createdAt: Date;
   updatedAt: Date;
+  permissions: string[];
 
   constructor(role: AdminRole) {
     this.id = role.id;
@@ -15,5 +16,8 @@ export class AdminRoleDto {
     this.description = role.description;
     this.createdAt = role.createdAt;
     this.updatedAt = role.updatedAt;
+    this.permissions = Array.isArray(role.permissions)
+      ? role.permissions.map((p) => p.code)
+      : [];
   }
 }
