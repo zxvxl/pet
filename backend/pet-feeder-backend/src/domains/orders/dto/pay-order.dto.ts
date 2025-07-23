@@ -6,7 +6,7 @@ export class PayOrderDto {
   @IsString()
   orderId: string;
 
-  /** 用户的 openid，用于微信支付 */
+  /** 用户的 openId，用于微信支付 */
   @IsString()
-  openid: string;
+  openId: string;
 }

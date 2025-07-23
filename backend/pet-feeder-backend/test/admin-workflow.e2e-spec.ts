@@ -146,7 +146,7 @@ describe('Admin & order workflow (e2e)', () => {
     expect(profileRes.body.data.username).toBe('operator');
     const userRes = await request(server)
       .post('/users')
-      .send({ openid: 'f1', nickname: 'F1' });
+      .send({ openId: 'f1', nickname: 'F1' });
     const userId = userRes.body.data.id;
     const feederRes = await request(server)
       .post('/feeders')
@@ -191,7 +191,7 @@ describe('Admin & order workflow (e2e)', () => {
       await request(server).post('/admin/login').send({ username: 'op1', password: 'pwd' })
     ).body.data.access_token;
 
-    const uRes = await request(server).post('/users').send({ openid: 'del1', nickname: 'd' });
+    const uRes = await request(server).post('/users').send({ openId: 'del1', nickname: 'd' });
     const feeder = await request(server)
       .post('/feeders')
       .send({ userId: uRes.body.data.id, name: 'D', phone: '13000000002', idCard: '110101199001011111' });
@@ -214,7 +214,7 @@ describe('Admin & order workflow (e2e)', () => {
   it('manages orders with status updates and pagination', async () => {
     const userRes = await request(server)
       .post('/users')
-      .send({ openid: 'o1', nickname: 'OrderUser' });
+      .send({ openId: 'o1', nickname: 'OrderUser' });
     const userId = userRes.body.data.id;
     const userToken = await jwt.signAsync({ sub: userId, role: 'user' });
     const petRes = await request(server)

@@ -25,12 +25,12 @@ export class WxPayService {
 
   /**
    * 创建 JSAPI 支付交易
-   * @param openid 用户 openid
+   * @param openId 用户 openid
    * @param amount 金额，单位分
    * @param outTradeNo 订单号
    */
   async createJsapiTransaction(
-    openid: string,
+    openId: string,
     amount: number,
     outTradeNo: string,
   ): Promise<JsapiPayParams> {

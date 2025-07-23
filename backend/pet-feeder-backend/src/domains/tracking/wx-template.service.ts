@@ -4,7 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 export class WxTemplateService {
   private readonly logger = new Logger('WxTemplate');
 
-  async send(openid: string, templateId: string, data: any, page = '') {
+  async send(openId: string, templateId: string, data: any, page = '') {
     // Placeholder implementation using fetch
     const accessToken = 'ACCESS_TOKEN';
     try {
@@ -13,7 +13,7 @@ export class WxTemplateService {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ touser: openid, template_id: templateId, data, page }),
+          body: JSON.stringify({ touser: openId, template_id: templateId, data, page }),
         },
       );
     } catch (e) {
