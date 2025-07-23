@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { AdminUser } from './admin-user.entity';
+import { AdminPermission } from './admin-permission.entity';
 
 @Entity('admin_role')
 export class AdminRole {
@@ -30,4 +32,12 @@ export class AdminRole {
 
   @ManyToMany(() => AdminUser, (user) => user.roles)
   users: AdminUser[];
+
+  @ManyToMany(() => AdminPermission)
+  @JoinTable({
+    name: 'admin_role_permission',
+    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
+  })
+  permissions: AdminPermission[];
 }

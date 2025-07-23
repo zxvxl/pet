@@ -81,7 +81,7 @@ export class AdminService {
   async findByUsername(username: string) {
     return this.adminRepository.findOne({
       where: { username },
-      relations: ['roles'],
+      relations: ['roles', 'roles.permissions'],
     });
   }
 
@@ -96,8 +96,11 @@ export class AdminService {
   async login(username: string, password: string) {
     const user = await this.validateUser(username, password);
     if (!user) return null;
-    const role = user.roles[0]?.code;
-    const payload = { sub: user.id, role };
+    const roles = user.roles.map((r) => r.code);
+    const permissions = user.roles.flatMap((r) =>
+      Array.isArray(r.permissions) ? r.permissions.map((p) => p.code) : [],
+    );
+    const payload = { sub: user.id, roles, permissions };
     const token = await this.jwtService.signAsync(payload);
     return { access_token: token };
   }
@@ -105,7 +108,7 @@ export class AdminService {
   async profile(userId: number) {
     return this.adminRepository.findOne({
       where: { id: userId },
-      relations: ['roles'],
+      relations: ['roles', 'roles.permissions'],
     });
   }
 
