@@ -4,7 +4,12 @@ import { IsOptional, IsString, Matches } from 'class-validator';
 export class CreateUserDto {
   /** 微信 openid */
   @IsString()
-  openid: string;
+  openId: string;
+
+  /** 微信 unionid，可为空 */
+  @IsOptional()
+  @IsString()
+  unionId?: string;
 
   /** 用户昵称 */
   @IsString()

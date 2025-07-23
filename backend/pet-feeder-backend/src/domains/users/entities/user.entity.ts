@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Pet } from '../../pets/entities/pet.entity';
 import { Order } from '../../orders/entities/order.entity';
 
@@ -11,7 +18,11 @@ export class User {
 
   /** 微信 openid 唯一 */
   @Column({ unique: true })
-  openid: string;
+  openId: string;
+
+  /** 微信 unionid，可为空全局唯一 */
+  @Column({ unique: true, nullable: true })
+  unionId?: string;
 
   /** 昵称 */
   @Column({ length: 100 })
@@ -32,6 +43,14 @@ export class User {
   /** 手机号 */
   @Column({ length: 20, nullable: true })
   phone?: string;
+
+  /** 创建时间 */
+  @CreateDateColumn()
+  createdAt: Date;
+
+  /** 更新时间 */
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   /** 用户拥有的宠物 */
   @OneToMany(() => Pet, (pet) => pet.user)

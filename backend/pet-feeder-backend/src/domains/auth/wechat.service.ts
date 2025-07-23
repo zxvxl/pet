@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 export interface WechatSession {
   openid: string;
+  unionid?: string;
   session_key: string;
 }
 
@@ -30,6 +31,10 @@ export class WechatService {
     if (!data.openid || !data.session_key) {
       throw new UnauthorizedException('Invalid wechat response');
     }
-    return { openid: data.openid, session_key: data.session_key };
+    return {
+      openid: data.openid,
+      unionid: data.unionid,
+      session_key: data.session_key,
+    };
   }
 }

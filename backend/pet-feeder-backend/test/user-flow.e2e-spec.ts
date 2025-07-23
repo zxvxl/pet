@@ -112,8 +112,8 @@ describe('User core flow (e2e)', () => {
     // login to obtain JWT
     const loginRes = await request(server)
       .post('/auth/wx-login')
-      .send({ openid: 'user_openid', nickname: 'TestUser', avatar: 'a.jpg' });
-    token = loginRes.body.data.access_token;
+      .send({ openId: 'user_openid', nickname: 'TestUser', avatar: 'a.jpg' });
+    token = loginRes.body.data.token;
 
     const profileRes = await request(server)
       .get('/auth/profile')
@@ -138,7 +138,7 @@ describe('User core flow (e2e)', () => {
     // ensure there is an available feeder
     const fUserRes = await request(server)
       .post('/users')
-      .send({ openid: 'feeder_avail', nickname: 'fa' });
+      .send({ openId: 'feeder_avail', nickname: 'fa' });
     const feeder0 = await request(server).post('/feeders').send({
       userId: fUserRes.body.data.id,
       name: 'Available',
@@ -175,7 +175,7 @@ describe('User core flow (e2e)', () => {
     // create feeder and service order
     const uRes = await request(server)
       .post('/users')
-      .send({ openid: 'feeder_openid', nickname: 'Feeder' });
+      .send({ openId: 'feeder_openid', nickname: 'Feeder' });
     const feederRes = await request(server).post('/feeders').send({
       userId: uRes.body.data.id,
       name: 'Feeder',

@@ -104,14 +104,14 @@ export class OrdersService {
 
   /**
    * 创建微信支付预订单
-   * @param dto 订单编号及用户openid
+   * @param dto 订单编号及用户openId
    */
   async createPrepay(dto: PayOrderDto) {
     const order = await this.ordersRepository.findOne({
       where: { id: parseInt(dto.orderId, 10) },
     });
     if (!order) throw new BusinessException(2002, 'ORDER_NOT_FOUND', HttpStatus.NOT_FOUND);
-    return this.wxPay.createJsapiTransaction(dto.openid, 1, dto.orderId);
+    return this.wxPay.createJsapiTransaction(dto.openId, 1, dto.orderId);
   }
 
   /**

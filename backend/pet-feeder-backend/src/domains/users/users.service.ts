@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,7 +17,7 @@ export class UsersService {
   ) {}
 
   /** 新建用户 */
-  create(createUserDto: CreateUserDto) {
+  create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }
@@ -32,14 +32,24 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { id } });
   }
 
-  /** 根据 openid 查询用户 */
-  findByOpenid(openid: string) {
-    return this.usersRepository.findOne({ where: { openid } });
+  /** 根据 openId 查询用户 */
+  findByOpenId(openId: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { openId } });
   }
 
-  /** 更新用户 */
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.update(id, updateUserDto);
+  /** 根据 unionId 查询用户 */
+  findByUnionId(unionId: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { unionId } });
+  }
+
+  /** 更新用户信息 */
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    Object.assign(user, updateUserDto);
+    return this.usersRepository.save(user);
   }
 
   /** 删除用户 */

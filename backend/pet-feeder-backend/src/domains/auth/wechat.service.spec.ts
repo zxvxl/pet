@@ -1,26 +1,16 @@
 import axios from 'axios';
 import { WechatService } from './wechat.service';
 import { UnauthorizedException } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
+import { ConfigService } from '@nestjs/config';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('WechatService', () => {
-  const service = new WechatService();
-
-  const tmp = path.join(__dirname, 'wechat.test.json');
+  const service = new WechatService(new ConfigService({ wechat: { appid: 'appid', secret: 'secret' } } as any));
 
   beforeEach(() => {
     mockedAxios.get.mockReset();
-    fs.writeFileSync(tmp, JSON.stringify({ wechat: { appid: 'appid', secret: 'secret' } }));
-    process.env.APP_CONFIG_PATH = tmp;
-  });
-
-  afterEach(() => {
-    if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
-    delete process.env.APP_CONFIG_PATH;
   });
 
   it('throws when code invalid', async () => {

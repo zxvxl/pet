@@ -30,7 +30,7 @@ describe('OrdersService payment', () => {
     orderRepo.findOne = jest.fn().mockResolvedValue({ id: 1 });
     wxPay.createJsapiTransaction.mockResolvedValue({ prepay_id: 'p' });
 
-    const res = await service.createPrepay({ orderId: '1', openid: 'o' });
+    const res = await service.createPrepay({ orderId: '1', openId: 'o' });
     expect(wxPay.createJsapiTransaction).toBeCalledWith('o', 1, '1');
     expect(res).toEqual({ prepay_id: 'p' });
   });

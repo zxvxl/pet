@@ -88,7 +88,7 @@ describe('Feeder workflow (e2e)', () => {
     jest.spyOn(wxService, 'send').mockResolvedValue(undefined);
     const loginRes = await request(server)
       .post('/auth/wx-login')
-      .send({ openid: 'user', nickname: 'user', avatar: 'a.jpg' });
+      .send({ openId: 'user', nickname: 'user', avatar: 'a.jpg' });
     token = loginRes.body.data.access_token;
   });
 
@@ -99,7 +99,7 @@ describe('Feeder workflow (e2e)', () => {
   it('should register, approve and finish service with images', async () => {
     const userRes = await request(server)
       .post('/users')
-      .send({ openid: 'feeder1', nickname: 'feeder1' });
+      .send({ openId: 'feeder1', nickname: 'feeder1' });
     const feederRes = await request(server).post('/feeders').send({
       userId: userRes.body.data.id,
       name: 'Feeder 1',
@@ -112,7 +112,7 @@ describe('Feeder workflow (e2e)', () => {
 
     const ownerRes = await request(server)
       .post('/users')
-      .send({ openid: 'owner', nickname: 'owner' });
+      .send({ openId: 'owner', nickname: 'owner' });
     const petRes = await request(server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
@@ -152,7 +152,7 @@ describe('Feeder workflow (e2e)', () => {
   it('should transition status correctly', async () => {
     const uRes = await request(server)
       .post('/users')
-      .send({ openid: 'feeder2', nickname: 'feeder2' });
+      .send({ openId: 'feeder2', nickname: 'feeder2' });
     const fRes = await request(server).post('/feeders').send({
       userId: uRes.body.data.id,
       name: 'Feeder 2',
@@ -165,7 +165,7 @@ describe('Feeder workflow (e2e)', () => {
 
     const ownerRes = await request(server)
       .post('/users')
-      .send({ openid: 'owner2', nickname: 'owner2' });
+      .send({ openId: 'owner2', nickname: 'owner2' });
     const petRes = await request(server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
@@ -211,7 +211,7 @@ describe('Feeder workflow (e2e)', () => {
   it('should allow only one feeder to accept an order', async () => {
     const owner = await request(server)
       .post('/users')
-      .send({ openid: 'owner3', nickname: 'owner3' });
+      .send({ openId: 'owner3', nickname: 'owner3' });
     const pet = await request(server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
@@ -230,13 +230,13 @@ describe('Feeder workflow (e2e)', () => {
 
     const fu1 = await request(server)
       .post('/users')
-      .send({ openid: 'feeder3', nickname: 'f3' });
+      .send({ openId: 'feeder3', nickname: 'f3' });
     const feeder1 = await request(server)
       .post('/feeders')
       .send({ userId: fu1.body.data.id, name: 'f3', phone: '1', idCard: '1' });
     const fu2 = await request(server)
       .post('/users')
-      .send({ openid: 'feeder4', nickname: 'f4' });
+      .send({ openId: 'feeder4', nickname: 'f4' });
     const feeder2 = await request(server)
       .post('/feeders')
       .send({ userId: fu2.body.data.id, name: 'f4', phone: '1', idCard: '2' });
@@ -257,7 +257,7 @@ describe('Feeder workflow (e2e)', () => {
   it('should validate sign-in distance', async () => {
     const uRes = await request(server)
       .post('/users')
-      .send({ openid: 'feeder5', nickname: 'f5' });
+      .send({ openId: 'feeder5', nickname: 'f5' });
     const fRes = await request(server)
       .post('/feeders')
       .send({ userId: uRes.body.data.id, name: 'f5', phone: '1', idCard: '3' });
@@ -266,7 +266,7 @@ describe('Feeder workflow (e2e)', () => {
 
     const oRes = await request(server)
       .post('/users')
-      .send({ openid: 'owner4', nickname: 'o4' });
+      .send({ openId: 'owner4', nickname: 'o4' });
     const pRes = await request(server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
@@ -306,7 +306,7 @@ describe('Feeder workflow (e2e)', () => {
   it('should reject order for blacklisted feeder', async () => {
     const uRes = await request(server)
       .post('/users')
-      .send({ openid: 'feeder6', nickname: 'f6' });
+      .send({ openId: 'feeder6', nickname: 'f6' });
     const fRes = await request(server)
       .post('/feeders')
       .send({ userId: uRes.body.data.id, name: 'f6', phone: '1', idCard: '4' });
@@ -318,7 +318,7 @@ describe('Feeder workflow (e2e)', () => {
 
     const owner = await request(server)
       .post('/users')
-      .send({ openid: 'owner5', nickname: 'o5' });
+      .send({ openId: 'owner5', nickname: 'o5' });
     const pet = await request(server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
