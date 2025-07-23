@@ -8,6 +8,7 @@ import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { AdminUserController } from './admin-user.controller';
 import { AdminRoleController } from './admin-role.controller';
+import { AdminAuthController } from './admin-auth.controller';
 import { AdminUserService } from './admin-user.service';
 import { AdminRoleService } from './admin-role.service';
 import { AdminJwtGuard } from './admin-jwt.guard';
@@ -45,6 +46,7 @@ import { AdminPermissionController } from './admin-permission.controller';
     AdminUserController,
     AdminRoleController,
     AdminPermissionController,
+    AdminAuthController,
   ],
   providers: [
     AdminService,
