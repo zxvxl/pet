@@ -122,7 +122,6 @@
   import { useProjectSetting } from '@/hooks/setting/useProjectSetting';
   import { AsideMenu } from '@/layout/components/Menu';
   import { RedirectName } from '@/router/constant';
-  import { useScreenLockStore } from '@/store/modules/screenLock';
   import { useUserStore } from '@/store/modules/user';
   import { TABS_ROUTES } from '@/store/mutation-types';
   import { NDialogProvider, useDialog, useMessage } from 'naive-ui';
@@ -144,7 +143,6 @@
     emits: ['update:collapsed'],
     setup(props, { emit }) {
       const userStore = useUserStore();
-      const useLockscreen = useScreenLockStore();
       const message = useMessage();
       const dialog = useDialog();
       const { navMode, navTheme, headerSetting, menuSetting, crumbsSetting } = useProjectSetting();
@@ -273,13 +271,6 @@
           tips: 'github',
           eventObject: {
             click: () => window.open('https://github.com/jekip/naive-ui-admin'),
-          },
-        },
-        {
-          icon: 'LockOutlined',
-          tips: '锁屏',
-          eventObject: {
-            click: () => useLockscreen.setLock(true),
           },
         },
       ];

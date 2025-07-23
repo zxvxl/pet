@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { store } from '@/store';
-import { ACCESS_TOKEN, CURRENT_USER, IS_SCREENLOCKED } from '@/store/mutation-types';
+import { ACCESS_TOKEN, CURRENT_USER } from '@/store/mutation-types';
 import { ResultEnum } from '@/enums/httpEnum';
 
 import { getUserInfo as getUserInfoApi, login } from '@/api/system/user';
@@ -71,7 +71,6 @@ export const useUserStore = defineStore({
         const ex = 7 * 24 * 60 * 60;
         storage.set(ACCESS_TOKEN, token, ex);
         storage.set(CURRENT_USER, response, ex);
-        storage.set(IS_SCREENLOCKED, false);
         this.setToken(token);
         this.setUserInfo(response.data);
       }
