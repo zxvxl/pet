@@ -20,6 +20,7 @@ import { Order } from '../src/orders/entities/order.entity';
 import { Feeder } from '../src/feeders/entities/feeder.entity';
 import { AdminUser } from '../src/admin/entities/admin-user.entity';
 import { AdminOperationLog } from '../src/admin/entities/admin-operation-log.entity';
+import { AdminRole } from '../src/admin/entities/admin-role.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 
@@ -46,7 +47,15 @@ async function createApp() {
         type: 'sqlite',
         database: ':memory:',
         dropSchema: true,
-        entities: [User, Pet, Order, Feeder, AdminUser, AdminOperationLog],
+        entities: [
+          User,
+          Pet,
+          Order,
+          Feeder,
+          AdminUser,
+          AdminRole,
+          AdminOperationLog,
+        ],
         synchronize: true,
       }),
       UsersModule,
@@ -72,6 +81,7 @@ describe('Admin & order workflow (e2e)', () => {
   let orderRepo: Repository<Order>;
   let feederRepo: Repository<Feeder>;
   let logRepo: Repository<AdminOperationLog>;
+  let roleRepo: Repository<AdminRole>;
 
   beforeAll(async () => {
     app = await createApp();
@@ -80,6 +90,11 @@ describe('Admin & order workflow (e2e)', () => {
     orderRepo = app.get(getRepositoryToken(Order));
     feederRepo = app.get(getRepositoryToken(Feeder));
     logRepo = app.get(getRepositoryToken(AdminOperationLog));
+    roleRepo = app.get(getRepositoryToken(AdminRole));
+    await roleRepo.save([
+      { code: 'super', name: 'super' } as AdminRole,
+      { code: 'operator', name: 'operator' } as AdminRole,
+    ]);
   });
 
   afterAll(async () => {
@@ -112,7 +127,12 @@ describe('Admin & order workflow (e2e)', () => {
   it('audits feeder approval and rejection', async () => {
     const adminRepo = app.get<Repository<AdminUser>>(getRepositoryToken(AdminUser));
     const hashed = await bcrypt.hash('pwd', 10);
-    await adminRepo.save({ username: 'operator', password: hashed, role: 'operator' } as any);
+    const operatorRole = await roleRepo.findOne({ where: { code: 'operator' } });
+    await adminRepo.save({
+      username: 'operator',
+      password: hashed,
+      roles: [operatorRole!],
+    } as any);
 
     const loginRes = await request(server)
       .post('/admin/login')
@@ -157,9 +177,11 @@ describe('Admin & order workflow (e2e)', () => {
   it('restricts feeder removal to super admins', async () => {
     const adminRepo = app.get<Repository<AdminUser>>(getRepositoryToken(AdminUser));
     const hashed = await bcrypt.hash('pwd', 10);
+    const superRole = await roleRepo.findOne({ where: { code: 'super' } });
+    const operatorRole = await roleRepo.findOne({ where: { code: 'operator' } });
     await adminRepo.save([
-      { username: 'super1', password: hashed, role: 'super' } as any,
-      { username: 'op1', password: hashed, role: 'operator' } as any,
+      { username: 'super1', password: hashed, roles: [superRole!] } as any,
+      { username: 'op1', password: hashed, roles: [operatorRole!] } as any,
     ]);
 
     const superToken = (
@@ -224,9 +246,10 @@ describe('Admin & order workflow (e2e)', () => {
   });
 
   it('writes admin operation logs', async () => {
-    const admin = await app.get(getRepositoryToken(AdminUser)).save(
-      { username: 'admin', password: 'pwd', role: 'super' } as any,
-    );
+    const role = await roleRepo.findOne({ where: { code: 'super' } });
+    const admin = await app
+      .get(getRepositoryToken(AdminUser))
+      .save({ username: 'admin', password: 'pwd', roles: [role!] } as any);
     const log = logRepo.create({
       user: admin,
       action: 'test',

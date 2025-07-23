@@ -9,7 +9,7 @@ import { Complaint } from '../complaints/entities/complaint.entity';
 import { Feedback } from '../feedback/entities/feedback.entity';
 import { AdminUser } from './entities/admin-user.entity';
 import { AdminOperationLog } from './entities/admin-operation-log.entity';
-import { AdminRole } from './admin-role.enum';
+import { AdminRole } from './entities/admin-role.entity';
 import { AuditFeederDto } from './dto/audit-feeder.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { HandleComplaintDto } from './dto/handle-complaint.dto';
@@ -27,6 +27,8 @@ export class AdminService {
     private feedbackRepository: Repository<Feedback>,
     @InjectRepository(AdminUser)
     private adminRepository: Repository<AdminUser>,
+    @InjectRepository(AdminRole)
+    private roleRepository: Repository<AdminRole>,
     @InjectRepository(AdminOperationLog)
     private logRepository: Repository<AdminOperationLog>,
     private jwtService: JwtService,
@@ -58,34 +60,53 @@ export class AdminService {
     return res;
   }
 
-  async createAdminUser(username: string, password: string, role: AdminRole) {
+  async createAdminUser(
+    username: string,
+    password: string,
+    roleCode: string,
+  ) {
+    const role = await this.roleRepository.findOne({ where: { code: roleCode } });
+    if (!role) {
+      throw new Error('role not found');
+    }
     const hash = await bcrypt.hash(password, 10);
-    const user = this.adminRepository.create({ username, password: hash, role });
+    const user = this.adminRepository.create({
+      username,
+      password: hash,
+      roles: [role],
+    });
     return this.adminRepository.save(user);
   }
 
   async findByUsername(username: string) {
-    return this.adminRepository.findOne({ where: { username } });
+    return this.adminRepository.findOne({
+      where: { username },
+      relations: ['roles'],
+    });
   }
 
   async validateUser(username: string, password: string) {
     const user = await this.findByUsername(username);
     if (!user) return null;
     const match = await bcrypt.compare(password, user.password);
-    if (!match || user.status === 0) return null;
+    if (!match || !user.isActive) return null;
     return user;
   }
 
   async login(username: string, password: string) {
     const user = await this.validateUser(username, password);
     if (!user) return null;
-    const payload = { sub: user.id, role: user.role };
+    const role = user.roles[0]?.code;
+    const payload = { sub: user.id, role };
     const token = await this.jwtService.signAsync(payload);
     return { access_token: token };
   }
 
   async profile(userId: number) {
-    return this.adminRepository.findOne({ where: { id: userId } });
+    return this.adminRepository.findOne({
+      where: { id: userId },
+      relations: ['roles'],
+    });
   }
 
   async listComplaints(status?: string) {
@@ -125,7 +146,10 @@ export class AdminService {
     await this.logRepository.save(log);
   }
   async findById(id: number) {
-    return this.adminRepository.findOne({ where: { id } });
+    return this.adminRepository.findOne({
+      where: { id },
+      relations: ['roles'],
+    });
   }
 
 }
