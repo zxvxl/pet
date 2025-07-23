@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Role } from '../../roles/entities/role.entity';
 import { AdminRole } from '../admin-role.enum';
 
 @Entity('admin_user')
@@ -20,4 +28,13 @@ export class AdminUser {
 
   @CreateDateColumn()
   createTime: Date;
+
+  /** 关联角色列表 */
+  @ManyToMany(() => Role)
+  @JoinTable({
+    name: 'admin_user_roles',
+    joinColumn: { name: 'admin_user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+  })
+  roles: Role[];
 }

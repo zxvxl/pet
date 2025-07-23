@@ -1,4 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  JoinTable,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Role } from '../../roles/entities/role.entity';
 import { Pet } from '../../pets/entities/pet.entity';
 import { Order } from '../../orders/entities/order.entity';
 
@@ -40,4 +48,13 @@ export class User {
   /** 用户创建的订单 */
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
+
+  /** 关联角色列表 */
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+  })
+  roles: Role[];
 }
