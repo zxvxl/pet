@@ -20,6 +20,7 @@ import { FeederLocation } from '../src/tracking/entities/feeder-location.entity'
 import { EmergencyCall } from '../src/im/entities/emergency-call.entity';
 import { AdminUser } from '../src/admin/entities/admin-user.entity';
 import { AdminOperationLog } from '../src/admin/entities/admin-operation-log.entity';
+import { AdminRole } from '../src/admin/entities/admin-role.entity';
 import { AppController } from '../src/app.controller';
 import { AppService } from '../src/app.service';
 
@@ -42,6 +43,7 @@ describe('AppController (e2e)', () => {
             FeederLocation,
             EmergencyCall,
             AdminUser,
+            AdminRole,
             AdminOperationLog,
           ],
           synchronize: true,

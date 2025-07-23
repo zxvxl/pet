@@ -9,6 +9,7 @@ import { AdminService } from './admin.service';
 import { AdminJwtGuard } from './admin-jwt.guard';
 import { AdminUser } from './entities/admin-user.entity';
 import { AdminOperationLog } from './entities/admin-operation-log.entity';
+import { AdminRole } from './entities/admin-role.entity';
 import { Complaint } from '../complaints/entities/complaint.entity';
 import { Feedback } from '../feedback/entities/feedback.entity';
 
@@ -18,6 +19,7 @@ import { Feedback } from '../feedback/entities/feedback.entity';
       Feeder,
       Order,
       AdminUser,
+      AdminRole,
       AdminOperationLog,
       Complaint,
       Feedback,
