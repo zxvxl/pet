@@ -42,7 +42,7 @@ export class AdminService {
     const status = dto.approve ? 1 : 2;
     const result = await this.feedersRepository.update(dto.feederId, {
       status,
-      rejectReason: dto.approve ? undefined : dto.reason,
+      reject_reason: dto.approve ? undefined : dto.reason,
     });
     await this.logOperation(dto.feederId, 'feeder', `audit:${dto.approve}`, dto.reason, adminId);
     return result;
@@ -89,7 +89,7 @@ export class AdminService {
     const user = await this.findByUsername(username);
     if (!user) return null;
     const match = await bcrypt.compare(password, user.password);
-    if (!match || !user.isActive) return null;
+    if (!match || !user.is_active) return null;
     return user;
   }
 
@@ -115,7 +115,7 @@ export class AdminService {
   async listComplaints(status?: string) {
     return this.complaintsRepository.find({
       where: status ? { status } : {},
-      relations: ['user', 'handledBy', 'relatedOrder'],
+      relations: ['user', 'handled_by', 'related_order'],
     });
   }
 
@@ -123,8 +123,8 @@ export class AdminService {
     const result = await this.complaintsRepository.update(id, {
       status: dto.status,
       result: dto.result,
-      handledBy: { id: adminId } as AdminUser,
-      handledAt: new Date(),
+      handled_by: { id: adminId } as AdminUser,
+      handled_at: new Date(),
     });
     await this.logOperation(id, 'complaint', `update:${dto.status}`, undefined, adminId);
     return result;
@@ -140,12 +140,12 @@ export class AdminService {
 
   private async logOperation(targetId: number, targetType: string, action: string, detail?: string, userId?: number) {
     const log = this.logRepository.create({
-      user: { id: userId || 0 } as any,
-      targetId,
-      targetType,
-      action,
-      detail,
-    });
+        user: { id: userId || 0 } as any,
+        target_id: targetId,
+        target_type: targetType,
+        action,
+        detail,
+      });
     await this.logRepository.save(log);
   }
   async findById(id: number) {

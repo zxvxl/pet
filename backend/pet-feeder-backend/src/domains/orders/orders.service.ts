@@ -39,7 +39,7 @@ export class OrdersService {
       let feederId = createOrderDto.feederId;
       if (!feederId) {
         const available = await feedersRepo.find({
-          where: { status: 1, isBlacklist: 0 },
+          where: { status: 1, is_blacklist: 0 },
         });
         if (available.length === 0) {
           throw new BusinessException(2001, 'NO_FEEDER');

@@ -12,10 +12,11 @@ export class AuthService {
   ) {}
 
   async validateOrCreateUser(loginDto: LoginDto) {
-    let user = await this.usersService.findByOpenId?.(loginDto.openId);
+    let user = await this.usersService.findByOpenId?.(loginDto.openid);
     if (!user) {
       user = await this.usersService.create({
-        openId: loginDto.openId,
+        open_id: loginDto.openid,
+        union_id: undefined,
         nickname: loginDto.nickname,
         avatar: loginDto.avatar,
       });
@@ -54,15 +55,15 @@ export class AuthService {
     }
     if (!user) {
       user = await this.usersService.create({
-        openId: openid,
-        unionId: unionid,
+        open_id: openid,
+        union_id: unionid,
         nickname: nickname || '',
         avatar: avatar || '',
       });
     } else {
       const updated: Partial<User> = {};
-      if (unionid && !user.unionId) {
-        updated.unionId = unionid;
+      if (unionid && !user.union_id) {
+        updated.union_id = unionid;
       }
       if (nickname && user.nickname !== nickname) {
         updated.nickname = nickname;

@@ -9,6 +9,9 @@ export class FeederLocation {
   @ManyToOne(() => ServiceOrder)
   order: ServiceOrder;
 
+  @Column({ name: 'order_id' })
+  orderId: number;
+
   @Column('decimal', { precision: 9, scale: 6, name: 'latitude' })
   latitude: number;
 

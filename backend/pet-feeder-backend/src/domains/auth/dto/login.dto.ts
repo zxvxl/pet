@@ -2,7 +2,7 @@ import { IsString } from 'class-validator';
 
 export class LoginDto {
   @IsString()
-  openId: string;
+  openid: string;
 
   @IsString()
   nickname: string;

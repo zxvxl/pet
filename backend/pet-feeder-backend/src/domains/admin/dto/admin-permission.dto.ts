@@ -15,7 +15,7 @@ export class AdminPermissionDto {
     this.code = permission.code;
     this.type = permission.type ?? null;
     this.description = permission.description ?? null;
-    this.createdAt = permission.createdAt;
-    this.updatedAt = permission.updatedAt;
+    this.createdAt = permission.create_time;
+    this.updatedAt = permission.update_time;
   }
 }

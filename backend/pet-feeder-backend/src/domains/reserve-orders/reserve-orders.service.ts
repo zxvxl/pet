@@ -46,17 +46,17 @@ export class ReserveOrdersService {
           service,
           pet,
           price: Number(service.price),
-          serviceName: service.name,
+          service_name: service.name,
         });
         items.push(item);
       }
 
       const order = orderRepo.create({
         user: { id: userId } as any,
-        reserveTime: dto.reserveTime,
+        reserve_time: dto.reserveTime,
         address: dto.address,
         remark: dto.remark,
-        totalAmount: total,
+        total_amount: total,
         status: 'pending',
         items,
       });

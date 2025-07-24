@@ -52,11 +52,11 @@ export class ServiceOrdersService {
 
   async create(dto: CreateServiceOrderDto) {
     const feeder = await this.feeders.findOne({ where: { id: dto.feederId } });
-    if (feeder?.isBlacklist) {
+    if (feeder?.is_blacklist) {
       throw new BusinessException(3001, 'BLACKLIST', HttpStatus.FORBIDDEN);
     }
     const existing = await this.repository.findOne({
-      where: { baseOrder: { id: dto.orderId } },
+      where: { base_order: { id: dto.orderId } },
     });
     if (existing) {
       throw new BusinessException(3002, 'ORDER_TAKEN', HttpStatus.CONFLICT);
@@ -64,7 +64,7 @@ export class ServiceOrdersService {
 
     const entity = this.repository.create({
       feeder: { id: dto.feederId } as Feeder,
-      baseOrder: { id: dto.orderId } as Order,
+      base_order: { id: dto.orderId } as Order,
       status: ServiceStatus.ACCEPTED,
     });
     try {
@@ -82,7 +82,7 @@ export class ServiceOrdersService {
   findOne(id: number) {
     return this.repository.findOne({
       where: { id },
-      relations: ['feeder', 'baseOrder', 'baseOrder.user'],
+      relations: ['feeder', 'base_order', 'base_order.user'],
     });
   }
 

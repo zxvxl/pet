@@ -1,15 +1,15 @@
-import { IsOptional, IsString, Matches } from 'class-validator';
+import { IsOptional, IsString, Matches, IsNotEmpty } from 'class-validator';
 
 // 👉 模块：创建用户 DTO
 export class CreateUserDto {
   /** 微信 openid */
-  @IsString()
-  openId: string;
+  @IsNotEmpty()
+  open_id: string;
 
   /** 微信 unionid，可为空 */
   @IsOptional()
   @IsString()
-  unionId?: string;
+  union_id?: string;
 
   /** 用户昵称 */
   @IsString()

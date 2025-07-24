@@ -24,11 +24,11 @@ export function createStatusUpdater<T extends ObjectLiteral>(
     const tpl = templateMap[status];
     if (tpl) {
       const detail = await findDetail(id);
-      const openId =
-        detail?.user?.openId ?? detail?.baseOrder?.user?.openId;
-      const orderId = detail?.baseOrder?.id ?? detail?.id;
-      if (openId && orderId) {
-        wxService.send(openId, tpl, { status }, `/pages/orders/detail?id=${orderId}`);
+      const open_id =
+        detail?.user?.open_id ?? detail?.base_order?.user?.open_id;
+      const orderId = detail?.base_order?.id ?? detail?.id;
+      if (open_id && orderId) {
+        wxService.send(open_id, tpl, { status }, `/pages/orders/detail?id=${orderId}`);
       }
     }
     return res;

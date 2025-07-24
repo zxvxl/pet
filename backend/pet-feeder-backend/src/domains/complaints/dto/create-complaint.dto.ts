@@ -1,6 +1,6 @@
 export class CreateComplaintDto {
   orderId: number;
-  complaintType: string;
+  complaint_type: string;
   description: string;
   images: string[];
 }

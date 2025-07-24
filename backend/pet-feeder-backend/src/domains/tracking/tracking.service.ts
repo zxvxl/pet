@@ -22,7 +22,7 @@ export class TrackingService {
 
   async reportLocation(id: number, dto: UpdateLocationDto) {
     const record = this.locations.create({
-      order_id: id,
+      orderId: id,
       latitude: dto.lat,
       longitude: dto.lng,
     });

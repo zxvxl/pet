@@ -52,12 +52,12 @@ export class FeederOrdersService {
 
   async create(dto: CreateFeederOrderDto) {
     const feeder = await this.feeders.findOne({ where: { id: dto.feederId } });
-    if (feeder?.isBlacklist) {
+    if (feeder?.is_blacklist) {
       throw new BusinessException(3001, 'BLACKLIST', HttpStatus.FORBIDDEN);
     }
     const existing = await this.orders.findOne({
-      where: { baseOrder: { id: dto.orderId } },
-    });
+        where: { base_order: { id: dto.orderId } },
+      });
     if (existing) {
       throw new BusinessException(3002, 'ORDER_TAKEN', HttpStatus.CONFLICT);
     }
@@ -66,9 +66,9 @@ export class FeederOrdersService {
       user: { id: dto.userId } as User,
       feeder: { id: dto.feederId } as Feeder,
       pet: { id: dto.petId } as Pet,
-      serviceTime: dto.serviceTime,
+      service_time: dto.serviceTime,
       address: dto.address,
-      baseOrder: { id: dto.orderId } as Order,
+      base_order: { id: dto.orderId } as Order,
       status: FeederOrderStatus.ACCEPTED,
     });
     try {
@@ -87,7 +87,7 @@ export class FeederOrdersService {
     const [items, total] = await this.orders.findAndCount({
       where: { feeder: { id: feederId } },
       relations: ['user', 'pet', 'feeder'],
-      order: { createdAt: 'DESC' },
+      order: { create_time: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
     });

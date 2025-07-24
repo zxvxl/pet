@@ -29,8 +29,8 @@ export class FeederSchedulesService {
       this.repository.create({
         feeder: { id: feederId } as Feeder,
         weekday: i.weekday,
-        startTime: i.startTime,
-        endTime: i.endTime,
+        start_time: i.startTime,
+        end_time: i.endTime,
         enabled: i.enabled ?? 1,
       }),
     );
@@ -56,7 +56,7 @@ export class FeederSchedulesService {
   findByFeeder(feederId: number) {
     return this.repository.find({
       where: { feeder: { id: feederId } },
-      order: { weekday: 'ASC', startTime: 'ASC' },
+      order: { weekday: 'ASC', start_time: 'ASC' },
     });
   }
 
@@ -74,8 +74,8 @@ export class FeederSchedulesService {
       (s) =>
         s.enabled &&
         s.weekday === weekday &&
-        s.startTime <= start &&
-        s.endTime >= end,
+        s.start_time <= start &&
+        s.end_time >= end,
     );
   }
 
@@ -90,13 +90,13 @@ export class FeederSchedulesService {
     const upcoming = await this.feederOrders.find({
       where: {
         feeder: { id: feederId },
-        serviceTime: MoreThan(new Date()),
+        service_time: MoreThan(new Date()),
         status: Not(In([FeederOrderStatus.CANCELED, FeederOrderStatus.REJECTED])),
       },
     });
     for (const order of upcoming) {
-      const weekday = (order.serviceTime.getDay() + 6) % 7;
-      const time = order.serviceTime.toTimeString().slice(0, 8);
+      const weekday = (order.service_time.getDay() + 6) % 7;
+      const time = order.service_time.toTimeString().slice(0, 8);
       const ok = items.some(
         (i) =>
           i.weekday === weekday && i.startTime <= time && i.endTime >= time,
@@ -116,16 +116,16 @@ export class FeederSchedulesService {
       .innerJoinAndSelect('s.feeder', 'f')
       .where('s.enabled = 1')
       .andWhere('f.status = 1')
-      .andWhere('f.isBlacklist = 0')
+      .andWhere('f.is_blacklist = 0')
       .andWhere('s.weekday = :weekday', { weekday })
-      .andWhere('s.startTime <= :start', { start: startStr })
-      .andWhere('s.endTime >= :end', { end: endStr });
+      .andWhere('s.start_time <= :start', { start: startStr })
+      .andWhere('s.end_time >= :end', { end: endStr });
     const schedules = await qb.getMany();
     if (schedules.length === 0) return [];
     const busy = await this.feederOrders.find({
       where: {
         feeder: In(schedules.map((s) => s.feeder.id)),
-        serviceTime: Between(start, end),
+        service_time: Between(start, end),
         status: Not(In([FeederOrderStatus.CANCELED, FeederOrderStatus.REJECTED])),
       },
       relations: ['feeder'],

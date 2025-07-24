@@ -16,9 +16,9 @@ export class ComplaintsService {
 
   create(userId: number, dto: CreateComplaintDto) {
     const entity = this.complaints.create({
-      relatedOrder: { id: dto.orderId } as Order,
+      related_order: { id: dto.orderId } as Order,
       user: { id: userId } as any,
-      complaintType: dto.complaintType,
+      complaint_type: dto.complaint_type,
       description: dto.description,
       images: dto.images,
     });
@@ -28,7 +28,7 @@ export class ComplaintsService {
   findOne(id: number) {
     return this.complaints.findOne({
       where: { id },
-      relations: ['relatedOrder', 'user', 'handledBy'],
+      relations: ['related_order', 'user', 'handled_by'],
     });
   }
 }
