@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { AdminUser } from './admin-user.entity';
 import { AdminPermission } from './admin-permission.entity';
+import { AdminMenu } from './admin-menu.entity';
 
 @Entity('admin_role')
 export class AdminRole {
@@ -40,4 +41,12 @@ export class AdminRole {
     inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
   })
   permissions: AdminPermission[];
+
+  @ManyToMany(() => AdminMenu)
+  @JoinTable({
+    name: 'admin_role_menu',
+    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'menu_id', referencedColumnName: 'id' },
+  })
+  menus: AdminMenu[];
 }

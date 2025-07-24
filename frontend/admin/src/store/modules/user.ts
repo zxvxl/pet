@@ -92,12 +92,7 @@ export const useUserStore = defineStore({
         throw new Error('未找到登录token');
       }
       
-      const userId = getUserIdFromToken(token);
-      if (!userId) {
-        throw new Error('无法从token中获取用户ID');
-      }
-      
-      const data = await getUserInfoApi(userId);
+      const data = await getUserInfoApi();
       const response = data as any;
       const info = response?.result || response?.data || response;
       

@@ -40,7 +40,7 @@ import { ReserveOrdersModule } from './domains/reserve-orders/reserve-orders.mod
           username: db.user,
           password: db.password,
           database: db.name,
-          synchronize: true,
+          synchronize: false,
           autoLoadEntities: true,
         };
       },

@@ -16,6 +16,7 @@ import { AdminUser } from './entities/admin-user.entity';
 import { AdminOperationLog } from './entities/admin-operation-log.entity';
 import { AdminRole } from './entities/admin-role.entity';
 import { AdminPermission } from './entities/admin-permission.entity';
+import { AdminMenu } from './entities/admin-menu.entity';
 import { Complaint } from '../complaints/entities/complaint.entity';
 import { Feedback } from '../feedback/entities/feedback.entity';
 import { AdminPermissionService } from './admin-permission.service';
@@ -29,6 +30,7 @@ import { AdminPermissionController } from './admin-permission.controller';
       AdminUser,
       AdminRole,
       AdminPermission,
+      AdminMenu,
       AdminOperationLog,
       Complaint,
       Feedback,

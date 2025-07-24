@@ -19,7 +19,14 @@ export class AdminUserService {
   }
 
   findById(id: number) {
-    return this.userRepo.findOne({ where: { id }, relations: ['roles'] });
+    return this.userRepo.findOne({ where: { id }, relations: ['roles', 'roles.permissions', 'roles.menus'] });
+  }
+
+  findByUsername(username: string) {
+    return this.userRepo.findOne({ 
+      where: { username }, 
+      relations: ['roles', 'roles.permissions', 'roles.menus'] 
+    });
   }
 
   async create(dto: CreateAdminUserDto) {

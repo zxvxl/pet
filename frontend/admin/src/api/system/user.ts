@@ -3,7 +3,7 @@ import { Alova } from '@/utils/http/alova/index';
 /**
  * @description: 获取用户信息
  */
-export function getUserInfo(userId: number) {
+export function getUserInfo() {
   return Alova.Get(`/admin/auth/info`, {
     meta: {
       isReturnNativeResponse: true,
@@ -16,7 +16,7 @@ export function getUserInfo(userId: number) {
  */
 export function login(params) {
   return Alova.Post(
-    '/admin/login',
+    '/admin/auth/login',
       params,
     {
       meta: {
