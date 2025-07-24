@@ -22,9 +22,9 @@ export class TrackingService {
 
   async reportLocation(id: number, dto: UpdateLocationDto) {
     const record = this.locations.create({
-      order: { id } as ServiceOrder,
-      lat: dto.lat,
-      lng: dto.lng,
+      order_id: id,
+      latitude: dto.lat,
+      longitude: dto.lng,
     });
     const saved = await this.locations.save(record);
     this.gateway.notifyLocation(id, saved);

@@ -35,7 +35,7 @@ const columns = [
     }
   },
   { title: '订单状态', key: 'status' },
-  { title: '下单时间', key: 'startTime' }
+  { title: '下单时间', key: 'start_time' }
 ]
 
 const pagination = reactive({

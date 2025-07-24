@@ -25,9 +25,9 @@ export class TrackingGateway implements OnGatewayConnection {
       .to(String(orderId))
       .emit('location', {
         orderId,
-        lat: location.lat,
-        lng: location.lng,
-        time: location.createTime,
+        lat: location.latitude,
+        lng: location.longitude,
+        time: location.create_time,
       });
   }
 }

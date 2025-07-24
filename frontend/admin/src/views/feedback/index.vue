@@ -21,7 +21,7 @@ const columns = [
     }
   },
   { title: '内容', key: 'description' },
-  { title: '创建时间', key: 'createTime' }
+  { title: '创建时间', key: 'create_time' }
 ]
 
 const pagination = reactive({

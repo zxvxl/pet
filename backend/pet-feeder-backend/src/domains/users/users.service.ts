@@ -34,12 +34,12 @@ export class UsersService {
 
   /** 根据 openId 查询用户 */
   findByOpenId(openId: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { openId } });
+    return this.usersRepository.findOne({ where: { open_id: openId } });
   }
 
   /** 根据 unionId 查询用户 */
   findByUnionId(unionId: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { unionId } });
+    return this.usersRepository.findOne({ where: { union_id: unionId } });
   }
 
   /** 更新用户信息 */

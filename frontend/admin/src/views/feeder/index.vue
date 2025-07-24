@@ -47,7 +47,7 @@ async function fetchList() {
 }
 
 async function approve(row:any){
-  await approveFeeder({ feederId: row.id, approve: true })
+  await approveFeeder({ feeder_id: row.id, approve: true })
   fetchList()
 }
 
