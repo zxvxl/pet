@@ -49,7 +49,7 @@ export const useUserStore = defineStore({
     getNickname(): string {
       return this.username;
     },
-    getPermissions(): [any][] {
+    getPermissions(): string[] {
       return this.permissions;
     },
     getUserInfo(): UserInfoType {
