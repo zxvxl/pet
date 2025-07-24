@@ -214,8 +214,18 @@ const formRules: FormRules = {
     { type: 'array', required: true, message: '请选择角色', trigger: 'change' }
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+    { 
+      validator: (rule: any, value: string) => {
+        if (!isEdit.value && !value) {
+          return new Error('请输入密码')
+        }
+        if (value && (value.length < 6 || value.length > 20)) {
+          return new Error('长度在 6 到 20 个字符')
+        }
+        return true
+      },
+      trigger: 'blur'
+    }
   ]
 }
 
@@ -298,21 +308,28 @@ const handleSubmit = async () => {
     await formRef.value?.validate()
     modalLoading.value = true
     
-    const payload = isEdit.value 
-      ? {
-          nickname: formData.nickname,
-          email: formData.email,
-          phone: formData.phone,
-          roles: formData.roles
-        }
-      : {
-          username: formData.username,
-          nickname: formData.nickname,
-          email: formData.email,
-          phone: formData.phone,
-          roles: formData.roles,
-          password: formData.password
-        }
+    let payload: any
+    
+    if (isEdit.value) {
+      payload = {
+        nickname: formData.nickname,
+        email: formData.email,
+        phone: formData.phone,
+        roles: formData.roles
+      }
+      if (formData.password && formData.password.trim() !== '') {
+        payload.password = formData.password
+      }
+    } else {
+      payload = {
+        username: formData.username,
+        nickname: formData.nickname,
+        email: formData.email,
+        phone: formData.phone,
+        roles: formData.roles,
+        password: formData.password
+      }
+    }
 
     if (isEdit.value && currentId.value) {
       await updateAdminUser(currentId.value, payload)

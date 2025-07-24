@@ -136,11 +136,12 @@ import { images } from '@/assets';
         try {
           const res = await userStore.login(params);
           message.destroyAll();
-          if (res && res.data?.access_token) {
-            const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
+          const data = (res as any)?.data;
+          if (data && data.access_token) {
+            const toPath = decodeURIComponent((route.query?.redirect || '/dashboard') as string);
             message.success('登录成功，即将进入系统');
             if (route.name === LOGIN_NAME) {
-              router.replace('/');
+              router.replace('/dashboard');
             } else router.replace(toPath);
           } else {
             message.error('登录失败');

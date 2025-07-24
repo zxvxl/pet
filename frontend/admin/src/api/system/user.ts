@@ -4,7 +4,7 @@ import { Alova } from '@/utils/http/alova/index';
  * @description: 获取用户信息
  */
 export function getUserInfo(userId: number) {
-  return Alova.Get(`/admin/users/${userId}`, {
+  return Alova.Get(`/admin/auth/info`, {
     meta: {
       isReturnNativeResponse: true,
     },

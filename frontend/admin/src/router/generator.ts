@@ -1,8 +1,9 @@
-import { adminMenus } from '@/api/system/menu';
-import { constantRouterIcon } from './icons';
+import { getAdminMenus } from '@/api/system/menu';
+
 import { RouteRecordRaw } from 'vue-router';
 import { Layout, ParentLayout } from '@/router/constant';
 import type { AppRouteRecordRaw } from '@/router/types';
+declare type Recordable<T = any> = Record<string, T>;
 
 const Iframe = () => import('@/views/iframe/index.vue');
 const LayoutMap = new Map<string, () => Promise<typeof import('*.vue')>>();
@@ -16,13 +17,13 @@ LayoutMap.set('IFRAME', Iframe);
  * @param parent
  * @returns {*}
  */
-export const generateRoutes = (routerMap, parent?): any[] => {
-  return routerMap.map((item) => {
-    const currentRoute: any = {
+export const generateRoutes = (routerMap: Recordable[], parent?: Recordable): any[] => {
+  return routerMap.map((item: Recordable) => {
+    const currentRoute: Recordable = {
       path: `${(parent && parent.path) ?? ''}${item.path}`,
       name: item.name ?? '',
       component: item.component,
-      meta: { title: item.name },
+      meta: { title: item.name, ...(item.meta || {}) },
     };
 
     currentRoute.path = currentRoute.path.replace('//', '/');
@@ -38,8 +39,24 @@ export const generateRoutes = (routerMap, parent?): any[] => {
  * @returns {Promise<Router>}
  */
 export const generateDynamicRoutes = async (): Promise<RouteRecordRaw[]> => {
-  const result = await adminMenus();
-  const router = generateRoutes(result);
+  const result = await getAdminMenus();
+  const response = result as any;
+  const menus = response?.menus || [];
+  
+  // 将后端菜单格式转换为前端路由格式
+  const formattedMenus = menus.map(menu => ({
+    ...menu,
+    name: menu.name || menu.path?.replace('/', '') || '',
+    component: menu.component || 'LAYOUT',
+    meta: {
+      title: menu.name,
+      icon: menu.icon || 'file',
+      hideMenu: menu.is_show === 0,
+      ...menu.meta
+    }
+  }));
+  
+  const router = generateRoutes(formattedMenus);
   asyncImportRoute(router);
   return router;
 };
@@ -77,7 +94,7 @@ export const asyncImportRoute = (routes: AppRouteRecordRaw[] | undefined): void 
 export const dynamicImport = (
   viewsModules: Record<string, () => Promise<Recordable>>,
   component: string
-) => {
+): (() => Promise<Recordable>) | undefined => {
   component = component.replace(/^\//, '').replace(/\.vue$/, '');
   const keys = Object.keys(viewsModules);
   const matchKeys = keys.filter((key) => {

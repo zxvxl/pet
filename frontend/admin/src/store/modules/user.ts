@@ -73,14 +73,14 @@ export const useUserStore = defineStore({
     async login(params: any) {
       const response = await login(params);
       console.log(response);
-      const token = response.data?.access_token;
+      const token = (response as any).data?.access_token;
       console.log(token)
       if (token) {
         const ex = 7 * 24 * 60 * 60;
         storage.set(ACCESS_TOKEN, token, ex);
-        storage.set(CURRENT_USER, response.data, ex);
+        storage.set(CURRENT_USER, (response as any).data, ex);
         this.setToken(token);
-        this.setUserInfo(response.data);
+        this.setUserInfo((response as any).data);
       }
       return response;
     },
@@ -98,17 +98,15 @@ export const useUserStore = defineStore({
       }
       
       const data = await getUserInfoApi(userId);
-      const info = (data as any).result || data;
+      const response = data as any;
+      const info = response?.result || response?.data || response;
       
-      // 处理权限：从roles中提取权限信息
-      if (info?.roles && Array.isArray(info.roles)) {
-        const permissions = info.roles.flatMap((role: any) => 
-          role.permissions ? role.permissions.map((p: any) => p.code || p) : []
-        );
-        this.setPermissions(permissions);
-        info.permissions = permissions;
+      // 处理权限和菜单：直接使用后端的权限和菜单数据
+      if (info?.permissions && Array.isArray(info.permissions)) {
+        this.setPermissions(info.permissions);
       }
       
+      // 保存完整的用户信息，包括角色、权限和菜单
       this.setUserInfo(info);
       return info;
     },

@@ -9,8 +9,11 @@ export const adminMenus = [];
  * @description: 获取管理员菜单
  */
 export function getAdminMenus() {
-  // TODO: 实现获取菜单的逻辑
-  return [];
+  return Alova.Get('/admin/auth/info', {
+    meta: {
+      isReturnNativeResponse: true,
+    },
+  });
 }
 
 /**
