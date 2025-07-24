@@ -1,25 +1,34 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity('service_types')
+@Entity('service_type')
 export class ServiceType {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, name: 'name' })
   name: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'price' })
   price: number;
 
-  @Column('decimal', { precision: 10, scale: 2, name: 'member_price' })
-  memberPrice: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'member_price' })
+  member_price: number;
 
-  @Column({ length: 255, nullable: true })
+  @Column({ length: 255, nullable: true, name: 'description' })
   description?: string;
 
   @Column({ name: 'supported_species', length: 50, nullable: true })
-  supportedSpecies?: string;
+  supported_species?: string;
 
   @Column({ name: 'cover_url', length: 255, nullable: true })
-  coverUrl?: string;
+  cover_url?: string;
+
+  @CreateDateColumn({ name: 'create_time' })
+  create_time: Date;
+
+  @UpdateDateColumn({ name: 'update_time' })
+  update_time: Date;
+
+  @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
+  is_deleted: boolean;
 }

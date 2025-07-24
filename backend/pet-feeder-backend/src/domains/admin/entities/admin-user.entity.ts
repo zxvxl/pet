@@ -41,11 +41,14 @@ export class AdminUser {
   })
   is_active: boolean;
 
-  @CreateDateColumn({ name: 'created_at' })
-  created_at: Date;
+  @CreateDateColumn({ name: 'create_time' })
+  create_time: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'update_time' })
+  update_time: Date;
+
+  @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
+  is_deleted: boolean;
 
   @ManyToMany(() => AdminRole, (role) => role.users)
   @JoinTable({

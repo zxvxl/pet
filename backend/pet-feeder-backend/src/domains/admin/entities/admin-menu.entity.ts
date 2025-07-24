@@ -37,11 +37,14 @@ export class AdminMenu {
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'permission_code' })
   permission_code: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  created_at: Date;
+  @CreateDateColumn({ name: 'create_time' })
+  create_time: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'update_time' })
+  update_time: Date;
+
+  @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
+  is_deleted: boolean;
 
   @ManyToMany(() => AdminRole, (role) => role.menus)
   roles: AdminRole[];

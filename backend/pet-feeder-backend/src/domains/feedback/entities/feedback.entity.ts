@@ -4,11 +4,12 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
 import { User } from '../../users/entities/user.entity';
 
-@Entity('feedback')
+@Entity('review_feedback')
 export class Feedback {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,18 +20,24 @@ export class Feedback {
   @ManyToOne(() => User)
   user: User;
 
-  @Column('simple-json')
+  @Column({ type: 'json', name: 'type' })
   type: string[];
 
-  @Column('text')
+  @Column({ type: 'text', name: 'description' })
   description: string;
 
-  @Column('simple-json', { nullable: true })
+  @Column({ type: 'json', nullable: true, name: 'images' })
   images?: string[];
 
-  @Column({ length: 50, nullable: true })
+  @Column({ length: 50, nullable: true, name: 'contact' })
   contact?: string;
 
-  @CreateDateColumn()
-  createTime: Date;
+  @CreateDateColumn({ name: 'create_time' })
+  create_time: Date;
+
+  @UpdateDateColumn({ name: 'update_time' })
+  update_time: Date;
+
+  @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
+  is_deleted: boolean;
 }

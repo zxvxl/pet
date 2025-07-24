@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Pet } from '../../pets/entities/pet.entity';
 import { ServiceType } from '../../service-types/entities/service-type.entity';
 import { OrderEntity } from './order.entity';
 
-@Entity('reserve_order_items')
+@Entity('user_reserve_order_item')
 export class OrderServiceItem {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,9 +17,18 @@ export class OrderServiceItem {
   @ManyToOne(() => Pet)
   pet: Pet;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'price' })
   price: number;
 
-  @Column({ length: 50 })
-  serviceName: string;
+  @Column({ length: 50, name: 'service_name' })
+  service_name: string;
+
+  @CreateDateColumn({ name: 'create_time' })
+  create_time: Date;
+
+  @UpdateDateColumn({ name: 'update_time' })
+  update_time: Date;
+
+  @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
+  is_deleted: boolean;
 }

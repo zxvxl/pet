@@ -12,7 +12,7 @@ import { Pet } from '../../pets/entities/pet.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { FeederOrderStatus } from '../status.enum';
 
-@Entity('feeder_orders')
+@Entity('feeder_order')
 export class FeederOrder {
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,48 +27,52 @@ export class FeederOrder {
   pet: Pet;
 
   @ManyToOne(() => Order)
-  baseOrder: Order;
+  base_order: Order;
 
-  @Column('datetime')
-  serviceTime: Date;
+  @Column({ type: 'datetime', name: 'service_time' })
+  service_time: Date;
 
-  @Column({ length: 200 })
+  @Column({ length: 200, name: 'address' })
   address: string;
 
   @Column({
     type: 'enum',
     enum: FeederOrderStatus,
     default: FeederOrderStatus.PENDING,
+    name: 'status'
   })
   status: FeederOrderStatus;
 
-  @Column('decimal', { precision: 9, scale: 6, nullable: true })
-  signInLat?: number;
+  @Column({ type: 'decimal', precision: 9, scale: 6, nullable: true, name: 'sign_in_lat' })
+  sign_in_lat?: number;
 
-  @Column('decimal', { precision: 9, scale: 6, nullable: true })
-  signInLng?: number;
+  @Column({ type: 'decimal', precision: 9, scale: 6, nullable: true, name: 'sign_in_lng' })
+  sign_in_lng?: number;
 
-  @Column({ type: 'datetime', nullable: true })
-  signInTime?: Date;
+  @Column({ type: 'datetime', nullable: true, name: 'sign_in_time' })
+  sign_in_time?: Date;
 
-  @Column({ type: 'datetime', nullable: true })
-  completeTime?: Date;
+  @Column({ type: 'datetime', nullable: true, name: 'complete_time' })
+  complete_time?: Date;
 
-  @Column({ type: 'simple-json', nullable: true })
-  completeImages?: string[];
+  @Column({ type: 'json', nullable: true, name: 'complete_images' })
+  complete_images?: string[];
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true, name: 'description' })
   description?: string;
 
-  @Column({ type: 'simple-json', nullable: true })
+  @Column({ type: 'json', nullable: true, name: 'images' })
   images?: string[];
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true, name: 'remark' })
   remark?: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @CreateDateColumn({ name: 'create_time' })
+  create_time: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @UpdateDateColumn({ name: 'update_time' })
+  update_time: Date;
+
+  @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
+  is_deleted: boolean;
 }

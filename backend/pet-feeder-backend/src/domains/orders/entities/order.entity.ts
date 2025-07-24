@@ -3,13 +3,15 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Pet } from '../../pets/entities/pet.entity';
 import { Feeder } from '../../feeders/entities/feeder.entity';
 
-@Entity('orders')
-// 👉 模块：订单实体，对应表 orders
+@Entity('user_order')
+// 👉 模块：订单实体，对应表 user_order
 export class Order {
   /** 订单主键 */
   @PrimaryGeneratedColumn()
@@ -28,14 +30,30 @@ export class Order {
   feeder?: Feeder;
 
   /** 开始时间 */
-  @Column('datetime')
-  startTime: Date;
+  @Column({ type: 'datetime', name: 'start_time' })
+  start_time: Date;
 
   /** 结束时间 */
-  @Column('datetime')
-  endTime: Date;
+  @Column({ type: 'datetime', name: 'end_time' })
+  end_time: Date;
 
   /** 订单状态，如 pending/paid */
-  @Column({ length: 50, default: 'pending' })
+  @Column({ length: 50, default: 'pending', name: 'status' })
   status: string;
+
+  /** 总价 */
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0.00, name: 'total_price' })
+  total_price: number;
+
+  /** 创建时间 */
+  @CreateDateColumn({ name: 'create_time' })
+  create_time: Date;
+
+  /** 更新时间 */
+  @UpdateDateColumn({ name: 'update_time' })
+  update_time: Date;
+
+  /** 是否删除 */
+  @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
+  is_deleted: boolean;
 }
