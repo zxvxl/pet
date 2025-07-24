@@ -68,17 +68,24 @@ export class AdminAuthController {
     // 获取角色信息
     const roles = adminUser.roles?.map((r) => r.code) || [];
     
-    // 简化权限和菜单返回，避免实体关系问题
-    const permissions: string[] = [];
-    const menus: any[] = [];
+    // 获取权限信息 - 从角色中提取所有权限
+    const permissions = adminUser.roles?.flatMap(role => 
+      role.permissions?.map(p => p.code) || []
+    ) || [];
     
-    return {
-      id: adminUser.id,
-      username: adminUser.username,
-      nickname: adminUser.nickname,
-      roles,
-      permissions,
-      menus,
-    } as AdminAuthInfoDto;
+    // 获取菜单信息 - 从角色中提取所有菜单
+    const menus = adminUser.roles?.flatMap(role => 
+      role.menus?.map(menu => ({
+        id: menu.id,
+        name: menu.name,
+        path: menu.path,
+        icon: menu.icon,
+        sort: menu.sort,
+        parentId: menu.parent_id,
+        permission: menu.permission_code
+      })) || []
+    ) || [];
+    
+    return new AdminAuthInfoDto(adminUser, permissions, menus);
   }
 }

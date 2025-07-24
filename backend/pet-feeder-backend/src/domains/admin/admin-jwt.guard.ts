@@ -26,13 +26,7 @@ export class AdminJwtGuard extends AuthGuard('jwt') {
       throw new UnauthorizedException('No admin roles assigned');
     }
 
-    // 确保有管理员角色 - 放宽验证条件，只要roles数组非空即可
-    // 因为角色在登录时已经验证过
-    const hasAdminRole = roles.length > 0;
-    
-    if (!hasAdminRole) {
-      throw new UnauthorizedException('admin access only');
-    }
+    // 角色验证已通过前面的检查，这里不需要额外验证
 
     // 标准化用户信息，确保controller能够正确访问
     const standardizedUser = {

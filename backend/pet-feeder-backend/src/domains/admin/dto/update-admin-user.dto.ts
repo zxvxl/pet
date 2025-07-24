@@ -5,7 +5,7 @@ import { IsArray, IsBoolean, IsOptional } from 'class-validator';
 export class UpdateAdminUserDto extends PartialType(CreateAdminUserDto) {
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean;
+  is_active?: boolean;
 
   @IsOptional()
   @IsArray()

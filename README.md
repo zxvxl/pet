@@ -23,8 +23,10 @@ See [docs/admin-start.md](docs/admin-start.md) for running the admin console.
 - 主模块 `AppModule` 加载了以下子模块：
   - `orders`、`feeders`、`service-orders`、`reserve-orders`、`tracking`、`admin` 等
 - 数据库结构：
-  - 脚本位于 `src/database/schema.sql`
-  - 主要表结构包括：`feeders`、`orders`、`messages`、`complaints` 等
+  - 初始化脚本：`database-init.sql`
+  - 命名规范：使用下划线命名法，添加业务前缀（admin_, user_, feeder_等）
+  - 详细文档：`docs/database-setup.md`
+  - 主要表结构包括：`admin_user`、`admin_role`、`admin_permission`、`admin_menu`等管理员系统表，以及`feeders`、`orders`、`messages`、`complaints`等业务表
 
 ## 🐾 小程序前端（`frontend/miniapp`）
 

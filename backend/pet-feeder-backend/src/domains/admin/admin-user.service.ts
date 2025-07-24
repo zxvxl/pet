@@ -35,7 +35,7 @@ export class AdminUserService {
       nickname: dto.nickname,
       email: dto.email,
       phone: dto.phone,
-      isActive: true,
+      is_active: true,
     });
     user.password = await bcrypt.hash(dto.password, 10);
     if (dto.roleIds && dto.roleIds.length) {
@@ -51,7 +51,7 @@ export class AdminUserService {
     if (dto.nickname !== undefined) user.nickname = dto.nickname;
     if (dto.email !== undefined) user.email = dto.email;
     if (dto.phone !== undefined) user.phone = dto.phone;
-    if (dto.isActive !== undefined) user.isActive = dto.isActive;
+    if (dto.is_active !== undefined) user.is_active = dto.is_active;
     if (dto.roleIds) {
       user.roles = await this.roleRepo.findByIds(dto.roleIds);
     }

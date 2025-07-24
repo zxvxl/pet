@@ -183,7 +183,7 @@ INSERT INTO `admin_role_permission` (`role_id`, `permission_id`) VALUES
 (3, 22), (3, 23), (3, 28);
 
 -- 设备管理员权限
-INSERT INTO `admin_role_permission` (`role_id`, `permission_code`) VALUES
+INSERT INTO `admin_role_permission` (`role_id`, `permission_id`) VALUES
 (4, 24), (4, 25), (4, 28);
 
 -- 客服专员权限

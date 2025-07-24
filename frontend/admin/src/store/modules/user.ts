@@ -13,9 +13,9 @@ export type UserInfoType = {
   nickname?: string | null;
   email?: string | null;
   phone?: string | null;
-  isActive?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  is_active?: boolean;
+  created_at?: Date;
+  updated_at?: Date;
   roles?: any[];
   permissions?: string[];
 };
