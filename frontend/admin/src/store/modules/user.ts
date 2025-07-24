@@ -5,11 +5,19 @@ import { ResultEnum } from '@/enums/httpEnum';
 
 import { getUserInfo as getUserInfoApi, login } from '@/api/system/user';
 import { storage } from '@/utils/Storage';
+import { getUserIdFromToken } from '@/utils/jwt';
 
 export type UserInfoType = {
-  // TODO: add your own data
-  username: string;
-  email: string;
+  id?: number;
+  username?: string;
+  nickname?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  isActive?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  roles?: any[];
+  permissions?: string[];
 };
 
 export interface IUserState {
@@ -70,7 +78,7 @@ export const useUserStore = defineStore({
       if (token) {
         const ex = 7 * 24 * 60 * 60;
         storage.set(ACCESS_TOKEN, token, ex);
-        storage.set(CURRENT_USER, response, ex);
+        storage.set(CURRENT_USER, response.data, ex);
         this.setToken(token);
         this.setUserInfo(response.data);
       }
@@ -79,11 +87,28 @@ export const useUserStore = defineStore({
 
     // 获取用户信息
     async getInfo() {
-      const data = await getUserInfoApi();
-      const info = data.result || data;
-      if (info && info.permissions) {
-        this.setPermissions(info.permissions);
+      const token = this.getToken;
+      if (!token) {
+        throw new Error('未找到登录token');
       }
+      
+      const userId = getUserIdFromToken(token);
+      if (!userId) {
+        throw new Error('无法从token中获取用户ID');
+      }
+      
+      const data = await getUserInfoApi(userId);
+      const info = (data as any).result || data;
+      
+      // 处理权限：从roles中提取权限信息
+      if (info?.roles && Array.isArray(info.roles)) {
+        const permissions = info.roles.flatMap((role: any) => 
+          role.permissions ? role.permissions.map((p: any) => p.code || p) : []
+        );
+        this.setPermissions(permissions);
+        info.permissions = permissions;
+      }
+      
       this.setUserInfo(info);
       return info;
     },
@@ -91,7 +116,7 @@ export const useUserStore = defineStore({
     // 登出
     async logout() {
       this.setPermissions([]);
-      this.setUserInfo({ username: '', email: '' });
+      this.setUserInfo({});
       storage.remove(ACCESS_TOKEN);
       storage.remove(CURRENT_USER);
     },

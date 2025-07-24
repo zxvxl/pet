@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, NotFoundException } from '@nestjs/common';
 import { AdminUserService } from './admin-user.service';
 import { AdminJwtGuard } from './admin-jwt.guard';
 import { AdminAuthInfoDto } from './dto/admin-auth-info.dto';
@@ -12,7 +12,12 @@ export class AdminAuthController {
   async getAdminInfo(@Req() req): Promise<AdminAuthInfoDto> {
     const userId = req.user.userId;
     const adminUser = await this.adminUserService.findById(userId);
-    const roles = adminUser?.roles?.map((r) => r.code) || [];
+    
+    if (!adminUser) {
+      throw new NotFoundException('Admin user not found');
+    }
+    
+    const roles = adminUser.roles?.map((r) => r.code) || [];
     const permissions: string[] = [];
     const menus: any[] = [];
     return {

@@ -4,6 +4,9 @@ import { NIcon, NTag } from 'naive-ui';
 import { PageEnum } from '@/enums/pageEnum';
 import { isObject } from './is/index';
 import { cloneDeep } from 'lodash-es';
+
+// 导出JWT工具
+export * from './jwt';
 /**
  * render 图标
  * */

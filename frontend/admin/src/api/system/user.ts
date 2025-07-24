@@ -3,8 +3,8 @@ import { Alova } from '@/utils/http/alova/index';
 /**
  * @description: 获取用户信息
  */
-export function getUserInfo() {
-  return Alova.Get('/admin/me', {
+export function getUserInfo(userId: number) {
+  return Alova.Get(`/admin/users/${userId}`, {
     meta: {
       isReturnNativeResponse: true,
     },
