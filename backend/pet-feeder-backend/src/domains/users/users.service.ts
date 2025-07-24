@@ -23,22 +23,22 @@ export class UsersService {
   }
 
   /** 查询所有用户 */
-  findAll() {
+  findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
   /** 根据ID查询用户 */
-  findOne(id: number) {
+  findOne(id: number): Promise<User | null> {
     return this.usersRepository.findOne({ where: { id } });
   }
 
   /** 根据 openId 查询用户 */
-  findByOpenId(openId: string): Promise<User | undefined> {
+  findByOpenId(openId: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { openId } });
   }
 
   /** 根据 unionId 查询用户 */
-  findByUnionId(unionId: string): Promise<User | undefined> {
+  findByUnionId(unionId: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { unionId } });
   }
 

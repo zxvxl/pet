@@ -81,7 +81,7 @@ export class AuthService {
     return { token, userInfo: user };
   }
 
-  async profile(userId: number) {
+  async profile(userId: number): Promise<User | null> {
     return this.usersService.findOne(userId);
   }
 }

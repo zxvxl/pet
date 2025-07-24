@@ -6,6 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { User } from './entities/user.entity';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
@@ -24,13 +25,13 @@ export class UsersController {
   @Get()
   @Roles('admin')
   /** 获取用户列表 */
-  getAllUsers() {
+  async getAllUsers(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
   /** 根据ID获取用户 */
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<User | null> {
     return this.usersService.findOne(+id);
   }
 

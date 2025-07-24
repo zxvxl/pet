@@ -4,6 +4,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { WechatService } from './wechat.service';
 import { WxLoginDto } from './dto/wx-login.dto';
+import { User } from '../users/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -32,7 +33,7 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  profile(@Req() req) {
+  async profile(@Req() req): Promise<User | null> {
     return this.authService.profile(req.user.userId);
   }
 }
