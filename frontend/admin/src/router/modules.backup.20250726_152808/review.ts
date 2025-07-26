@@ -1,6 +1,9 @@
+// frontend/admin/src/router/modules/review.ts
+// 服务评价路由配置
+
 import type { RouteRecordRaw } from 'vue-router'
-import { renderIcon } from '@/utils'
-import { Star, Warning } from '@vicons/ionicons5'
+import { renderIcon } from '@/utils/renderIcon'
+import { Star } from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw = {
   path: '/reviews',
@@ -30,7 +33,7 @@ const routes: RouteRecordRaw = {
       component: () => import('@/views/reviews/FeedbackList.vue'),
       meta: {
         title: '反馈投诉',
-        icon: renderIcon(Warning),
+        icon: 'warning',
         hideMenu: false,
       },
     },

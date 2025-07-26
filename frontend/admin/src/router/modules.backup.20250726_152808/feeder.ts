@@ -1,6 +1,8 @@
+// 喂养员管理路由配置
+
 import type { RouteRecordRaw } from 'vue-router'
-import { renderIcon } from '@/utils'
-import { People, PersonAdd } from '@vicons/ionicons5'
+import { renderIcon } from '@/utils/renderIcon'
+import { Team } from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw = {
   path: '/feeders',
@@ -9,9 +11,9 @@ const routes: RouteRecordRaw = {
   component: () => import('@/layout/index.vue'),
   meta: {
     title: '喂养员管理',
-    icon: renderIcon(People),
+    icon: renderIcon(Team),
     orderNo: 2,
-    roles: ['super'],
+    roles: ['super'], // 仅超级管理员可见
     hideMenu: false,
   },
   children: [
@@ -21,7 +23,7 @@ const routes: RouteRecordRaw = {
       component: () => import('@/views/feeders/FeederList.vue'),
       meta: {
         title: '喂养员列表',
-        icon: renderIcon(People),
+        icon: renderIcon(Team),
         roles: ['super', 'feeder_manager'],
         hideMenu: false,
       },
@@ -32,7 +34,7 @@ const routes: RouteRecordRaw = {
       component: () => import('@/views/feeders/FeederAudit.vue'),
       meta: {
         title: '审核中心',
-        icon: renderIcon(PersonAdd),
+        icon: 'check-circle',
         roles: ['super', 'feeder_manager'],
         hideMenu: false,
       },

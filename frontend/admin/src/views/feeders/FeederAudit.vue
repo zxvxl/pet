@@ -1,166 +1,282 @@
+<!-- frontend/admin/src/views/feeders/FeederAudit.vue -->
 <template>
-  <div class="feeder-audit-container">
-    <n-card title="审核中心" :bordered="false">
-      <!-- 统计信息 -->
-      <n-grid :cols="4" :x-gap="16" :y-gap="16" class="mb-4">
-        <n-grid-item>
-          <n-card hoverable>
-            <n-statistic label="待审核" :value="stats.pending" />
-          </n-card>
-        </n-grid-item>
-        <n-grid-item>
-          <n-card hoverable>
-            <n-statistic label="今日审核" :value="stats.todayAudited" />
-          </n-card>
-        </n-grid-item>
-        <n-grid-item>
-          <n-card hoverable>
-            <n-statistic label="通过率" :value="stats.passRate" suffix="%" />
-          </n-card>
-        </n-grid-item>
-        <n-grid-item>
-          <n-card hoverable>
-            <n-statistic label="平均审核时长" :value="stats.avgAuditTime" suffix="分钟" />
-          </n-card>
-        </n-grid-item>
-      </n-grid>
-
-      <!-- 筛选栏 -->
-      <div class="filter-bar">
-        <n-space>
-          <n-select
-            v-model:value="filterForm.status"
-            placeholder="审核状态"
-            style="width: 150px"
-            :options="statusOptions"
-            clearable
-          />
-          <n-date-picker
-            v-model:value="filterForm.dateRange"
-            type="daterange"
-            placeholder="申请日期范围"
-            style="width: 250px"
-            clearable
-          />
-          <n-button type="primary" @click="handleSearch">
-            <template #icon>
-              <n-icon><Search /></n-icon>
+  <div class="feeder-audit">
+    <!-- 统计卡片 -->
+    <n-grid :cols="4" :x-gap="16" class="mb-4">
+      <n-grid-item>
+        <n-card>
+          <n-statistic label="待审核" :value="stats.pending">
+            <template #suffix>
+              <n-text>人</n-text>
             </template>
-            搜索
-          </n-button>
-          <n-button @click="handleReset">重置</n-button>
-        </n-space>
-      </div>
+          </n-statistic>
+        </n-card>
+      </n-grid-item>
+      <n-grid-item>
+        <n-card>
+          <n-statistic label="今日审核" :value="stats.todayAudit">
+            <template #suffix>
+              <n-text>人</n-text>
+            </template>
+          </n-statistic>
+        </n-card>
+      </n-grid-item>
+      <n-grid-item>
+        <n-card>
+          <n-statistic label="通过率" :value="stats.passRate">
+            <template #suffix>
+              <n-text>%</n-text>
+            </template>
+          </n-statistic>
+        </n-card>
+      </n-grid-item>
+      <n-grid-item>
+        <n-card>
+          <n-statistic label="平均审核时长" :value="stats.avgAuditTime">
+            <template #suffix>
+              <n-text>小时</n-text>
+            </template>
+          </n-statistic>
+        </n-card>
+      </n-grid-item>
+    </n-grid>
 
-      <!-- 审核列表 -->
+    <n-card :bordered="false">
+      <n-space vertical>
+        <!-- 搜索表单 -->
+        <n-form
+          ref="searchFormRef"
+          :model="searchForm"
+          label-placement="left"
+          :show-feedback="false"
+          class="search-form"
+        >
+          <n-grid :cols="24" :x-gap="16">
+            <n-form-item-gi :span="6" label="关键词">
+              <n-input
+                v-model:value="searchForm.keyword"
+                placeholder="搜索姓名/手机号"
+                clearable
+                @keyup.enter="handleSearch"
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="6" label="状态">
+              <n-select
+                v-model:value="searchForm.status"
+                :options="auditStatusOptions"
+                placeholder="选择状态"
+                clearable
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="8" label="申请时间">
+              <n-date-picker
+                v-model:value="searchForm.dateRange"
+                type="daterange"
+                clearable
+                placeholder="选择时间范围"
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="4">
+              <n-space>
+                <n-button type="primary" @click="handleSearch">
+                  <template #icon>
+                    <n-icon><Search /></n-icon>
+                  </template>
+                  搜索
+                </n-button>
+                <n-button @click="handleReset">
+                  <template #icon>
+                    <n-icon><Refresh /></n-icon>
+                  </template>
+                  重置
+                </n-button>
+              </n-space>
+            </n-form-item-gi>
+          </n-grid>
+        </n-form>
+
+        <!-- 批量操作 -->
+        <n-space v-if="hasPermission('feeder:audit')">
+          <n-button
+            type="success"
+            :disabled="!selectedRowKeys.length"
+            @click="handleBatchAudit('approve')"
+          >
+            <template #icon>
+              <n-icon><CheckCircle /></n-icon>
+            </template>
+            批量通过
+          </n-button>
+          <n-button
+            type="error"
+            :disabled="!selectedRowKeys.length"
+            @click="handleBatchAudit('reject')"
+          >
+            <template #icon>
+              <n-icon><CloseCircle /></n-icon>
+            </template>
+            批量拒绝
+          </n-button>
+        </n-space>
+      </n-space>
+
+      <!-- 数据表格 -->
       <n-data-table
+        ref="tableRef"
         :columns="columns"
         :data="tableData"
         :loading="loading"
         :pagination="pagination"
         :row-key="(row) => row.id"
-        @update:page="handlePageChange"
-        @update:page-size="handlePageSizeChange"
+        :checked-row-keys="selectedRowKeys"
+        @update:checked-row-keys="handleRowKeysChange"
+        flex-height
+        style="min-height: 500px; margin-top: 16px"
       />
     </n-card>
 
-    <!-- 审核弹窗 -->
-    <n-modal v-model:show="showAuditModal" preset="card" title="审核喂养员" style="width: 700px">
-      <div v-if="currentApplication">
-        <n-tabs type="line" animated>
+    <!-- 审核详情弹窗 -->
+    <n-modal
+      v-model:show="showAuditModal"
+      :mask-closable="false"
+      preset="card"
+      title="审核详情"
+      style="width: 900px"
+    >
+      <div v-if="currentFeeder" class="audit-detail">
+        <n-tabs default-value="basic" type="line">
           <n-tab-pane name="basic" tab="基本信息">
-            <n-descriptions :column="2" bordered>
-              <n-descriptions-item label="姓名">{{ currentApplication.name }}</n-descriptions-item>
-              <n-descriptions-item label="手机号">{{ currentApplication.phone }}</n-descriptions-item>
-              <n-descriptions-item label="身份证">{{ currentApplication.id_card }}</n-descriptions-item>
-              <n-descriptions-item label="申请时间">{{ formatDate(currentApplication.created_at) }}</n-descriptions-item>
-              <n-descriptions-item label="地址" :span="2">{{ currentApplication.address }}</n-descriptions-item>
-              <n-descriptions-item label="简介" :span="2">{{ currentApplication.bio || '暂无简介' }}</n-descriptions-item>
+            <n-descriptions
+              :column="2"
+              bordered
+              label-placement="left"
+              label-style="width: 120px"
+            >
+              <n-descriptions-item label="头像">
+                <n-avatar
+                  :src="currentFeeder.avatar"
+                  :size="80"
+                  round
+                  :fallback-src="defaultAvatar"
+                />
+              </n-descriptions-item>
+              <n-descriptions-item label="姓名">{{ currentFeeder.name }}</n-descriptions-item>
+              <n-descriptions-item label="手机号">{{ currentFeeder.phone }}</n-descriptions-item>
+              <n-descriptions-item label="身份证号">{{ currentFeeder.id_card }}</n-descriptions-item>
+              <n-descriptions-item label="地址" :span="2">{{ currentFeeder.address || '暂无' }}</n-descriptions-item>
+              <n-descriptions-item label="个人简介" :span="2">{{ currentFeeder.bio || '暂无' }}</n-descriptions-item>
+              <n-descriptions-item label="工作经验" :span="2">{{ currentFeeder.experience || '暂无' }}</n-descriptions-item>
+              <n-descriptions-item label="申请时间">{{ formatDate(currentFeeder.created_at) }}</n-descriptions-item>
+              <n-descriptions-item label="状态">
+                <n-tag :type="getStatusType(currentFeeder.status)" size="small">
+                  {{ getStatusText(currentFeeder.status) }}
+                </n-tag>
+              </n-descriptions-item>
             </n-descriptions>
           </n-tab-pane>
           
-          <n-tab-pane name="documents" tab="证件材料">
-            <n-space vertical>
-              <div v-if="currentApplication.id_card_front">
-                <div class="document-label">身份证正面</div>
-                <n-image
-                  :src="currentApplication.id_card_front"
-                  width="200"
-                  height="120"
-                  object-fit="cover"
-                  preview-disabled
-                />
-              </div>
-              <div v-if="currentApplication.id_card_back">
-                <div class="document-label">身份证背面</div>
-                <n-image
-                  :src="currentApplication.id_card_back"
-                  width="200"
-                  height="120"
-                  object-fit="cover"
-                  preview-disabled
-                />
-              </div>
-              <div v-if="currentApplication.avatar">
-                <div class="document-label">头像照片</div>
-                <n-image
-                  :src="currentApplication.avatar"
-                  width="120"
-                  height="120"
-                  object-fit="cover"
-                  preview-disabled
-                />
-              </div>
-            </n-space>
+          <n-tab-pane name="certificates" tab="资质证书">
+            <n-grid v-if="currentFeeder.certificates && currentFeeder.certificates.length" :cols="3" :x-gap="12" :y-gap="12">
+              <n-grid-item v-for="(cert, index) in currentFeeder.certificates" :key="index">
+                <n-card size="small">
+                  <n-image
+                    :src="cert"
+                    width="200"
+                    height="150"
+                    object-fit="cover"
+                    :fallback-src="defaultCertImage"
+                    preview
+                  />
+                </n-card>
+              </n-grid-item>
+            </n-grid>
+            <n-empty v-else description="暂无证书" />
           </n-tab-pane>
         </n-tabs>
 
-        <!-- 审核操作 -->
-        <div class="audit-actions">
-          <n-space justify="center">
-            <n-button type="success" size="large" @click="handleApprove">
-              <template #icon>
-                <n-icon><CheckmarkCircle /></n-icon>
-              </template>
-              通过审核
-            </n-button>
-            <n-button type="error" size="large" @click="handleReject">
-              <template #icon>
-                <n-icon><CloseCircle /></n-icon>
-              </template>
-              拒绝申请
-            </n-button>
-            <n-button @click="showAuditModal = false">取消</n-button>
-          </n-space>
-        </div>
+        <!-- 审核表单 -->
+        <n-divider />
+        <n-form
+          ref="auditFormRef"
+          :model="auditForm"
+          label-placement="left"
+          label-width="80px"
+        >
+          <n-form-item label="审核结果" path="action">
+            <n-radio-group v-model:value="auditForm.action">
+              <n-space>
+                <n-radio value="approve">通过</n-radio>
+                <n-radio value="reject">拒绝</n-radio>
+              </n-space>
+            </n-radio-group>
+          </n-form-item>
+          <n-form-item
+            v-if="auditForm.action === 'reject'"
+            label="拒绝原因"
+            path="rejection_reason"
+          >
+            <n-input
+              v-model:value="auditForm.rejection_reason"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入拒绝原因"
+            />
+          </n-form-item>
+        </n-form>
       </div>
-    </n-modal>
 
-    <!-- 拒绝原因弹窗 -->
-    <n-modal v-model:show="showRejectModal" preset="card" title="拒绝原因" style="width: 500px">
-      <n-form ref="rejectFormRef" :model="rejectForm" :rules="rejectRules">
-        <n-form-item label="拒绝原因" path="reason">
-          <n-select
-            v-model:value="rejectForm.reason"
-            placeholder="选择拒绝原因"
-            :options="rejectReasonOptions"
-            clearable
-          />
-        </n-form-item>
-        <n-form-item label="详细说明" path="detail">
-          <n-input
-            v-model:value="rejectForm.detail"
-            type="textarea"
-            placeholder="请输入详细的拒绝原因"
-            :rows="4"
-          />
-        </n-form-item>
-      </n-form>
-      
       <template #footer>
         <n-space justify="end">
-          <n-button @click="showRejectModal = false">取消</n-button>
-          <n-button type="error" @click="confirmReject">确认拒绝</n-button>
+          <n-button @click="showAuditModal = false">取消</n-button>
+          <n-button
+            type="primary"
+            :loading="auditLoading"
+            @click="handleAuditSubmit"
+          >
+            提交审核
+          </n-button>
+        </n-space>
+      </template>
+    </n-modal>
+
+    <!-- 批量审核弹窗 -->
+    <n-modal
+      v-model:show="showBatchAuditModal"
+      :mask-closable="false"
+      preset="card"
+      :title="`批量${batchAction === 'approve' ? '通过' : '拒绝'}审核`"
+      style="width: 500px"
+    >
+      <div>
+        <p>确定要{{ batchAction === 'approve' ? '通过' : '拒绝' }}选中的 {{ selectedRowKeys.length }} 个喂养员申请吗？</p>
+        
+        <n-form
+          v-if="batchAction === 'reject'"
+          ref="batchAuditFormRef"
+          :model="batchAuditForm"
+          label-placement="top"
+        >
+          <n-form-item label="拒绝原因" path="rejection_reason">
+            <n-input
+              v-model:value="batchAuditForm.rejection_reason"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入拒绝原因"
+            />
+          </n-form-item>
+        </n-form>
+      </div>
+
+      <template #footer>
+        <n-space justify="end">
+          <n-button @click="showBatchAuditModal = false">取消</n-button>
+          <n-button
+            type="primary"
+            :loading="batchAuditLoading"
+            @click="handleBatchAuditSubmit"
+          >
+            确定
+          </n-button>
         </n-space>
       </template>
     </n-modal>
@@ -168,95 +284,99 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed, h } from 'vue'
-import { 
-  NCard, 
-  NDataTable, 
-  NSelect, 
-  NDatePicker, 
-  NButton, 
-  NSpace, 
-  NModal, 
-  NDescriptions, 
-  NDescriptionsItem, 
-  NTag, 
-  NIcon,
-  NTabs,
-  NTabPane,
-  NImage,
-  NForm,
-  NFormItem,
-  NInput,
+import { ref, reactive, onMounted, h } from 'vue'
+import {
+  NCard,
   NGrid,
   NGridItem,
   NStatistic,
+  NText,
+  NSpace,
+  NForm,
+  NFormItem,
+  NFormItemGi,
+  NInput,
+  NSelect,
+  NDatePicker,
+  NButton,
+  NIcon,
+  NDataTable,
+  NModal,
+  NTabs,
+  NTabPane,
+  NDescriptions,
+  NDescriptionsItem,
+  NAvatar,
+  NTag,
+  NImage,
+  NEmpty,
+  NDivider,
+  NRadioGroup,
+  NRadio,
   useMessage,
   type DataTableColumns,
-  type FormInst
 } from 'naive-ui'
-import { Search, CheckmarkCircle, CloseCircle, Eye } from '@vicons/ionicons5'
-import { getFeederAuditList, approveFeeder, rejectFeeder, getAuditStats } from '@/api/feeder'
+import { Search, Refresh, CheckCircle, CloseCircle, Eye } from '@vicons/ionicons5'
+import {
+  getFeederAuditList,
+  getFeederDetail,
+  auditFeeder,
+  batchUpdateFeeders,
+  type FeederInfo,
+  type FeederListParams,
+  type FeederAuditData,
+} from '@/api/feeder'
+import { useUserStore } from '@/store/modules/user'
+import { formatDate } from '@/utils'
 
-// 类型定义
-interface FeederApplication {
-  id: number
-  name: string
-  phone: string
-  id_card: string
-  status: number
-  address: string
-  bio?: string
-  created_at: string
-  id_card_front?: string
-  id_card_back?: string
-  avatar?: string
-  audit_time?: string
-  audit_user?: string
-  reject_reason?: string
-}
-
-interface FilterForm {
-  status: number | null
-  dateRange: [string, string] | null
-}
-
-interface RejectForm {
-  reason: string
-  detail: string
-}
-
-interface AuditStats {
-  pending: number
-  todayAudited: number
-  passRate: number
-  avgAuditTime: number
+// 权限控制
+const userStore = useUserStore()
+const hasPermission = (permission: string) => {
+  const permissions = userStore.getUserInfo.permissions || []
+  return permissions.includes(permission) || userStore.getUserInfo.roles?.includes('super')
 }
 
 // 响应式数据
 const loading = ref(false)
-const tableData = ref<FeederApplication[]>([])
-const currentApplication = ref<FeederApplication | null>(null)
+const auditLoading = ref(false)
+const batchAuditLoading = ref(false)
+const tableData = ref<FeederInfo[]>([])
+const currentFeeder = ref<FeederInfo | null>(null)
 const showAuditModal = ref(false)
-const showRejectModal = ref(false)
-const rejectFormRef = ref<FormInst | null>(null)
+const showBatchAuditModal = ref(false)
+const selectedRowKeys = ref<number[]>([])
+const batchAction = ref<'approve' | 'reject'>('approve')
 
-const stats = ref<AuditStats>({
+// 统计数据
+const stats = ref({
   pending: 0,
-  todayAudited: 0,
+  todayAudit: 0,
   passRate: 0,
-  avgAuditTime: 0
+  avgAuditTime: 0,
 })
 
-const filterForm = reactive<FilterForm>({
-  status: null,
-  dateRange: null
+// 搜索表单
+const searchFormRef = ref()
+const searchForm = reactive<FeederListParams>({
+  keyword: '',
+  status: 0, // 默认显示待审核
+  dateRange: null,
 })
 
-const rejectForm = reactive<RejectForm>({
-  reason: '',
-  detail: ''
+// 审核表单
+const auditFormRef = ref()
+const auditForm = reactive({
+  action: 'approve' as 'approve' | 'reject',
+  rejection_reason: '',
 })
 
+// 批量审核表单
+const batchAuditFormRef = ref()
+const batchAuditForm = reactive({
+  rejection_reason: '',
+})
+
+// 分页配置
 const pagination = reactive({
   page: 1,
   pageSize: 20,
@@ -271,66 +391,79 @@ const pagination = reactive({
     pagination.pageSize = pageSize
     pagination.page = 1
     fetchData()
-  }
+  },
 })
 
-// 选项配置
-const statusOptions = [
+// 审核状态选项
+const auditStatusOptions = [
   { label: '待审核', value: 0 },
   { label: '已通过', value: 1 },
-  { label: '已拒绝', value: 2 }
+  { label: '已拒绝', value: 2 },
 ]
 
-const rejectReasonOptions = [
-  { label: '证件信息不清晰', value: '证件信息不清晰' },
-  { label: '身份证信息与申请信息不符', value: '身份证信息与申请信息不符' },
-  { label: '地址信息不准确', value: '地址信息不准确' },
-  { label: '其他原因', value: '其他原因' }
-]
-
-const rejectRules = {
-  reason: {
-    required: true,
-    message: '请选择拒绝原因',
-    trigger: 'change'
-  },
-  detail: {
-    required: true,
-    message: '请输入详细说明',
-    trigger: 'blur'
-  }
-}
+// 默认图片
+const defaultAvatar = 'https://via.placeholder.com/80x80?text=头像'
+const defaultCertImage = 'https://via.placeholder.com/200x150?text=证书'
 
 // 消息提示
 const message = useMessage()
 
 // 表格列配置
-const columns: DataTableColumns<FeederApplication> = [
+const columns: DataTableColumns<FeederInfo> = [
+  {
+    type: 'selection',
+    disabled: (row) => row.status !== 0, // 只有待审核状态可选择
+  },
   {
     title: 'ID',
     key: 'id',
-    width: 80
+    width: 80,
+  },
+  {
+    title: '头像',
+    key: 'avatar',
+    width: 80,
+    render(row) {
+      return h(NAvatar, {
+        src: row.avatar,
+        size: 'small',
+        round: true,
+        fallbackSrc: defaultAvatar,
+      })
+    },
   },
   {
     title: '姓名',
     key: 'name',
-    width: 120
+    width: 120,
   },
   {
     title: '手机号',
     key: 'phone',
-    width: 140
+    width: 140,
+  },
+  {
+    title: '身份证号',
+    key: 'id_card',
+    width: 120,
+    render(row) {
+      return formatIdCard(row.id_card)
+    },
   },
   {
     title: '状态',
     key: 'status',
     width: 100,
     render(row) {
-      return h(NTag, {
-        type: getStatusType(row.status),
-        size: 'small'
-      }, { default: () => getStatusText(row.status) })
-    }
+      return h(
+        NTag,
+        {
+          type: getStatusType(row.status),
+          size: 'small',
+        },
+        { default: () => getStatusText(row.status) }
+      )
+    },
   },
   {
     title: '申请时间',
@@ -338,77 +471,70 @@ const columns: DataTableColumns<FeederApplication> = [
     width: 160,
     render(row) {
       return formatDate(row.created_at)
-    }
-  },
-  {
-    title: '审核时间',
-    key: 'audit_time',
-    width: 160,
-    render(row) {
-      return row.audit_time ? formatDate(row.audit_time) : '-'
-    }
-  },
-  {
-    title: '审核人',
-    key: 'audit_user',
-    width: 120,
-    render(row) {
-      return row.audit_user || '-'
-    }
+    },
   },
   {
     title: '操作',
     key: 'actions',
-    width: 150,
+    width: 200,
     fixed: 'right',
     render(row) {
-      if (row.status === 0) {
-        return h(NSpace, { size: 'small' }, {
-          default: () => [
-            h(NButton, {
+      const actions = []
+      
+      actions.push(
+        h(
+          NButton,
+          {
+            size: 'small',
+            type: 'info',
+            onClick: () => handleViewDetail(row),
+          },
+          { default: () => '查看详情', icon: () => h(NIcon, null, { default: () => h(Eye) }) }
+        )
+      )
+
+      if (hasPermission('feeder:audit') && row.status === 0) {
+        actions.push(
+          h(
+            NButton,
+            {
               size: 'small',
-              type: 'primary',
-              onClick: () => handleAudit(row)
-            }, { default: () => '审核' })
-          ]
-        })
-      } else {
-        return h(NSpace, { size: 'small' }, {
-          default: () => [
-            h(NButton, {
+              type: 'success',
+              onClick: () => handleQuickAudit(row, 'approve'),
+            },
+            { default: () => '通过', icon: () => h(NIcon, null, { default: () => h(CheckCircle) }) }
+          ),
+          h(
+            NButton,
+            {
               size: 'small',
-              type: 'info',
-              onClick: () => handleViewDetail(row)
-            }, { default: () => '查看' })
-          ]
-        })
+              type: 'error',
+              onClick: () => handleQuickAudit(row, 'reject'),
+            },
+            { default: () => '拒绝', icon: () => h(NIcon, null, { default: () => h(CloseCircle) }) }
+          )
+        )
       }
-    }
-  }
+
+      return h(NSpace, { size: 'small' }, { default: () => actions })
+    },
+  },
 ]
 
 // 工具函数
 const getStatusType = (status: number) => {
-  switch (status) {
-    case 0: return 'warning'
-    case 1: return 'success'
-    case 2: return 'error'
-    default: return 'default'
-  }
+  const types = { 0: 'warning', 1: 'success', 2: 'error' }
+  return types[status] || 'default'
 }
 
 const getStatusText = (status: number) => {
-  switch (status) {
-    case 0: return '待审核'
-    case 1: return '已通过'
-    case 2: return '已拒绝'
-    default: return '未知'
-  }
+  const texts = { 0: '待审核', 1: '已通过', 2: '已拒绝' }
+  return texts[status] || '未知'
 }
 
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '-'
-  return new Date(dateStr).toLocaleString()
+const formatIdCard = (idCard?: string) => {
+  if (!idCard) return '未填写'
+  return idCard.replace(/^(.{6})(?:\d+)(.{4})$/, '$1****$2')
 }
 
 // API调用
@@ -418,13 +544,24 @@ const fetchData = async () => {
     const params = {
       page: pagination.page,
       pageSize: pagination.pageSize,
-      status: filterForm.status,
-      dateRange: filterForm.dateRange
+      ...searchForm,
     }
     
+    if (searchForm.dateRange) {
+      params.dateRange = [
+        new Date(searchForm.dateRange[0]).toISOString().split('T')[0],
+        new Date(searchForm.dateRange[1]).toISOString().split('T')[0],
+      ]
+    }
+
     const response = await getFeederAuditList(params)
-    tableData.value = response.data || []
-    pagination.total = response.total || 0
+    tableData.value = response.data.list || []
+    pagination.total = response.data.total || 0
+    
+    // 更新统计数据
+    if (response.data.stats) {
+      stats.value = response.data.stats
+    }
   } catch (error) {
     message.error('获取审核列表失败')
     console.error('获取审核列表失败:', error)
@@ -433,129 +570,143 @@ const fetchData = async () => {
   }
 }
 
-const fetchStats = async () => {
-  try {
-    const response = await getAuditStats()
-    stats.value = response
-  } catch (error) {
-    console.error('获取统计数据失败:', error)
-  }
-}
-
 // 事件处理
 const handleSearch = () => {
   pagination.page = 1
+  selectedRowKeys.value = []
   fetchData()
 }
 
 const handleReset = () => {
-  filterForm.status = null
-  filterForm.dateRange = null
+  searchForm.keyword = ''
+  searchForm.status = 0
+  searchForm.dateRange = null
   pagination.page = 1
+  selectedRowKeys.value = []
   fetchData()
 }
 
-const handlePageChange = (page: number) => {
-  pagination.page = page
-  fetchData()
+const handleRowKeysChange = (keys: number[]) => {
+  selectedRowKeys.value = keys
 }
 
-const handlePageSizeChange = (pageSize: number) => {
-  pagination.pageSize = pageSize
-  pagination.page = 1
-  fetchData()
-}
-
-const handleAudit = (row: FeederApplication) => {
-  currentApplication.value = row
-  showAuditModal.value = true
-}
-
-const handleViewDetail = (row: FeederApplication) => {
-  currentApplication.value = row
-  showAuditModal.value = true
-}
-
-const handleApprove = async () => {
-  if (!currentApplication.value) return
-  
+const handleViewDetail = async (row: FeederInfo) => {
   try {
-    await approveFeeder(currentApplication.value.id)
-    message.success('审核通过成功')
-    showAuditModal.value = false
-    fetchData()
-    fetchStats()
+    const response = await getFeederDetail(row.id)
+    currentFeeder.value = response.data
+    // 重置审核表单
+    auditForm.action = 'approve'
+    auditForm.rejection_reason = ''
+    showAuditModal.value = true
   } catch (error) {
-    message.error('审核操作失败')
-    console.error('审核操作失败:', error)
+    message.error('获取详情失败')
   }
 }
 
-const handleReject = () => {
-  showRejectModal.value = true
-}
-
-const confirmReject = async () => {
-  if (!currentApplication.value) return
-  
-  try {
-    await rejectFormRef.value?.validate()
-    
-    await rejectFeeder(currentApplication.value.id, {
-      reason: rejectForm.reason,
-      detail: rejectForm.detail
+const handleQuickAudit = (row: FeederInfo, action: 'approve' | 'reject') => {
+  if (action === 'reject') {
+    // 拒绝操作需要输入原因，打开详情弹窗
+    handleViewDetail(row).then(() => {
+      auditForm.action = 'reject'
     })
-    
-    message.success('拒绝申请成功')
-    showRejectModal.value = false
-    showAuditModal.value = false
-    
-    // 重置表单
-    rejectForm.reason = ''
-    rejectForm.detail = ''
-    
-    fetchData()
-    fetchStats()
-  } catch (error) {
-    if (error !== false) {
-      message.error('拒绝操作失败')
-      console.error('拒绝操作失败:', error)
-    }
+  } else {
+    // 通过操作可以直接执行
+    const dialog = window.$dialog.info({
+      title: '确认审核',
+      content: `确定要通过喂养员"${row.name}"的申请吗？`,
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: async () => {
+        try {
+          await auditFeeder({
+            id: row.id,
+            action: 'approve',
+          })
+          message.success('审核成功')
+          fetchData()
+        } catch (error) {
+          message.error('审核失败')
+        }
+      },
+    })
   }
 }
 
-// 生命周期
+const handleAuditSubmit = async () => {
+  if (!currentFeeder.value) return
+  
+  if (auditForm.action === 'reject' && !auditForm.rejection_reason.trim()) {
+    message.error('请输入拒绝原因')
+    return
+  }
+
+  try {
+    auditLoading.value = true
+    await auditFeeder({
+      id: currentFeeder.value.id,
+      action: auditForm.action,
+      rejection_reason: auditForm.rejection_reason,
+    })
+    message.success('审核成功')
+    showAuditModal.value = false
+    fetchData()
+  } catch (error) {
+    message.error('审核失败')
+  } finally {
+    auditLoading.value = false
+  }
+}
+
+const handleBatchAudit = (action: 'approve' | 'reject') => {
+  batchAction.value = action
+  batchAuditForm.rejection_reason = ''
+  showBatchAuditModal.value = true
+}
+
+const handleBatchAuditSubmit = async () => {
+  if (batchAction.value === 'reject' && !batchAuditForm.rejection_reason.trim()) {
+    message.error('请输入拒绝原因')
+    return
+  }
+
+  try {
+    batchAuditLoading.value = true
+    await batchUpdateFeeders(selectedRowKeys.value, 'audit', {
+      action: batchAction.value,
+      rejection_reason: batchAuditForm.rejection_reason,
+    })
+    message.success('批量审核成功')
+    showBatchAuditModal.value = false
+    selectedRowKeys.value = []
+    fetchData()
+  } catch (error) {
+    message.error('批量审核失败')
+  } finally {
+    batchAuditLoading.value = false
+  }
+}
+
+// 初始化
 onMounted(() => {
   fetchData()
-  fetchStats()
 })
 </script>
 
 <style scoped>
-.feeder-audit-container {
-  padding: 20px;
+.feeder-audit {
+  padding: 16px;
+}
+
+.search-form {
+  margin-bottom: 16px;
+}
+
+.audit-detail {
+  max-height: 600px;
+  overflow-y: auto;
 }
 
 .mb-4 {
   margin-bottom: 16px;
 }
-
-.filter-bar {
-  margin-bottom: 16px;
-  padding: 16px;
-  background: #f5f5f5;
-  border-radius: 8px;
-}
-
-.document-label {
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: #666;
-}
-
-.audit-actions {
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
-}
-</style> 
+</style>

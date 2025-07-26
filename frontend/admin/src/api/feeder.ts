@@ -1,69 +1,240 @@
-import { Alova as http } from '@/utils/http/alova';
+// frontend/admin/src/api/feeder.ts
+// 喂养员管理相关API接口
 
-export interface FeederUser {
-  id: number;
-  name: string;
-  phone: string;
-  id_card: string;
-  status: number;
-  address: string;
-  bio?: string;
-  created_at: string;
-  last_login_at?: string;
-  rating?: number;
-  order_count?: number;
+import { http } from '@/utils/http/axios'
+
+// 喂养员列表查询参数
+export interface FeederListParams {
+  page?: number
+  pageSize?: number
+  keyword?: string
+  status?: number
+  dateRange?: [string, string]
 }
 
-export interface FeederApplication {
-  id: number;
-  name: string;
-  phone: string;
-  id_card: string;
-  status: number;
-  address: string;
-  bio?: string;
-  created_at: string;
-  id_card_front?: string;
-  id_card_back?: string;
-  avatar?: string;
-  audit_time?: string;
-  audit_user?: string;
-  reject_reason?: string;
+// 喂养员信息类型
+export interface FeederInfo {
+  id: number
+  user_id?: number
+  name: string
+  phone: string
+  id_card?: string
+  avatar?: string
+  address?: string
+  bio?: string
+  experience?: string
+  certificates?: string[]
+  status: number
+  rating?: number
+  order_count?: number
+  rejection_reason?: string
+  last_login_at?: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
-export interface AuditStats {
-  pending: number;
-  todayAudited: number;
-  passRate: number;
-  avgAuditTime: number;
+// 喂养员审核数据
+export interface FeederAuditData {
+  id: number
+  action: 'approve' | 'reject'
+  rejection_reason?: string
 }
 
-// 获取喂养员列表
-export function getFeederList(params: any) {
-  return http.Get('/admin/feeders', { params });
+// 喂养员服务记录
+export interface FeederServiceRecord {
+  id: number
+  feeder_id: number
+  order_id: number
+  service_type: string
+  start_time: string
+  end_time?: string
+  location?: string
+  photos?: string[]
+  notes?: string
+  rating?: number
+  status: string
+  created_at: string
 }
 
-// 更新喂养员状态
+// 签到记录
+export interface FeederCheckin {
+  id: number
+  feeder_id: number
+  order_id: number
+  checkin_time: string
+  location?: string
+  latitude?: number
+  longitude?: number
+  photos?: string[]
+  notes?: string
+  created_at: string
+}
+
+/**
+ * 获取喂养员列表
+ */
+export function getFeederList(params: FeederListParams) {
+  return http.request({
+    url: '/admin/feeders',
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * 获取喂养员详情
+ */
+export function getFeederDetail(id: number) {
+  return http.request({
+    url: `/admin/feeders/${id}`,
+    method: 'GET',
+  })
+}
+
+/**
+ * 创建喂养员
+ */
+export function createFeeder(data: Partial<FeederInfo>) {
+  return http.request({
+    url: '/admin/feeders',
+    method: 'POST',
+    data,
+  })
+}
+
+/**
+ * 更新喂养员信息
+ */
+export function updateFeeder(id: number, data: Partial<FeederInfo>) {
+  return http.request({
+    url: `/admin/feeders/${id}`,
+    method: 'PUT',
+    data,
+  })
+}
+
+/**
+ * 删除喂养员
+ */
+export function deleteFeeder(id: number) {
+  return http.request({
+    url: `/admin/feeders/${id}`,
+    method: 'DELETE',
+  })
+}
+
+/**
+ * 审核喂养员
+ */
+export function auditFeeder(data: FeederAuditData) {
+  return http.request({
+    url: `/admin/feeders/${data.id}/audit`,
+    method: 'POST',
+    data: {
+      action: data.action,
+      rejection_reason: data.rejection_reason,
+    },
+  })
+}
+
+/**
+ * 启用/禁用喂养员
+ */
 export function updateFeederStatus(id: number, status: number) {
-  return http.Put(`/admin/feeders/${id}/status`, { status });
+  return http.request({
+    url: `/admin/feeders/${id}/status`,
+    method: 'PUT',
+    data: { status },
+  })
 }
 
-// 获取审核列表
-export function getFeederAuditList(params: any) {
-  return http.Get('/admin/feeders/audit', { params });
+/**
+ * 获取喂养员统计数据
+ */
+export function getFeederStats() {
+  return http.request({
+    url: '/admin/feeders/stats',
+    method: 'GET',
+  })
 }
 
-// 通过审核
-export function approveFeeder(id: number) {
-  return http.Put(`/admin/feeders/${id}/approve`);
+/**
+ * 获取喂养员审核列表
+ */
+export function getFeederAuditList(params: FeederListParams) {
+  return http.request({
+    url: '/admin/feeders/audit-list',
+    method: 'GET',
+    params,
+  })
 }
 
-// 拒绝申请
-export function rejectFeeder(id: number, data: { reason: string; detail: string }) {
-  return http.Put(`/admin/feeders/${id}/reject`, data);
+/**
+ * 获取喂养员服务记录
+ */
+export function getFeederServiceRecords(feederId: number, params?: { page?: number; pageSize?: number }) {
+  return http.request({
+    url: `/admin/feeders/${feederId}/service-records`,
+    method: 'GET',
+    params,
+  })
 }
 
-// 获取审核统计
-export function getAuditStats() {
-  return http.Get('/admin/feeders/audit/stats');
+/**
+ * 获取喂养员签到记录
+ */
+export function getFeederCheckins(feederId: number, params?: { page?: number; pageSize?: number }) {
+  return http.request({
+    url: `/admin/feeders/${feederId}/checkins`,
+    method: 'GET',
+    params,
+  })
+}
+
+/**
+ * 批量操作喂养员
+ */
+export function batchUpdateFeeders(ids: number[], action: string, data?: any) {
+  return http.request({
+    url: '/admin/feeders/batch',
+    method: 'POST',
+    data: {
+      ids,
+      action,
+      ...data,
+    },
+  })
+}
+
+/**
+ * 导出喂养员数据
+ */
+export function exportFeeders(params: FeederListParams) {
+  return http.request({
+    url: '/admin/feeders/export',
+    method: 'GET',
+    params,
+    responseType: 'blob',
+  })
+}
+
+/**
+ * 获取喂养员地理分布数据
+ */
+export function getFeederLocationStats() {
+  return http.request({
+    url: '/admin/feeders/location-stats',
+    method: 'GET',
+  })
+}
+
+/**
+ * 获取喂养员评分统计
+ */
+export function getFeederRatingStats() {
+  return http.request({
+    url: '/admin/feeders/rating-stats',
+    method: 'GET',
+  })
 }

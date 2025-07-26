@@ -1,6 +1,9 @@
+// frontend/admin/src/router/modules/user.ts
+// 用户管理路由配置
+
 import type { RouteRecordRaw } from 'vue-router'
-import { renderIcon } from '@/utils'
-import { Person, Settings } from '@vicons/ionicons5'
+import { renderIcon } from '@/utils/renderIcon'
+import { People } from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw = {
   path: '/users',
@@ -9,7 +12,7 @@ const routes: RouteRecordRaw = {
   component: () => import('@/layout/index.vue'),
   meta: {
     title: '用户管理',
-    icon: renderIcon(Person),
+    icon: renderIcon(People),
     orderNo: 4,
     hideMenu: false,
   },
@@ -20,7 +23,7 @@ const routes: RouteRecordRaw = {
       component: () => import('@/views/users/UserList.vue'),
       meta: {
         title: '用户列表',
-        icon: renderIcon(Person),
+        icon: renderIcon(People),
         hideMenu: false,
       },
     },
@@ -30,7 +33,7 @@ const routes: RouteRecordRaw = {
       component: () => import('@/views/admin/users/index.vue'),
       meta: {
         title: '管理员用户',
-        icon: renderIcon(Settings),
+        icon: 'user-settings',
         roles: ['super'],
         hideMenu: false,
       },

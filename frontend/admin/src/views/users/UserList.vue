@@ -1,137 +1,250 @@
+<!-- frontend/admin/src/views/users/UserList.vue -->
 <template>
-  <div class="user-container">
-    <n-card title="用户列表" :bordered="false">
-      <!-- 搜索栏 -->
-      <div class="search-bar">
+  <div class="user-list">
+    <n-card :bordered="false" class="mb-4">
+      <n-space vertical>
+        <!-- 搜索表单 -->
+        <n-form
+          ref="searchFormRef"
+          :model="searchForm"
+          label-placement="left"
+          :show-feedback="false"
+          class="search-form"
+        >
+          <n-grid :cols="24" :x-gap="16">
+            <n-form-item-gi :span="6" label="关键词">
+              <n-input
+                v-model:value="searchForm.keyword"
+                placeholder="搜索用户名/手机号/昵称"
+                clearable
+                @keyup.enter="handleSearch"
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="6" label="状态">
+              <n-select
+                v-model:value="searchForm.status"
+                :options="statusOptions"
+                placeholder="选择状态"
+                clearable
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="8" label="注册时间">
+              <n-date-picker
+                v-model:value="searchForm.dateRange"
+                type="daterange"
+                clearable
+                placeholder="选择时间范围"
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="4">
+              <n-space>
+                <n-button type="primary" @click="handleSearch">
+                  <template #icon>
+                    <n-icon><Search /></n-icon>
+                  </template>
+                  搜索
+                </n-button>
+                <n-button @click="handleReset">
+                  <template #icon>
+                    <n-icon><Refresh /></n-icon>
+                  </template>
+                  重置
+                </n-button>
+              </n-space>
+            </n-form-item-gi>
+          </n-grid>
+        </n-form>
+
+        <!-- 操作按钮 -->
         <n-space>
-          <n-input
-            v-model:value="searchForm.keyword"
-            placeholder="搜索用户名/手机号"
-            style="width: 200px"
-            clearable
-          />
-          <n-select
-            v-model:value="searchForm.status"
-            :options="statusOptions"
-            placeholder="用户状态"
-            style="width: 120px"
-            clearable
-          />
-          <n-date-picker
-            v-model:value="searchForm.dateRange"
-            type="daterange"
-            placeholder="注册时间范围"
-            style="width: 240px"
-            clearable
-          />
-          <n-button type="primary" @click="handleSearch">
+          <n-button @click="handleExport" :loading="exportLoading">
             <template #icon>
-              <n-icon><Search /></n-icon>
+              <n-icon><Download /></n-icon>
             </template>
-            搜索
-          </n-button>
-          <n-button @click="handleReset">
-            <template #icon>
-              <n-icon><Refresh /></n-icon>
-            </template>
-            重置
+            导出数据
           </n-button>
         </n-space>
-      </div>
+      </n-space>
+    </n-card>
 
+    <n-card :bordered="false">
       <!-- 数据表格 -->
       <n-data-table
+        ref="tableRef"
         :columns="columns"
         :data="tableData"
         :loading="loading"
         :pagination="pagination"
         :row-key="(row) => row.id"
-        @update:page="handlePageChange"
-        @update:page-size="handlePageSizeChange"
+        flex-height
+        style="min-height: 500px"
       />
     </n-card>
 
     <!-- 用户详情弹窗 -->
-    <n-modal v-model:show="showDetailModal" preset="card" title="用户详情" style="width: 600px">
-      <n-descriptions :column="2" bordered>
-        <n-descriptions-item label="用户ID">{{ currentUser.id }}</n-descriptions-item>
-        <n-descriptions-item label="用户名">{{ currentUser.username }}</n-descriptions-item>
-        <n-descriptions-item label="手机号">{{ currentUser.phone }}</n-descriptions-item>
-        <n-descriptions-item label="邮箱">{{ currentUser.email || '-' }}</n-descriptions-item>
-        <n-descriptions-item label="注册时间">{{ formatDate(currentUser.created_at) }}</n-descriptions-item>
-        <n-descriptions-item label="最后登录">{{ formatDate(currentUser.last_login_at) }}</n-descriptions-item>
-        <n-descriptions-item label="状态">
-          <n-tag :type="currentUser.status ? 'success' : 'error'" size="small">
-            {{ currentUser.status ? '正常' : '禁用' }}
-          </n-tag>
-        </n-descriptions-item>
-        <n-descriptions-item label="宠物数量">{{ currentUser.pet_count || 0 }}</n-descriptions-item>
-        <n-descriptions-item label="订单数量">{{ currentUser.order_count || 0 }}</n-descriptions-item>
-        <n-descriptions-item label="备注" :span="2">{{ currentUser.remark || '-' }}</n-descriptions-item>
-      </n-descriptions>
-      
+    <n-modal
+      v-model:show="showDetailModal"
+      :mask-closable="false"
+      preset="card"
+      title="用户详情"
+      style="width: 800px"
+    >
+      <div v-if="currentUser" class="user-detail">
+        <n-descriptions
+          :column="2"
+          bordered
+          label-placement="left"
+          label-style="width: 120px"
+        >
+          <n-descriptions-item label="头像">
+            <n-avatar
+              :src="currentUser.avatar"
+              :size="60"
+              round
+              :fallback-src="defaultAvatar"
+            />
+          </n-descriptions-item>
+          <n-descriptions-item label="用户ID">{{ currentUser.id }}</n-descriptions-item>
+          <n-descriptions-item label="用户名">{{ currentUser.username }}</n-descriptions-item>
+          <n-descriptions-item label="昵称">{{ currentUser.nickname || '未设置' }}</n-descriptions-item>
+          <n-descriptions-item label="手机号">{{ formatPhone(currentUser.phone) }}</n-descriptions-item>
+          <n-descriptions-item label="邮箱">{{ currentUser.email || '未设置' }}</n-descriptions-item>
+          <n-descriptions-item label="性别">{{ formatGender(currentUser.gender) }}</n-descriptions-item>
+          <n-descriptions-item label="生日">{{ formatDate(currentUser.birthday) || '未设置' }}</n-descriptions-item>
+          <n-descriptions-item label="状态">
+            <n-tag :type="getStatusType(currentUser.status)" size="small">
+              {{ getStatusText(currentUser.status) }}
+            </n-tag>
+          </n-descriptions-item>
+          <n-descriptions-item label="注册时间">{{ formatDate(currentUser.created_at) }}</n-descriptions-item>
+          <n-descriptions-item label="最后登录">{{ formatDate(currentUser.last_login_at) || '从未登录' }}</n-descriptions-item>
+          <n-descriptions-item label="地址" :span="2">{{ currentUser.address || '未设置' }}</n-descriptions-item>
+        </n-descriptions>
+
+        <!-- 用户统计 -->
+        <n-divider />
+        <h4>用户统计</h4>
+        <n-grid :cols="3" :x-gap="16">
+          <n-grid-item>
+            <n-statistic label="订单总数" :value="currentUser.order_count || 0">
+              <template #suffix>
+                <n-text>单</n-text>
+              </template>
+            </n-statistic>
+          </n-grid-item>
+          <n-grid-item>
+            <n-statistic label="消费金额" :value="currentUser.total_amount || 0">
+              <template #prefix>
+                <n-text>¥</n-text>
+              </template>
+            </n-statistic>
+          </n-grid-item>
+          <n-grid-item>
+            <n-statistic label="宠物数量" :value="currentUser.pet_count || 0">
+              <template #suffix>
+                <n-text>只</n-text>
+              </template>
+            </n-statistic>
+          </n-grid-item>
+        </n-grid>
+      </div>
+
       <template #footer>
         <n-space justify="end">
           <n-button @click="showDetailModal = false">关闭</n-button>
-          <n-button type="primary" @click="handleViewOrders">查看订单</n-button>
         </n-space>
       </template>
+    </n-modal>
+
+    <!-- 状态更新弹窗 -->
+    <n-modal
+      v-model:show="showStatusModal"
+      :mask-closable="false"
+      preset="dialog"
+      :title="`${statusAction === 'enable' ? '启用' : '禁用'}用户`"
+      :positive-text="statusAction === 'enable' ? '启用' : '禁用'"
+      negative-text="取消"
+      @positive-click="handleStatusConfirm"
+    >
+      <p>确定要{{ statusAction === 'enable' ? '启用' : '禁用' }}用户"{{ currentUser?.username }}"吗？</p>
     </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, h, computed } from 'vue'
-import { 
-  NCard, 
-  NDataTable, 
-  NButton, 
-  NSpace, 
-  NInput, 
-  NSelect, 
+import { ref, reactive, onMounted, computed, h } from 'vue'
+import {
+  NCard,
+  NSpace,
+  NForm,
+  NFormItem,
+  NFormItemGi,
+  NGrid,
+  NGridItem,
+  NInput,
+  NSelect,
   NDatePicker,
-  NModal, 
-  NDescriptions, 
-  NDescriptionsItem,
-  NTag,
+  NButton,
   NIcon,
+  NDataTable,
+  NModal,
+  NDescriptions,
+  NDescriptionsItem,
+  NAvatar,
+  NTag,
+  NText,
+  NDivider,
+  NStatistic,
   useMessage,
-  type DataTableColumns
+  type DataTableColumns,
 } from 'naive-ui'
-import { Search, Refresh, Eye, Edit, Trash } from '@vicons/ionicons5'
+import { Search, Refresh, Download, Eye, CheckCircle, CloseCircle } from '@vicons/ionicons5'
+import { useUserStore } from '@/store/modules/user'
+import { formatDate } from '@/utils'
 
 // 类型定义
 interface User {
   id: number
   username: string
-  phone: string
+  nickname?: string
+  phone?: string
   email?: string
-  status: boolean
+  avatar?: string
+  gender?: number
+  birthday?: string
+  address?: string
+  status: number
+  order_count?: number
+  total_amount?: number
+  pet_count?: number
   created_at: string
   last_login_at?: string
-  pet_count?: number
-  order_count?: number
-  remark?: string
 }
 
 interface SearchForm {
   keyword: string
-  status: string | null
+  status: number | null
   dateRange: [string, string] | null
 }
 
 // 响应式数据
 const loading = ref(false)
+const exportLoading = ref(false)
 const tableData = ref<User[]>([])
+const currentUser = ref<User | null>(null)
 const showDetailModal = ref(false)
-const currentUser = ref<User>({} as User)
+const showStatusModal = ref(false)
+const statusAction = ref<'enable' | 'disable'>('enable')
 
+// 搜索表单
+const searchFormRef = ref()
 const searchForm = reactive<SearchForm>({
   keyword: '',
   status: null,
-  dateRange: null
+  dateRange: null,
 })
 
+// 分页配置
 const pagination = reactive({
   page: 1,
   pageSize: 20,
@@ -146,14 +259,24 @@ const pagination = reactive({
     pagination.pageSize = pageSize
     pagination.page = 1
     fetchData()
-  }
+  },
 })
 
-// 选项配置
+// 状态选项
 const statusOptions = [
-  { label: '正常', value: 'active' },
-  { label: '禁用', value: 'inactive' }
+  { label: '正常', value: 1 },
+  { label: '禁用', value: 0 },
 ]
+
+// 权限控制
+const userStore = useUserStore()
+const canManageUser = computed(() => {
+  const permissions = userStore.getUserInfo.permissions || []
+  return permissions.includes('user:manage') || userStore.getUserInfo.roles?.includes('super')
+})
+
+// 默认头像
+const defaultAvatar = 'https://via.placeholder.com/60x60?text=头像'
 
 // 消息提示
 const message = useMessage()
@@ -163,52 +286,64 @@ const columns: DataTableColumns<User> = [
   {
     title: 'ID',
     key: 'id',
-    width: 80
+    width: 80,
+  },
+  {
+    title: '头像',
+    key: 'avatar',
+    width: 80,
+    render(row) {
+      return h(NAvatar, {
+        src: row.avatar,
+        size: 'small',
+        round: true,
+        fallbackSrc: defaultAvatar,
+      })
+    },
   },
   {
     title: '用户名',
     key: 'username',
-    width: 120
+    width: 120,
+  },
+  {
+    title: '昵称',
+    key: 'nickname',
+    width: 120,
+    render(row) {
+      return row.nickname || '未设置'
+    },
   },
   {
     title: '手机号',
     key: 'phone',
-    width: 130
-  },
-  {
-    title: '邮箱',
-    key: 'email',
-    width: 180,
+    width: 140,
     render(row) {
-      return row.email || '-'
-    }
+      return formatPhone(row.phone)
+    },
   },
   {
     title: '状态',
     key: 'status',
     width: 100,
     render(row) {
-      return h(NTag, {
-        type: row.status ? 'success' : 'error',
-        size: 'small'
-      }, { default: () => row.status ? '正常' : '禁用' })
-    }
+      return h(
+        NTag,
+        {
+          type: getStatusType(row.status),
+          size: 'small',
+        },
+        { default: () => getStatusText(row.status) }
+      )
+    },
   },
   {
-    title: '宠物数量',
-    key: 'pet_count',
-    width: 100,
-    render(row) {
-      return row.pet_count || 0
-    }
-  },
-  {
-    title: '订单数量',
+    title: '订单数',
     key: 'order_count',
     width: 100,
     render(row) {
-      return row.order_count || 0
-    }
+      return (row.order_count || 0) + '单'
+    },
   },
   {
     title: '注册时间',
@@ -216,7 +351,15 @@ const columns: DataTableColumns<User> = [
     width: 160,
     render(row) {
       return formatDate(row.created_at)
-    }
+    },
+  },
+  {
+    title: '最后登录',
+    key: 'last_login_at',
+    width: 160,
+    render(row) {
+      return formatDate(row.last_login_at) || '从未登录'
+    },
   },
   {
     title: '操作',
@@ -224,78 +367,137 @@ const columns: DataTableColumns<User> = [
     width: 200,
     fixed: 'right',
     render(row) {
-      return h(NSpace, { size: 'small' }, {
-        default: () => [
-          h(NButton, {
+      const actions = []
+      
+      actions.push(
+        h(
+          NButton,
+          {
             size: 'small',
             type: 'info',
-            onClick: () => handleViewDetail(row)
-          }, { default: () => '查看' }),
-          h(NButton, {
-            size: 'small',
-            type: 'primary',
-            onClick: () => handleEdit(row)
-          }, { default: () => '编辑' }),
-          h(NButton, {
-            size: 'small',
-            type: 'error',
-            onClick: () => handleDelete(row)
-          }, { default: () => '删除' })
-        ]
-      })
-    }
-  }
+            onClick: () => handleViewDetail(row),
+          },
+          { default: () => '查看', icon: () => h(NIcon, null, { default: () => h(Eye) }) }
+        )
+      )
+
+      if (canManageUser.value) {
+        if (row.status === 1) {
+          actions.push(
+            h(
+              NButton,
+              {
+                size: 'small',
+                type: 'warning',
+                onClick: () => handleStatusChange(row, 'disable'),
+              },
+              { default: () => '禁用', icon: () => h(NIcon, null, { default: () => h(CloseCircle) }) }
+            )
+          )
+        } else {
+          actions.push(
+            h(
+              NButton,
+              {
+                size: 'small',
+                type: 'success',
+                onClick: () => handleStatusChange(row, 'enable'),
+              },
+              { default: () => '启用', icon: () => h(NIcon, null, { default: () => h(CheckCircle) }) }
+            )
+          )
+        }
+      }
+
+      return h(NSpace, { size: 'small' }, { default: () => actions })
+    },
+  },
 ]
 
 // 工具函数
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '-'
-  return new Date(dateStr).toLocaleString()
+const getStatusType = (status: number) => {
+  return status === 1 ? 'success' : 'error'
+}
+
+const getStatusText = (status: number) => {
+  return status === 1 ? '正常' : '禁用'
+}
+
+const formatPhone = (phone?: string) => {
+  if (!phone) return '未设置'
+  return phone.replace(/^(.{3})(?:\d+)(.{4})$/, '$1****$2')
+}
+
+const formatGender = (gender?: number) => {
+  const genderMap = { 0: '未知', 1: '男', 2: '女' }
+  return genderMap[gender] || '未知'
 }
 
 // API调用
 const fetchData = async () => {
   loading.value = true
   try {
-    // 模拟数据
+    // 模拟API调用
     const mockData: User[] = [
       {
         id: 1,
-        username: '张三',
+        username: 'user001',
+        nickname: '爱宠小主',
         phone: '13800138001',
-        email: 'zhangsan@example.com',
-        status: true,
-        created_at: '2024-01-01 10:00:00',
-        last_login_at: '2024-01-15 14:30:00',
+        email: 'user001@example.com',
+        gender: 1,
+        status: 1,
+        order_count: 15,
+        total_amount: 2880.50,
         pet_count: 2,
-        order_count: 5,
-        remark: '优质用户'
+        created_at: '2024-01-10 14:20:00',
+        last_login_at: '2024-01-15 10:30:00',
       },
       {
         id: 2,
-        username: '李四',
+        username: 'user002',
+        nickname: '猫咪爱好者',
         phone: '13800138002',
-        status: true,
-        created_at: '2024-01-02 11:00:00',
-        last_login_at: '2024-01-14 16:20:00',
+        email: 'user002@example.com',
+        gender: 2,
+        status: 1,
+        order_count: 8,
+        total_amount: 1560.00,
         pet_count: 1,
-        order_count: 3
+        created_at: '2024-01-12 16:45:00',
+        last_login_at: '2024-01-14 08:15:00',
       },
       {
         id: 3,
-        username: '王五',
+        username: 'user003',
+        nickname: '狗狗管家',
         phone: '13800138003',
-        email: 'wangwu@example.com',
-        status: false,
-        created_at: '2024-01-03 09:00:00',
-        pet_count: 0,
-        order_count: 0,
-        remark: '账号异常'
-      }
+        status: 0,
+        order_count: 3,
+        total_amount: 480.00,
+        pet_count: 1,
+        created_at: '2024-01-08 12:30:00',
+        last_login_at: '2024-01-10 18:20:00',
+      },
     ]
-    
-    tableData.value = mockData
-    pagination.total = mockData.length
+
+    // 根据搜索条件过滤数据
+    let filteredData = mockData
+
+    if (searchForm.keyword) {
+      filteredData = filteredData.filter(user =>
+        user.username.includes(searchForm.keyword) ||
+        user.nickname?.includes(searchForm.keyword) ||
+        user.phone?.includes(searchForm.keyword)
+      )
+    }
+
+    if (searchForm.status !== null) {
+      filteredData = filteredData.filter(user => user.status === searchForm.status)
+    }
+
+    tableData.value = filteredData
+    pagination.total = filteredData.length
   } catch (error) {
     message.error('获取用户列表失败')
     console.error('获取用户列表失败:', error)
@@ -323,55 +525,69 @@ const handleViewDetail = (row: User) => {
   showDetailModal.value = true
 }
 
-const handleEdit = (row: User) => {
-  message.info('编辑功能开发中...')
+const handleStatusChange = (row: User, action: 'enable' | 'disable') => {
+  currentUser.value = row
+  statusAction.value = action
+  showStatusModal.value = true
 }
 
-const handleDelete = async (row: User) => {
+const handleStatusConfirm = async () => {
+  if (!currentUser.value) return
+
   try {
-    await window.$dialog.warning({
-      title: '确认删除',
-      content: `确定要删除用户"${row.username}"吗？`,
-      positiveText: '确定',
-      negativeText: '取消'
-    })
+    // 模拟API调用
+    await new Promise(resolve => setTimeout(resolve, 1000))
     
-    message.success('删除成功')
-    fetchData()
+    const newStatus = statusAction.value === 'enable' ? 1 : 0
+    currentUser.value.status = newStatus
+    
+    // 更新表格数据
+    const index = tableData.value.findIndex(user => user.id === currentUser.value?.id)
+    if (index !== -1) {
+      tableData.value[index].status = newStatus
+    }
+
+    message.success(`${statusAction.value === 'enable' ? '启用' : '禁用'}成功`)
+    showStatusModal.value = false
   } catch (error) {
-    // 用户取消删除
+    message.error(`${statusAction.value === 'enable' ? '启用' : '禁用'}失败`)
   }
 }
 
-const handleViewOrders = () => {
-  showDetailModal.value = false
-  // 跳转到订单列表并筛选该用户的订单
-  message.info('跳转到订单列表功能开发中...')
+const handleExport = async () => {
+  try {
+    exportLoading.value = true
+    // 模拟导出
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    message.success('导出成功')
+  } catch (error) {
+    message.error('导出失败')
+  } finally {
+    exportLoading.value = false
+  }
 }
 
-const handlePageChange = (page: number) => {
-  pagination.page = page
-  fetchData()
-}
-
-const handlePageSizeChange = (pageSize: number) => {
-  pagination.pageSize = pageSize
-  pagination.page = 1
-  fetchData()
-}
-
-// 生命周期
+// 初始化
 onMounted(() => {
   fetchData()
 })
 </script>
 
 <style scoped>
-.user-container {
-  padding: 20px;
+.user-list {
+  padding: 16px;
 }
 
-.search-bar {
+.search-form {
   margin-bottom: 16px;
 }
-</style> 
+
+.user-detail {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+</style>

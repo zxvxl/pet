@@ -1,5 +1,8 @@
+// frontend/admin/src/router/modules/dashboard.ts
+// 修正首页路由配置
+
 import type { RouteRecordRaw } from 'vue-router'
-import { renderIcon } from '@/utils'
+import { renderIcon } from '@/utils/renderIcon'
 import { Home } from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw = {
@@ -21,7 +24,7 @@ const routes: RouteRecordRaw = {
       meta: {
         title: '数据概览',
         hideMenu: false,
-        affix: true,
+        affix: true, // 固定标签页
       },
     },
   ],
