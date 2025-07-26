@@ -19,8 +19,8 @@ export class AdminUserDto {
     this.email = user.email ?? null;
     this.phone = user.phone ?? null;
     this.is_active = user.is_active;
-    this.createdAt = user.create_time;
-    this.updatedAt = user.update_time;
+    this.createdAt = user.created_at;
+    this.updatedAt = user.updated_at;
     this.roles = Array.isArray(user.roles) ? user.roles.map((r) => new AdminRoleDto(r)) : [];
   }
 }

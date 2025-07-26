@@ -14,8 +14,8 @@ export class AdminRoleDto {
     this.name = role.name;
     this.code = role.code;
     this.description = role.description ?? null;
-    this.createdAt = role.create_time;
-    this.updatedAt = role.update_time;
+    this.createdAt = role.created_at;
+    this.updatedAt = role.updated_at;
     this.permissions = Array.isArray(role.permissions)
       ? role.permissions.map((p) => p.code)
       : [];

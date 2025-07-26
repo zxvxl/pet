@@ -10,6 +10,7 @@ import { ExecutionContext } from '@nestjs/common';
 @Injectable()
 export class AdminJwtGuard extends AuthGuard('jwt') {
   handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
+    console.log(JSON.stringify(user));
     if (err || !user) {
       throw err || new UnauthorizedException();
     }

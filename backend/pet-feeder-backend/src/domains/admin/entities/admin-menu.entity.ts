@@ -37,11 +37,11 @@ export class AdminMenu {
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'permission_code' })
   permission_code: string;
 
-  @CreateDateColumn({ name: 'create_time' })
-  create_time: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  created_at: Date;
 
-  @UpdateDateColumn({ name: 'update_time' })
-  update_time: Date;
+  @UpdateDateColumn({ name: 'updated_at' })
+  updated_at: Date;
 
   @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
   is_deleted: boolean;

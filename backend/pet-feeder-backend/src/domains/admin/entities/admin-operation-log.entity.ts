@@ -21,11 +21,11 @@ export class AdminOperationLog {
   @Column({ type: 'text', nullable: true, name: 'detail' })
   detail?: string;
 
-  @CreateDateColumn({ name: 'create_time' })
-  create_time: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  created_at: Date;
 
-  @UpdateDateColumn({ name: 'update_time' })
-  update_time: Date;
+  @UpdateDateColumn({ name: 'updated_at' })
+  updated_at: Date;
 
   @Column({ type: 'tinyint', default: 0, name: 'is_deleted' })
   is_deleted: boolean;
