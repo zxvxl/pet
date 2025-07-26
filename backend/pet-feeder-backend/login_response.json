@@ -1,0 +1,1 @@
+{"code":0,"message":"success","data":{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbInN1cGVyX2FkbWluIl0sImlhdCI6MTc1MzUwNzUwNCwiZXhwIjoxNzUzNTkzOTA0fQ.3noYndR22Vkn4V684U9XuqmsECW0HQF2jdHnebHwBcU","user":{"id":"1","username":"admin","nickname":"超级管理员","email":"admin@petfeeder.com","roles":["super_admin"]}}}
