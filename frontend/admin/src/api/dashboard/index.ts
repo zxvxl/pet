@@ -27,7 +27,7 @@ export interface ChartData {
  * 获取仪表盘概况数据
  */
 export function getDashboardSummary() {
-  return http.Get<DashboardSummary>('/dashboard/summary');
+  return http.Get<DashboardSummary>('/admin/dashboard/stats');
 }
 
 /**
@@ -35,5 +35,5 @@ export function getDashboardSummary() {
  * @param range 时间范围，可选值：7, 30
  */
 export function getDashboardChart(range: number = 7) {
-  return http.Get<ChartData>(`/dashboard/chart?range=${range}`);
+  return http.Get<ChartData>(`/admin/dashboard/chart?range=${range}`);
 }

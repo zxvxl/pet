@@ -6,8 +6,8 @@ const dashboard: AppRouteRecordRaw = {
   component: () => import('@/layout/index.vue'),
   redirect: '/dashboard/index',
   meta: {
-    title: '仪表盘',
-    icon: 'dashboard',
+    title: '首页概览',
+    icon: 'bar-chart',
     orderNo: 1,
   },
   children: [
@@ -17,7 +17,7 @@ const dashboard: AppRouteRecordRaw = {
       component: () => import('@/views/dashboard/index.vue'),
       meta: {
         title: '仪表盘',
-        icon: 'dashboard',
+        icon: 'bar-chart',
         hideMenu: false,
       },
     },

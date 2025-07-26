@@ -90,23 +90,23 @@
     <!-- 快捷操作 -->
     <n-card title="快捷操作" class="mt-4">
       <n-space>
-        <n-button type="primary" @click="$router.push('/orders')">
+        <n-button type="primary" @click="$router.push('/orders/list')">
           <template #icon>
             <n-icon><List /></n-icon>
           </template>
           查看订单
         </n-button>
-        <n-button type="info" @click="$router.push('/complaints')">
-          <template #icon>
-            <n-icon><Warning /></n-icon>
-          </template>
-          投诉管理
-        </n-button>
-        <n-button type="success" @click="$router.push('/feeders')">
+        <n-button type="success" @click="$router.push('/feeders/list')">
           <template #icon>
             <n-icon><People /></n-icon>
           </template>
           喂养员管理
+        </n-button>
+        <n-button type="info" @click="$router.push('/feeders/audit')">
+          <template #icon>
+            <n-icon><CheckmarkCircle /></n-icon>
+          </template>
+          审核中心
         </n-button>
         <n-button type="warning" @click="$router.push('/feedback')">
           <template #icon>
@@ -122,10 +122,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import * as echarts from 'echarts'
-import { NCard, NGrid, NGridItem, NStatistic, NSpace, NButton, NIcon } from 'naive-ui'
-import { List, Warning, People, ChatboxEllipses } from '@vicons/ionicons5'
+import { NCard, NGrid, NGridItem, NStatistic, NSpace, NButton, NIcon, useMessage } from 'naive-ui'
+import { List, People, CheckmarkCircle, ChatboxEllipses } from '@vicons/ionicons5'
 import { getDashboardSummary, getDashboardChart } from '@/api/dashboard'
-import { usePermission } from '@/composables/usePermission'
+import { useUserStore } from '@/store/modules/user'
 
 // 数据定义
 interface DashboardSummary {
@@ -179,8 +179,11 @@ const chartRef = ref<HTMLElement>()
 let chartInstance: echarts.ECharts | null = null
 
 // 权限控制
-const { hasPermission } = usePermission()
-const canViewAmount = hasPermission('dashboard:view_amount')
+const userStore = useUserStore()
+const canViewAmount = computed(() => userStore.getUserInfo.roles?.includes('super'))
+
+// 消息提示
+const message = useMessage()
 
 // API调用
 const fetchSummary = async () => {
@@ -188,6 +191,7 @@ const fetchSummary = async () => {
     const response = await getDashboardSummary()
     summary.value = response
   } catch (error) {
+    message.error('获取概况数据失败')
     console.error('获取概况数据失败:', error)
   }
 }
@@ -198,6 +202,7 @@ const fetchChartData = async () => {
     chartData.value = response
     initChart()
   } catch (error) {
+    message.error('获取图表数据失败')
     console.error('获取图表数据失败:', error)
   }
 }
@@ -219,7 +224,7 @@ const initChart = () => {
     }
   ]
 
-  if (canViewAmount && chartData.value.orderAmounts) {
+  if (canViewAmount.value && chartData.value.orderAmounts) {
     series.push({
       name: '订单金额',
       type: 'line',
@@ -265,7 +270,7 @@ const initChart = () => {
         name: '订单数量',
         position: 'left'
       },
-      ...(canViewAmount && chartData.value.orderAmounts ? [{
+      ...(canViewAmount.value && chartData.value.orderAmounts ? [{
         type: 'value',
         name: '订单金额',
         position: 'right',
