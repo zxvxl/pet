@@ -1,10 +1,10 @@
 import type { AppRouteRecordRaw } from '../types';
 
 const order: AppRouteRecordRaw = {
-  path: '/order',
+  path: '/orders',
   name: 'Order',
   component: () => import('@/layout/index.vue'),
-  redirect: '/order/list',
+  redirect: '/orders/list',
   meta: {
     title: '订单管理',
     icon: 'file-text',
@@ -12,22 +12,12 @@ const order: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: '/order/list',
+      path: '/orders/list',
       name: 'OrderList',
-      component: () => import('@/views/order/OrderList.vue'),
+      component: () => import('@/views/orders/OrderList.vue'),
       meta: {
         title: '订单列表',
         icon: 'list',
-        hideMenu: false,
-      },
-    },
-    {
-      path: '/order/statistics',
-      name: 'OrderStatistics',
-      component: () => import('@/views/order/statistics/index.vue'),
-      meta: {
-        title: '订单统计',
-        icon: 'bar-chart',
         hideMenu: false,
       },
     },

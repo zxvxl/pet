@@ -96,23 +96,35 @@
           </template>
           查看订单
         </n-button>
-        <n-button type="success" @click="$router.push('/feeders/list')">
+        <n-button type="success" @click="$router.push('/users/list')">
+          <template #icon>
+            <n-icon><People /></n-icon>
+          </template>
+          用户管理
+        </n-button>
+        <n-button v-if="userStore.getUserInfo.roles?.includes('super')" type="info" @click="$router.push('/feeders/list')">
           <template #icon>
             <n-icon><People /></n-icon>
           </template>
           喂养员管理
         </n-button>
-        <n-button type="info" @click="$router.push('/feeders/audit')">
+        <n-button v-if="userStore.getUserInfo.roles?.includes('super')" type="warning" @click="$router.push('/feeders/audit')">
           <template #icon>
             <n-icon><CheckmarkCircle /></n-icon>
           </template>
           审核中心
         </n-button>
-        <n-button type="warning" @click="$router.push('/feedback')">
+        <n-button type="info" @click="$router.push('/reviews/list')">
+          <template #icon>
+            <n-icon><Star /></n-icon>
+          </template>
+          评价管理
+        </n-button>
+        <n-button type="warning" @click="$router.push('/reviews/feedback')">
           <template #icon>
             <n-icon><ChatboxEllipses /></n-icon>
           </template>
-          反馈中心
+          反馈投诉
         </n-button>
       </n-space>
     </n-card>
@@ -123,7 +135,7 @@
 import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import * as echarts from 'echarts'
 import { NCard, NGrid, NGridItem, NStatistic, NSpace, NButton, NIcon, useMessage } from 'naive-ui'
-import { List, People, CheckmarkCircle, ChatboxEllipses } from '@vicons/ionicons5'
+import { List, People, CheckmarkCircle, ChatboxEllipses, Star } from '@vicons/ionicons5'
 import { getDashboardSummary, getDashboardChart } from '@/api/dashboard'
 import { useUserStore } from '@/store/modules/user'
 

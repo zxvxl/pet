@@ -1,37 +1,27 @@
 import type { AppRouteRecordRaw } from '../types';
 
 const user: AppRouteRecordRaw = {
-  path: '/user',
+  path: '/users',
   name: 'User',
   component: () => import('@/layout/index.vue'),
-  redirect: '/user/admin',
+  redirect: '/users/list',
   meta: {
     title: '用户管理',
     icon: 'people',
-    orderNo: 2,
+    orderNo: 4,
   },
   children: [
     {
-      path: '/user/admin',
-      name: 'UserAdmin',
-      component: () => import('@/views/user/admin/index.vue'),
+      path: '/users/list',
+      name: 'UserList',
+      component: () => import("@/views/user/UserList.vue"),
       meta: {
-        title: '管理员用户',
-        icon: 'shield-checkmark',
-        hideMenu: false,
-      },
-    },
-    {
-      path: '/user/normal',
-      name: 'UserNormal',
-      component: () => import('@/views/user/normal/index.vue'),
-      meta: {
-        title: '普通用户',
-        icon: 'person',
+        title: '用户列表',
+        icon: 'list',
         hideMenu: false,
       },
     },
   ],
 };
 
-export default user; 
+export default user;
