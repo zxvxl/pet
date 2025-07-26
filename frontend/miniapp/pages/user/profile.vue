@@ -279,9 +279,9 @@ export default {
         content: '确定要退出登录吗？',
         success: (res) => {
           if (res.confirm) {
-            store.commit('setToken', '')
-            store.commit('setUser', null)
-            uni.reLaunch({ url: '/pages/login/index' })
+      store.commit('setToken', '')
+      store.commit('setUser', null)
+      uni.reLaunch({ url: '/pages/login/index' })
           }
         }
       })

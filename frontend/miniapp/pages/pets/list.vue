@@ -124,7 +124,7 @@ export default {
         uni.showToast({ 
           title: '获取宠物列表失败', 
           icon: 'none' 
-        })
+      })
       } finally {
         this.loading = false
       }

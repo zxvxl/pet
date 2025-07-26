@@ -261,7 +261,7 @@ export default {
             url: '/pets',
             data: { ids: this.orderData.petIds }
           }),
-          request({ 
+      request({
             url: `/addresses/${this.orderData.addressId}` 
           })
         ])
@@ -343,7 +343,7 @@ export default {
 
         const result = await request({
           url: '/orders',
-          method: 'POST',
+        method: 'POST',
           data: orderParams
         })
 

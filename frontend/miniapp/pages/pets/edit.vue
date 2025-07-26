@@ -43,7 +43,7 @@
           />
         </view>
 
-        <view class="form-item">
+    <view class="form-item">
           <text class="form-label">宠物品种</text>
           <t-input 
             v-model="form.type" 
@@ -51,9 +51,9 @@
             :maxlength="30"
             class="form-input"
           />
-        </view>
+    </view>
 
-        <view class="form-item">
+    <view class="form-item">
           <text class="form-label">性别</text>
           <t-picker 
             :columns="genderOptions" 
@@ -66,7 +66,7 @@
               placeholder="请选择性别"
               class="form-input"
             />
-          </t-picker>
+      </t-picker>
         </view>
 
         <view class="form-item">
@@ -263,7 +263,7 @@ export default {
         })
         
         setTimeout(() => {
-          uni.navigateBack()
+        uni.navigateBack()
         }, 1500)
       } catch (error) {
         uni.showToast({ 
