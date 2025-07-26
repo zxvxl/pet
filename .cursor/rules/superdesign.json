@@ -1,0 +1,11 @@
+{
+    "name": "SuperDesign",
+    "triggers": ["design", "ui", "mockup", "interface"],
+    "actions": [
+      {
+        "type": "superdesign",
+        "prompt": "${input}"
+      }
+    ]
+  }
+  

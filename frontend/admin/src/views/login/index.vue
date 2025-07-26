@@ -93,6 +93,7 @@
   import { PageEnum } from '@/enums/pageEnum';
 import { websiteConfig } from '@/config/website.config';
 import { images } from '@/assets';
+  import { useAsyncRoute } from '@/store/modules/asyncRoute';
   interface FormState {
     username: string;
     password: string;
@@ -116,6 +117,7 @@ import { images } from '@/assets';
   };
 
   const userStore = useUserStore();
+  const asyncRouteStore = useAsyncRoute();
 
   const router = useRouter();
   const route = useRoute();
@@ -138,8 +140,11 @@ import { images } from '@/assets';
           message.destroyAll();
           const data = (res as any)?.data;
           if (data && data.access_token) {
+            message.success('登录成功，正在加载菜单...');
+            // 获取用户信息并生成动态路由
+            await userStore.getInfo();
+            await asyncRouteStore.generateRoutes(userStore.getUserInfo);
             const toPath = decodeURIComponent((route.query?.redirect || '/dashboard') as string);
-            message.success('登录成功，即将进入系统');
             if (route.name === LOGIN_NAME) {
               router.replace('/dashboard');
             } else router.replace(toPath);

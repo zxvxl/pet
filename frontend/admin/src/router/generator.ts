@@ -41,22 +41,60 @@ export const generateRoutes = (routerMap: Recordable[], parent?: Recordable): an
 export const generateDynamicRoutes = async (): Promise<RouteRecordRaw[]> => {
   const result = await getAdminMenus();
   const response = result as any;
-  const menus = response?.menus || [];
+  // 适配后端返回的数据结构：response.data.menus
+  const menus = response?.data?.menus || response?.menus || [];
   
   // 将后端菜单格式转换为前端路由格式
-  const formattedMenus = menus.map(menu => ({
-    ...menu,
-    name: menu.name || menu.path?.replace('/', '') || '',
-    component: menu.component || 'LAYOUT',
-    meta: {
-      title: menu.name,
-      icon: menu.icon || 'file',
-      hideMenu: menu.is_show === 0,
-      ...menu.meta
-    }
-  }));
+  // 构建层级菜单结构
+  const menuMap = new Map<number, any>();
+  const rootMenus: any[] = [];
   
-  const router = generateRoutes(formattedMenus);
+  // 首先创建所有菜单项
+  menus.forEach(menu => {
+    const menuItem = {
+      ...menu,
+      id: menu.id,
+      pid: menu.parentId || 0,
+      name: menu.name || menu.path?.replace('/', '') || '',
+      component: menu.component || 'LAYOUT',
+      meta: {
+        title: menu.name,
+        icon: menu.icon || 'file',
+        hideMenu: menu.is_show === 0,
+        ...menu.meta
+      },
+      children: []
+    };
+    menuMap.set(menu.id, menuItem);
+  });
+  
+  // 构建树形结构
+  menus.forEach(menu => {
+    const menuItem = menuMap.get(menu.id);
+    if (menu.parentId && menu.parentId !== 0 && menuMap.has(menu.parentId)) {
+      const parent = menuMap.get(menu.parentId);
+      parent.children = parent.children || [];
+      parent.children.push(menuItem);
+    } else if (!menu.parentId || menu.parentId === 0) {
+      rootMenus.push(menuItem);
+    }
+  });
+  
+  // 处理叶子节点的组件路径
+  function processLeafComponents(menus) {
+    menus.forEach(menu => {
+      if (menu.children && menu.children.length > 0) {
+        processLeafComponents(menu.children);
+      } else if (!menu.component) {
+        // 自动生成叶子节点的组件路径
+        menu.component = menu.path.replace(/^\//, '') + '/index';
+      }
+    });
+  }
+
+  processLeafComponents(rootMenus);
+
+  const router = generateRoutes(rootMenus);
   asyncImportRoute(router);
   return router;
 };

@@ -61,12 +61,7 @@ export function createRouterGuards(router: Router) {
 
     const routes = await asyncRouteStore.generateRoutes(userInfo);
 
-    // 动态添加可访问路由表
-    routes.forEach((item) => {
-      router.addRoute(item as unknown as RouteRecordRaw);
-    });
-
-    //添加404
+    // 添加404
     const isErrorPage = router.getRoutes().findIndex((item) => item.name === ErrorPageRoute.name);
     if (isErrorPage === -1) {
       router.addRoute(ErrorPageRoute as unknown as RouteRecordRaw);

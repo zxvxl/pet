@@ -1,29 +1,83 @@
 {
   "pages": [
+    {"path": "pages/home/index", "style": {"navigationBarTitleText": "宠物喂养"}},
     {"path": "pages/login/index", "style": {"navigationBarTitleText": "登录"}},
     {"path": "pages/pets/list", "style": {"navigationBarTitleText": "我的宠物"}},
-    {"path": "pages/pets/edit", "style": {"navigationBarTitleText": "编辑宠物"}},
-    {"path": "pages/appointment/book", "style": {"navigationBarTitleText": "预约服务"}},
-    {"path": "pages/order/create", "style": {"navigationBarTitleText": "服务预约"}},
+    {"path": "pages/pets/edit", "style": {"navigationBarTitleText": "宠物信息"}},
     {"path": "pages/order/index", "style": {"navigationBarTitleText": "我的订单"}},
-    {"path": "pages/order/detail", "style": {"navigationBarTitleText": "订单详情"}},
     {"path": "pages/orders/list", "style": {"navigationBarTitleText": "订单列表"}},
     {"path": "pages/orders/detail", "style": {"navigationBarTitleText": "订单详情"}},
-    {"path": "pages/orders/track", "style": {"navigationBarTitleText": "服务追踪"}},
-    {"path": "pages/im/chat", "style": {"navigationBarTitleText": "聊天"}},
-    {"path": "pages/user/profile", "style": {"navigationBarTitleText": "个人中心"}},
-    {"path": "pages/pay/result", "style": {"navigationBarTitleText": "支付结果"}},
-    {"path": "pages/feeder/apply", "style": {"navigationBarTitleText": "喂养员申请"}},
-    {"path": "pages/feeder/status", "style": {"navigationBarTitleText": "审核状态"}},
-    {"path": "pages/feeder/schedule", "style": {"navigationBarTitleText": "排班设置"}}
+    {"path": "pages/orders/track", "style": {"navigationBarTitleText": "订单追踪"}},
     {"path": "pages/service/select", "style": {"navigationBarTitleText": "选择服务"}},
-    {"path": "pages/service/pet-bind", "style": {"navigationBarTitleText": "绑定宠物"}},
-    {"path": "pages/service/reserve", "style": {"navigationBarTitleText": "填写预约"}},
-    {"path": "pages/service/confirm", "style": {"navigationBarTitleText": "确认预约"}}
+    {"path": "pages/service/pet-bind", "style": {"navigationBarTitleText": "选择宠物"}},
+    {"path": "pages/service/reserve", "style": {"navigationBarTitleText": "预约填写"}},
+    {"path": "pages/service/confirm", "style": {"navigationBarTitleText": "确认预约"}},
+    {"path": "pages/service/detail", "style": {"navigationBarTitleText": "服务详情"}},
+    {"path": "pages/feeder/list", "style": {"navigationBarTitleText": "喂养员列表"}},
+    {"path": "pages/feeder/detail", "style": {"navigationBarTitleText": "喂养员详情"}},
+    {"path": "pages/feeder/apply", "style": {"navigationBarTitleText": "申请成为喂养员"}},
+    {"path": "pages/feeder/status", "style": {"navigationBarTitleText": "申请状态"}},
+    {"path": "pages/feeder/schedule", "style": {"navigationBarTitleText": "排班设置"}},
+    {"path": "pages/pay/result", "style": {"navigationBarTitleText": "支付结果"}},
+    {"path": "pages/im/chat", "style": {"navigationBarTitleText": "在线聊天"}},
+    {"path": "pages/chat/index", "style": {"navigationBarTitleText": "在线客服"}},
+    {"path": "pages/evaluation/create", "style": {"navigationBarTitleText": "服务评价"}},
+    {"path": "pages/feedback/index", "style": {"navigationBarTitleText": "意见反馈"}},
+    {"path": "pages/settings/index", "style": {"navigationBarTitleText": "设置"}},
+    {"path": "pages/help/index", "style": {"navigationBarTitleText": "帮助中心"}},
+    {"path": "pages/about/index", "style": {"navigationBarTitleText": "关于我们"}},
+    {"path": "pages/wallet/index", "style": {"navigationBarTitleText": "我的钱包"}},
+    {"path": "pages/coupons/index", "style": {"navigationBarTitleText": "优惠券"}},
+    {"path": "pages/address/index", "style": {"navigationBarTitleText": "地址管理"}},
+    {"path": "pages/favorites/index", "style": {"navigationBarTitleText": "我的收藏"}},
+    {"path": "pages/schedule/index", "style": {"navigationBarTitleText": "预约记录"}},
+    {"path": "pages/search/index", "style": {"navigationBarTitleText": "搜索"}},
+    {"path": "pages/location/index", "style": {"navigationBarTitleText": "位置选择"}},
+    {"path": "pages/agreement/service", "style": {"navigationBarTitleText": "服务协议"}},
+    {"path": "pages/agreement/privacy", "style": {"navigationBarTitleText": "隐私政策"}},
+    {"path": "pages/user/profile", "style": {"navigationBarTitleText": "个人中心"}}
   ],
   "globalStyle": {
     "navigationBarTitleText": "Pet Feeder",
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundColor": "#f8f8f8"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#5A98F2",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "static/icons/home.png",
+        "selectedIconPath": "static/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/service/select",
+        "text": "预约",
+        "iconPath": "static/icons/service.png",
+        "selectedIconPath": "static/icons/service-active.png"
+      },
+      {
+        "pagePath": "pages/order/index",
+        "text": "订单",
+        "iconPath": "static/icons/order.png",
+        "selectedIconPath": "static/icons/order-active.png"
+      },
+      {
+        "pagePath": "pages/pets/list",
+        "text": "宠物",
+        "iconPath": "static/icons/pet.png",
+        "selectedIconPath": "static/icons/pet-active.png"
+      },
+      {
+        "pagePath": "pages/user/profile",
+        "text": "我的",
+        "iconPath": "static/icons/user.png",
+        "selectedIconPath": "static/icons/user-active.png"
+      }
+    ]
   }
 }

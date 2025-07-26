@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PassportModule } from '@nestjs/passport';
 import { Feeder } from '../feeders/entities/feeder.entity';
 import { Order } from '../orders/entities/order.entity';
 import { AdminController } from './admin.controller';
@@ -12,6 +13,7 @@ import { AdminAuthController } from './admin-auth.controller';
 import { AdminUserService } from './admin-user.service';
 import { AdminRoleService } from './admin-role.service';
 import { AdminJwtGuard } from './admin-jwt.guard';
+import { AdminJwtStrategy } from './admin-jwt.strategy';
 import { AdminUser } from './entities/admin-user.entity';
 import { AdminOperationLog } from './entities/admin-operation-log.entity';
 import { AdminRole } from './entities/admin-role.entity';
@@ -35,6 +37,7 @@ import { AdminPermissionController } from './admin-permission.controller';
       Complaint,
       Feedback,
     ]),
+    PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -56,6 +59,7 @@ import { AdminPermissionController } from './admin-permission.controller';
     AdminUserService,
     AdminRoleService,
     AdminPermissionService,
+    AdminJwtStrategy,
   ],
   exports: [
     AdminService,

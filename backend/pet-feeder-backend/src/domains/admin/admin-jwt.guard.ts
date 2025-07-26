@@ -4,11 +4,11 @@ import { ExecutionContext } from '@nestjs/common';
 
 /**
  * Guard ensuring the JWT belongs to an administrator.
- * It extends the default passport 'jwt' guard and verifies
+ * It extends the passport 'admin-jwt' guard and verifies
  * the user role contained in the token payload.
  */
 @Injectable()
-export class AdminJwtGuard extends AuthGuard('jwt') {
+export class AdminJwtGuard extends AuthGuard('admin-jwt') {
   handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
     console.log(JSON.stringify(user));
     if (err || !user) {

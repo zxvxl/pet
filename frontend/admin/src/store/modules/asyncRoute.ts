@@ -5,6 +5,7 @@ import { store } from '@/store';
 import { asyncRoutes, constantRouter } from '@/router/index';
 import { generateDynamicRoutes } from '@/router/generator';
 import { useProjectSetting } from '@/hooks/setting/useProjectSetting';
+import router from '@/router';
 
 interface TreeHelperConfig {
   id: string;
@@ -93,7 +94,7 @@ export const useAsyncRouteStore = defineStore({
         const { meta } = route;
         const { permissions } = meta || {};
         if (!permissions) return true;
-        return permissionsList.some((item) => permissions.includes(item.value));
+        return permissionsList.some((item) => permissions.includes(item));
       };
       const { permissionMode } = useProjectSetting();
       if (unref(permissionMode) === 'BACK') {
@@ -114,6 +115,10 @@ export const useAsyncRouteStore = defineStore({
       accessedRouters = (accessedRouters || []).filter(routeFilter);
       this.setRouters(accessedRouters);
       this.setMenus(accessedRouters);
+      accessedRouters.forEach(route => {
+        router.addRoute('Root', route);
+      });
+      this.setDynamicRouteAdded(true);
       return toRaw(accessedRouters);
     },
   },

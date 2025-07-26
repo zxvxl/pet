@@ -41,6 +41,8 @@ export default [
   {
     url: '/admin/me',
     method: 'GET',
+    enable: true,
+    data: mockUserInfo,
     response: () => mockUserInfo,
   },
   
@@ -48,6 +50,8 @@ export default [
   {
     url: '/admin/menus',
     method: 'GET',
+    enable: true,
+    data: mockMenus,
     response: () => mockMenus,
   },
   
@@ -55,6 +59,14 @@ export default [
   {
     url: '/admin/login',
     method: 'POST',
+    enable: true,
+    data: {
+      code: 200,
+      data: {
+        token: 'mock-token',
+      },
+      message: '登录成功',
+    },
     response: () => ({
       code: 200,
       data: {
