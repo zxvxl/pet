@@ -1,7 +1,7 @@
 // frontend/admin/src/api/feeder.ts
 // 喂养员管理相关API接口
 
-import { http } from '@/utils/http/axios'
+import { Alova as http } from '@/utils/http/alova'
 
 // 喂养员列表查询参数
 export interface FeederListParams {
@@ -87,7 +87,7 @@ export function getFeederList(params: FeederListParams) {
  */
 export function getFeederDetail(id: number) {
   return http.request({
-    url: `/admin/feeders/${id}`,
+    url: `/admin/feeder/${id}`, 
     method: 'GET',
   })
 }
@@ -129,7 +129,7 @@ export function deleteFeeder(id: number) {
  */
 export function auditFeeder(data: FeederAuditData) {
   return http.request({
-    url: `/admin/feeders/${data.id}/audit`,
+    url: `/admin/feeder/${data.id}/audit`, 
     method: 'POST',
     data: {
       action: data.action,
@@ -143,7 +143,7 @@ export function auditFeeder(data: FeederAuditData) {
  */
 export function updateFeederStatus(id: number, status: number) {
   return http.request({
-    url: `/admin/feeders/${id}/status`,
+    url: `/admin/feeder/${id}/status`, 
     method: 'PUT',
     data: { status },
   })
@@ -154,7 +154,7 @@ export function updateFeederStatus(id: number, status: number) {
  */
 export function getFeederStats() {
   return http.request({
-    url: '/admin/feeders/stats',
+    url: '/admin/feeder/stats', 
     method: 'GET',
   })
 }
@@ -164,7 +164,7 @@ export function getFeederStats() {
  */
 export function getFeederAuditList(params: FeederListParams) {
   return http.request({
-    url: '/admin/feeders/audit-list',
+    url: '/admin/feeder/audit-list', 
     method: 'GET',
     params,
   })
@@ -175,7 +175,7 @@ export function getFeederAuditList(params: FeederListParams) {
  */
 export function getFeederServiceRecords(feederId: number, params?: { page?: number; pageSize?: number }) {
   return http.request({
-    url: `/admin/feeders/${feederId}/service-records`,
+    url: `/admin/feeder/${feederId}/service-records`, 
     method: 'GET',
     params,
   })
@@ -186,7 +186,7 @@ export function getFeederServiceRecords(feederId: number, params?: { page?: numb
  */
 export function getFeederCheckins(feederId: number, params?: { page?: number; pageSize?: number }) {
   return http.request({
-    url: `/admin/feeders/${feederId}/checkins`,
+    url: `/admin/feeder/${feederId}/checkins`,
     method: 'GET',
     params,
   })
@@ -197,7 +197,7 @@ export function getFeederCheckins(feederId: number, params?: { page?: number; pa
  */
 export function batchUpdateFeeders(ids: number[], action: string, data?: any) {
   return http.request({
-    url: '/admin/feeders/batch',
+    url: '/admin/feeder/batch', 
     method: 'POST',
     data: {
       ids,
@@ -212,7 +212,7 @@ export function batchUpdateFeeders(ids: number[], action: string, data?: any) {
  */
 export function exportFeeders(params: FeederListParams) {
   return http.request({
-    url: '/admin/feeders/export',
+    url: '/admin/feeder/export', 
     method: 'GET',
     params,
     responseType: 'blob',
@@ -224,7 +224,7 @@ export function exportFeeders(params: FeederListParams) {
  */
 export function getFeederLocationStats() {
   return http.request({
-    url: '/admin/feeders/location-stats',
+    url: '/admin/feeder/location-stats', 
     method: 'GET',
   })
 }
@@ -234,7 +234,7 @@ export function getFeederLocationStats() {
  */
 export function getFeederRatingStats() {
   return http.request({
-    url: '/admin/feeders/rating-stats',
+    url: '/admin/feeder/rating-stats', 
     method: 'GET',
   })
 }

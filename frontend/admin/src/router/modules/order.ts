@@ -5,7 +5,7 @@ import { Document } from '@vicons/ionicons5'
 const routes: RouteRecordRaw = {
   path: '/orders',
   name: 'Orders',
-  redirect: '/orders/list',
+  redirect: '/order/list',
   component: () => import('@/layout/index.vue'),
   meta: {
     title: '订单管理',
@@ -17,7 +17,7 @@ const routes: RouteRecordRaw = {
     {
       path: 'list',
       name: 'OrderList',
-      component: () => import('@/views/orders/OrderList.vue'),
+      component: () => import('@/views/order/OrderList.vue'),
       meta: {
         title: '订单列表',
         icon: renderIcon(Document),

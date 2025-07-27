@@ -1,0 +1,58 @@
+{
+  "projectName": "宠物上门喂养系统",
+  "description": "本系统包括小程序端、喂养员端、后台管理端，覆盖宠物喂养服务的预约、接单、跟踪、支付、评价等全流程。",
+  "modules": [
+    {
+      "name": "用户管理",
+      "description": "用户注册、登录、宠物信息管理、服务预约",
+      "tables": ["users", "pets", "reserve_orders"],
+      "ui": ["登录页", "用户中心", "宠物管理页", "预约服务页"]
+    },
+    {
+      "name": "喂养员管理",
+      "description": "喂养员信息管理、服务轨迹记录、签到签出",
+      "tables": ["feeders", "feeder_service_orders"],
+      "ui": ["喂养员列表页", "喂养员详情页", "服务轨迹页"]
+    },
+    {
+      "name": "订单管理",
+      "description": "订单处理、状态跟踪、支付结算",
+      "tables": ["orders", "order_items", "tracking"],
+      "ui": ["订单列表页", "订单详情页", "服务进度页"]
+    },
+    {
+      "name": "投诉与评价",
+      "description": "用户对喂养员服务进行评价，申诉处理",
+      "tables": ["complaints", "reviews"],
+      "ui": ["投诉处理页", "评价列表页"]
+    },
+    {
+      "name": "权限与系统设置",
+      "description": "管理员权限控制、菜单配置、操作日志",
+      "tables": ["admin_user", "admin_menu", "admin_role", "admin_user_role"],
+      "ui": ["菜单管理页", "角色管理页", "操作日志页"]
+    }
+  ],
+  "permissionDesign": {
+    "type": "RBAC",
+    "description": "菜单权限、按钮权限、页面访问权限，依据 admin_user 所绑定的角色",
+    "notes": [
+      "菜单通过 admin_menu 控制显示",
+      "按钮权限通过页面按钮 key 和后端接口权限控制",
+      "订单金额字段仅超级管理员可见"
+    ]
+  },
+  "uiDesign": {
+    "framework": "TDesign + TailwindCSS",
+    "style": {
+      "主色调": "#0052D9",
+      "按钮风格": "rounded-xl + hover:shadow + icon",
+      "页面结构": "卡片化、区块分组、顶部导航"
+    },
+    "specialNotes": [
+      "统一使用 Super Design 的表单组件",
+      "订单页固定显示服务状态进度条",
+      "喂养员页面需支持地图定位与轨迹展示"
+    ]
+  }
+}

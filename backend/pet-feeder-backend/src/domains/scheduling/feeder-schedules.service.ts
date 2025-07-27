@@ -81,7 +81,7 @@ export class FeederSchedulesService {
 
   /** Helper to get feederId via user id. */
   async findFeederIdByUser(userId: number) {
-    const feeder = await this.feeders.findOne({ where: { user: { id: userId } } });
+    const feeder = await this.feeders.findOne({ where: { user_id: userId } });
     return feeder?.id ?? null;
   }
 

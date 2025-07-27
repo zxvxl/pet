@@ -5,7 +5,7 @@ import { Person, Settings } from '@vicons/ionicons5'
 const routes: RouteRecordRaw = {
   path: '/users',
   name: 'Users',
-  redirect: '/users/list',
+  redirect: '/user/list',
   component: () => import('@/layout/index.vue'),
   meta: {
     title: '用户管理',
@@ -17,7 +17,7 @@ const routes: RouteRecordRaw = {
     {
       path: 'list',
       name: 'UserList',
-      component: () => import('@/views/users/UserList.vue'),
+      component: () => import('@/views/user/UsersList.vue'),
       meta: {
         title: '用户列表',
         icon: renderIcon(Person),

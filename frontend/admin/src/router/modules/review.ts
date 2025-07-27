@@ -5,7 +5,7 @@ import { Star, Warning } from '@vicons/ionicons5'
 const routes: RouteRecordRaw = {
   path: '/reviews',
   name: 'Reviews',
-  redirect: '/reviews/list',
+  redirect: '/feedback/list',
   component: () => import('@/layout/index.vue'),
   meta: {
     title: '服务评价',
@@ -17,7 +17,7 @@ const routes: RouteRecordRaw = {
     {
       path: 'list',
       name: 'ReviewList',
-      component: () => import('@/views/reviews/ReviewList.vue'),
+      component: () => import('@/views/feedback/ReviewList.vue'),
       meta: {
         title: '评价列表',
         icon: renderIcon(Star),
@@ -27,7 +27,7 @@ const routes: RouteRecordRaw = {
     {
       path: 'feedback',
       name: 'FeedbackList',
-      component: () => import('@/views/reviews/FeedbackList.vue'),
+      component: () => import('@/views/feedback/FeedbackList.vue'),
       meta: {
         title: '反馈投诉',
         icon: renderIcon(Warning),

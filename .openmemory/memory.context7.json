@@ -1,0 +1,8 @@
+{
+  "claude": {
+    "memory": {
+      "type": "context7",
+      "url": "http://localhost:8765/mcp/claude/sse/zz"
+    }
+  }
+}

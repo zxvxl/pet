@@ -2,16 +2,17 @@
 
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, Between } from 'typeorm';
+import { Repository, Like, Between, In } from 'typeorm'; // 添加In操作符
 import { Feeder } from './entities/feeder.entity';
 import { FeederServiceRecord } from './entities/feeder-service-record.entity';
 import { FeederCheckin } from './entities/feeder-checkin.entity';
 import { CreateFeederDto } from './dto/create-feeder.dto';
 import { UpdateFeederDto } from './dto/update-feeder.dto';
-import { FeederListDto } from './dto/feeder-list.dto';
+// 暂时注释缺失的导入
+// import { FeederListDto } from './dto/feeder-list.dto';
 import { AuditFeederDto } from './dto/audit-feeder.dto';
 import { BatchUpdateDto } from './dto/batch-update.dto';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
 
 @Injectable()
 export class FeedersService {
@@ -253,7 +254,7 @@ export class FeedersService {
     // 今日审核数量
     const todayAudit = await this.feederRepository.count({
       where: {
-        status: [1, 2],
+        status: In([1, 2]),
         updated_at: Between(today, tomorrow),
         is_deleted: false,
       },
@@ -265,7 +266,7 @@ export class FeedersService {
 
     const recentAudited = await this.feederRepository.count({
       where: {
-        status: [1, 2],
+        status: In([1, 2]),
         updated_at: Between(thirtyDaysAgo, new Date()),
         is_deleted: false,
       },

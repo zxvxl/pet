@@ -5,7 +5,7 @@ import { People, PersonAdd } from '@vicons/ionicons5'
 const routes: RouteRecordRaw = {
   path: '/feeders',
   name: 'Feeders',
-  redirect: '/feeders/list',
+  redirect: '/feeder/list',
   component: () => import('@/layout/index.vue'),
   meta: {
     title: '喂养员管理',
@@ -18,7 +18,7 @@ const routes: RouteRecordRaw = {
     {
       path: 'list',
       name: 'FeederList',
-      component: () => import('@/views/feeders/FeederList.vue'),
+      component: () => import('@/views/feeder/FeederList.vue'),
       meta: {
         title: '喂养员列表',
         icon: renderIcon(People),
@@ -29,7 +29,7 @@ const routes: RouteRecordRaw = {
     {
       path: 'audit',
       name: 'FeederAudit',
-      component: () => import('@/views/feeders/FeederAudit.vue'),
+      component: () => import('@/views/feeder/FeederAudit.vue'),
       meta: {
         title: '审核中心',
         icon: renderIcon(PersonAdd),
